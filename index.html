@@ -77,6 +77,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .payment-logos-box { background: #fff; padding: 12px 25px; border-radius: 8px; display: inline-block; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
 .payment-logos-box img { height: 40px; width: auto; display: block; }
 
+/* ՄԵԿՆԱԲԱՆՈՒԹՅՈՒՆՆԵՐԻ ԲԱԺԻՆ */
+.reviews-section { margin-top: 50px; padding-top: 40px; border-top: 1px solid var(--border); }
+.reviews-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 25px; color: var(--dark); }
+.review-form { background: var(--cream); padding: 25px; border: 1px solid var(--border); margin-bottom: 30px; }
+.review-form input, .review-form textarea { width: 100%; padding: 12px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; margin-bottom: 12px; background: #fff; }
+.review-form textarea { min-height: 80px; resize: vertical; }
+.review-stars-input { display: flex; gap: 5px; margin-bottom: 12px; }
+.star-btn { font-size: 28px; cursor: pointer; color: #ddd; background: none; border: none; padding: 0; transition: color 0.2s; }
+.star-btn.active, .star-btn:hover { color: #f5a623; }
+.review-submit-btn { background: var(--accent); color: #fff; padding: 12px 25px; border: none; cursor: pointer; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-family: inherit; }
+.review-submit-btn:hover { opacity: 0.9; }
+.review-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.reviews-list { display: flex; flex-direction: column; gap: 20px; }
+.review-item { background: #fff; padding: 20px; border: 1px solid var(--border); border-left: 3px solid var(--accent); }
+.review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
+.review-author { font-weight: 500; color: var(--dark); font-size: 15px; }
+.review-date { font-size: 11px; color: var(--mid); }
+.review-stars { color: #f5a623; font-size: 16px; margin-bottom: 10px; }
+.review-text { color: var(--mid); line-height: 1.7; font-size: 14px; }
+.no-reviews { color: var(--mid); font-style: italic; text-align: center; padding: 20px; }
+.form-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; display: block; }
+
 @media(max-width:900px){
     .hero, .det-grid, .cat-grid, .prod-grid{grid-template-columns:1fr}
     .hero-r, .nav-links{display:none}
@@ -197,7 +219,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyClodivmz2FQiKy7KPpd7t35KW8ZOYCfW8",
@@ -211,8 +233,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const prodsCol = collection(db, "products");
+  const reviewsCol = collection(db, "reviews");
 
   let PRODUCTS = [];
+  let REVIEWS = [];
+  let selectedRating = 0;
   let RATES = { AMD: 1, USD: 400, RUB: 4.5 }; 
   
   async function fetchLiveRates() {
@@ -228,15 +253,35 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null;
 
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back" },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад" }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating." },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку." }
   };
 
   onSnapshot(prodsCol, (snapshot) => {
     PRODUCTS = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     updateUI();
     renderAdminList();
+  });
+
+  onSnapshot(reviewsCol, (snapshot) => {
+    REVIEWS = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    REVIEWS.sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (currentProduct) {
+      const nameEl = document.getElementById('rev-name');
+      const textEl = document.getElementById('rev-text');
+      const savedName = nameEl ? nameEl.value : '';
+      const savedText = textEl ? textEl.value : '';
+      refreshDetailPage();
+      const newNameEl = document.getElementById('rev-name');
+      const newTextEl = document.getElementById('rev-text');
+      if (newNameEl && savedName) newNameEl.value = savedName;
+      if (newTextEl && savedText) newTextEl.value = savedText;
+    }
   });
 
   window.setLang = (l) => {
@@ -316,20 +361,110 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   function refreshDetailPage() {
     const p = currentProduct;
     if(!p) return;
+    const t = TRANSLATIONS[currentLang];
+    const productReviews = REVIEWS.filter(r => r.productId === p.id);
+    
+    const reviewsHTML = productReviews.length > 0 
+      ? productReviews.map(r => {
+          const dateStr = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString() : '';
+          const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
+          return `
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">${escapeHtml(r.name || '')}</span>
+                <span class="review-date">${dateStr}</span>
+              </div>
+              <div class="review-stars">${stars}</div>
+              <div class="review-text">${escapeHtml(r.text || '')}</div>
+            </div>`;
+        }).join('')
+      : `<p class="no-reviews">${t.no_reviews}</p>`;
+
     document.getElementById('detail-content').innerHTML = `
       <div class="det-img"><img src="${p.img}"></div>
       <div class="det-info">
         <h1 style="font-family:'Cormorant Garamond'; font-size:42px">${p['name_'+currentLang] || p.name_hy}</h1>
         <div style="font-size:28px; color:var(--accent); margin:20px 0">${formatPrice(p.price)}</div>
-        <p style="text-transform:uppercase; font-size:11px; color:var(--mid)">${TRANSLATIONS[currentLang].select_size}</p>
+        <p style="text-transform:uppercase; font-size:11px; color:var(--mid)">${t.select_size}</p>
         <div class="size-grid">${[39,40,41,42,43,44].map(s => `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`).join('')}</div>
         <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_hy'] || ''}</p>
-        <button class="btn-wa" onclick="window.orderWA()">${TRANSLATIONS[currentLang].order_wa}</button>
-        <p onclick="go('shop')" style="margin-top:30px; cursor:pointer; text-decoration:underline">← ${TRANSLATIONS[currentLang].back}</p>
+        <button class="btn-wa" onclick="window.orderWA()">${t.order_wa}</button>
+        <p onclick="go('shop')" style="margin-top:30px; cursor:pointer; text-decoration:underline">← ${t.back}</p>
+        
+        <div class="reviews-section">
+          <h2 class="reviews-title">${t.reviews_title}</h2>
+          
+          <div class="review-form">
+            <label class="form-label">${t.leave_review}</label>
+            <input type="text" id="rev-name" placeholder="${t.your_name}" maxlength="50">
+            <textarea id="rev-text" placeholder="${t.your_review}" maxlength="500"></textarea>
+            <label class="form-label">${t.rating}</label>
+            <div class="review-stars-input" id="rev-stars">
+              ${[1,2,3,4,5].map(n => `<button type="button" class="star-btn ${selectedRating>=n?'active':''}" onclick="window.setRating(${n})">★</button>`).join('')}
+            </div>
+            <button class="review-submit-btn" onclick="window.submitReview()">${t.submit_review}</button>
+          </div>
+          
+          <div class="reviews-list">
+            ${reviewsHTML}
+          </div>
+        </div>
       </div>`;
   }
 
-  window.selSz = (el, s) => { selectedSize = s; refreshDetailPage(); };
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  window.setRating = (n) => {
+    selectedRating = n;
+    document.querySelectorAll('#rev-stars .star-btn').forEach((btn, i) => {
+      if (i < n) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+  };
+
+  window.submitReview = async () => {
+    const name = document.getElementById('rev-name').value.trim();
+    const text = document.getElementById('rev-text').value.trim();
+    const t = TRANSLATIONS[currentLang];
+    
+    if (!name || !text || selectedRating === 0) {
+      alert(t.fill_all);
+      return;
+    }
+    
+    try {
+      await addDoc(reviewsCol, {
+        productId: currentProduct.id,
+        name: name,
+        text: text,
+        rating: selectedRating,
+        createdAt: serverTimestamp()
+      });
+      selectedRating = 0;
+      document.getElementById('rev-name').value = '';
+      document.getElementById('rev-text').value = '';
+      alert(t.review_thanks);
+    } catch(e) {
+      alert("Error: " + e.message);
+    }
+  };
+
+  window.selSz = (el, s) => { 
+    const nameEl = document.getElementById('rev-name');
+    const textEl = document.getElementById('rev-text');
+    const savedName = nameEl ? nameEl.value : '';
+    const savedText = textEl ? textEl.value : '';
+    selectedSize = s; 
+    refreshDetailPage(); 
+    const newNameEl = document.getElementById('rev-name');
+    const newTextEl = document.getElementById('rev-text');
+    if (newNameEl) newNameEl.value = savedName;
+    if (newTextEl) newTextEl.value = savedText;
+  };
   
   window.orderWA = () => {
     if(!selectedSize) return alert("Ընտրեք չափսը");
