@@ -48,8 +48,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .prod-info{padding:20px}
 
 .det-grid { display: grid; grid-template-columns: 1.2fr 1fr; margin-top: 68px; background: #fff; min-height: calc(100vh - 68px); }
-.det-img { height: 100%; position: sticky; top: 68px; }
-.det-img img { width: 100%; height: 100%; object-fit: cover; }
+.det-img { height: calc(100vh - 68px); position: sticky; top: 68px; background: #f5f1eb; display: flex; align-items: center; justify-content: center; padding: 30px; cursor: zoom-in; }
+.det-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
+/* LIGHTBOX ԼԻԱԷԿՐԱՆ ՆԿԱՐ */
+.lightbox-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: zoom-out; padding: 20px; }
+.lightbox-overlay.on { display: flex; }
+.lightbox-overlay img { max-width: 95vw; max-height: 95vh; width: auto; height: auto; object-fit: contain; }
+.lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; background: none; border: none; line-height: 1; font-family: inherit; }
+.lightbox-close:hover { opacity: 0.7; }
 .det-info { padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
 .size-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 25px 0 35px; max-width: 400px; }
 .sz { border: 1px solid var(--border); padding: 12px 0; text-align: center; cursor: pointer; font-size: 14px; }
@@ -103,7 +110,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     .hero, .det-grid, .cat-grid, .prod-grid{grid-template-columns:1fr}
     .hero-r, .nav-links{display:none}
     .hero-l{padding: 60px 30px}
-    .det-img{height:50vh; position: relative; top:0}
+    .det-img{height:60vh; position: relative; top:0; padding: 20px;}
     .payment-logos-box { padding: 10px 15px; }
     .payment-logos-box img { height: 28px; }
 }
@@ -188,6 +195,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     </div>
     <button id="adm-main-btn" onclick="window.addNewProduct()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; margin-top:10px; cursor:pointer; font-weight:bold">ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ</button>
     <div id="admin-list" style="margin-top:30px"></div>
+</div>
+
+<div class="lightbox-overlay" id="lightbox" onclick="window.closeLightbox()">
+    <button class="lightbox-close" onclick="window.closeLightbox()">×</button>
+    <img id="lightbox-img" src="" alt="">
 </div>
 
 <footer class="site-footer">
@@ -381,7 +393,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       : `<p class="no-reviews">${t.no_reviews}</p>`;
 
     document.getElementById('detail-content').innerHTML = `
-      <div class="det-img"><img src="${p.img}"></div>
+      <div class="det-img" onclick="window.openLightbox('${p.img}')"><img src="${p.img}"></div>
       <div class="det-info">
         <h1 style="font-family:'Cormorant Garamond'; font-size:42px">${p['name_'+currentLang] || p.name_hy}</h1>
         <div style="font-size:28px; color:var(--accent); margin:20px 0">${formatPrice(p.price)}</div>
@@ -452,6 +464,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       alert("Error: " + e.message);
     }
   };
+
+  window.openLightbox = (imgSrc) => {
+    document.getElementById('lightbox-img').src = imgSrc;
+    document.getElementById('lightbox').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeLightbox = () => {
+    document.getElementById('lightbox').classList.remove('on');
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.closeLightbox();
+  });
 
   window.selSz = (el, s) => { 
     const nameEl = document.getElementById('rev-name');
