@@ -513,13 +513,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyClodivmz2FQiKy7KPpd7t35KW8ZOYCfW8",
-    authDomain: "hovakimyan-s-family.firebaseapp.com",
-    projectId: "hovakimyan-s-family",
-    storageBucket: "hovakimyan-s-family.firebasestorage.app",
-    messagingSenderId: "175248908456",
-    appId: "1:175248908456:web:cf6a3a6615e9dba756629d"
-  };
+  apiKey: "AIzaSyClodivmz2FQIkY7KpPd7t35KW8Z0YCfW8",
+  authDomain: "hovakimyan-s-family.firebaseapp.com",
+  projectId: "hovakimyan-s-family",
+  storageBucket: "hovakimyan-s-family.firebasestorage.app",
+  messagingSenderId: "175248908456",
+  appId: "1:175248908456:web:cf6a3a6615e9dba756629d",
+  measurementId: "G-G9F1892JJR"
+};
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
