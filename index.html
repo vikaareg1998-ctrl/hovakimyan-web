@@ -48,15 +48,184 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .prod-info{padding:20px}
 
 .det-grid { display: grid; grid-template-columns: 1.2fr 1fr; margin-top: 68px; background: #fff; min-height: calc(100vh - 68px); }
-.det-img { height: calc(100vh - 68px); position: sticky; top: 68px; background: #f5f1eb; display: flex; align-items: center; justify-content: center; padding: 30px; cursor: zoom-in; }
-.det-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+/* AUTH ԵՎ ACCOUNT */
+.user-nav-box { position: relative; cursor: pointer; padding: 5px 12px; font-size: 12px; color: var(--dark); display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: #fff; transition: 0.2s; }
+.user-nav-box:hover { border-color: var(--accent); }
+.user-nav-box .user-icon { font-size: 14px; }
+.user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid var(--border); min-width: 200px; margin-top: 5px; display: none; z-index: 1001; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.user-dropdown.on { display: block; }
+.user-dropdown a { display: block; padding: 12px 18px; color: var(--dark); text-decoration: none; font-size: 13px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.user-dropdown a:last-child { border-bottom: none; }
+.user-dropdown a:hover { background: var(--cream); color: var(--accent); }
+.user-dropdown .ud-email { padding: 10px 18px; font-size: 11px; color: var(--mid); border-bottom: 1px solid var(--border); background: var(--cream); }
+
+/* AUTH MODAL */
+.auth-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+.auth-overlay.on { display: flex; }
+.auth-modal { background: #fff; max-width: 420px; width: 100%; padding: 40px 30px; position: relative; max-height: 90vh; overflow-y: auto; }
+.auth-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 28px; cursor: pointer; color: var(--mid); font-family: inherit; line-height: 1; }
+.auth-close:hover { color: var(--dark); }
+.auth-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; text-align: center; margin-bottom: 5px; }
+.auth-sub { text-align: center; color: var(--mid); font-size: 13px; margin-bottom: 25px; }
+.auth-tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid var(--border); }
+.auth-tab { flex: 1; padding: 12px; cursor: pointer; background: transparent; border: none; font-family: inherit; font-size: 13px; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; }
+.auth-tab.on { color: var(--dark); border-bottom: 2px solid var(--accent); margin-bottom: -1px; font-weight: 600; }
+.auth-field { margin-bottom: 15px; }
+.auth-field label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+.auth-field input { width: 100%; padding: 12px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; }
+.auth-submit { width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-family: inherit; margin-top: 10px; }
+.auth-submit:hover { opacity: 0.9; }
+.auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.auth-divider { text-align: center; margin: 20px 0 15px; position: relative; color: var(--mid); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+.auth-divider::before, .auth-divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
+.auth-divider::before { left: 0; }
+.auth-divider::after { right: 0; }
+.auth-google { width: 100%; padding: 12px; background: #fff; color: var(--dark); border: 1px solid var(--border); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; }
+.auth-google:hover { border-color: var(--accent); }
+.auth-error { color: #c33; font-size: 12px; margin-top: 10px; text-align: center; }
+
+/* ACCOUNT ԷՋ */
+.account-container { max-width: 1000px; margin: 0 auto; padding: 120px 30px 60px; }
+.account-header { text-align: center; margin-bottom: 40px; }
+.account-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; margin-bottom: 10px; }
+.account-header p { color: var(--mid); font-size: 14px; }
+.account-tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--border); flex-wrap: wrap; justify-content: center; }
+.account-tab { padding: 12px 25px; cursor: pointer; background: transparent; border: none; font-family: inherit; font-size: 13px; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; }
+.account-tab.on { color: var(--dark); border-bottom: 2px solid var(--accent); margin-bottom: -2px; font-weight: 600; }
+.profile-form { max-width: 500px; margin: 0 auto; }
+.profile-form .auth-field input { background: var(--cream); }
+.user-order-card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; }
+.user-order-card .order-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent); }
+.user-order-items { margin-top: 10px; font-size: 13px; }
+.wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.wishlist-card { background: #fff; border: 1px solid var(--border); cursor: pointer; position: relative; }
+.wishlist-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.wishlist-card-info { padding: 15px; }
+.wishlist-remove { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); width: 32px; height: 32px; cursor: pointer; font-size: 18px; color: #c33; line-height: 1; font-family: inherit; }
+.wishlist-btn-detail { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1; font-family: inherit; z-index: 5; transition: 0.2s; }
+.wishlist-btn-detail.active { color: #c33; border-color: #c33; }
+.wishlist-btn-detail:hover { border-color: #c33; color: #c33; }
+
+/* ADMIN USERS */
+.users-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+.users-table th, .users-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.users-table th { background: var(--cream); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--mid); }
+.users-table tr:hover { background: var(--cream); cursor: pointer; }
+.user-detail-modal { background: #fff; padding: 30px; max-width: 700px; margin: 0 auto; }
+.user-stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+
+/* ZAMBYUGHI ԵՎ CHECKOUT */
+.cart-icon { position: relative; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 5px 10px; font-size: 18px; }
+.cart-badge { background: var(--accent); color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; position: absolute; top: -5px; right: -5px; font-weight: 600; }
+.cart-container { max-width: 900px; margin: 0 auto; padding: 120px 30px 60px; }
+.cart-title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; text-align: center; margin-bottom: 40px; }
+.cart-empty { text-align: center; padding: 60px 20px; color: var(--mid); font-size: 16px; }
+.cart-item { display: grid; grid-template-columns: 100px 1fr auto; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: center; }
+.cart-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; margin-bottom: 5px; }
+.cart-item-meta { font-size: 12px; color: var(--mid); margin-bottom: 8px; }
+.cart-item-price { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 18px; }
+.cart-qty { display: inline-flex; align-items: center; gap: 8px; margin-top: 5px; }
+.cart-qty button { width: 28px; height: 28px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit; }
+.cart-qty button:hover { background: var(--cream); }
+.cart-qty span { min-width: 25px; text-align: center; font-size: 14px; }
+.cart-remove { background: none; border: none; color: var(--mid); cursor: pointer; font-size: 20px; padding: 5px 10px; font-family: inherit; }
+.cart-remove:hover { color: #c33; }
+.cart-total-box { margin-top: 30px; padding: 25px; background: var(--cream); border: 1px solid var(--border); }
+.cart-total-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; }
+.cart-total-row.grand { font-size: 20px; font-weight: 600; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); color: var(--accent); }
+.cart-checkout-btn { background: var(--accent); color: #fff; border: none; padding: 16px 30px; width: 100%; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 20px; font-family: inherit; }
+.cart-checkout-btn:hover { opacity: 0.9; }
+.cart-continue { text-align: center; margin-top: 20px; }
+.cart-continue a { color: var(--mid); text-decoration: underline; cursor: pointer; font-size: 13px; }
+
+/* CHECKOUT FORMA */
+.checkout-container { max-width: 700px; margin: 0 auto; padding: 120px 30px 60px; }
+.checkout-grid { display: grid; gap: 15px; }
+.checkout-field { display: flex; flex-direction: column; }
+.checkout-field label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+.checkout-field input, .checkout-field textarea, .checkout-field select { padding: 12px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; background: #fff; }
+.checkout-field textarea { min-height: 70px; resize: vertical; }
+.checkout-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.checkout-radio-group { display: flex; flex-direction: column; gap: 10px; }
+.checkout-radio { display: flex; align-items: center; padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; background: #fff; gap: 10px; }
+.checkout-radio.on { border-color: var(--accent); background: var(--cream); }
+.checkout-radio input { margin: 0; }
+.checkout-radio-info { flex: 1; }
+.checkout-radio-title { font-size: 14px; font-weight: 500; }
+.checkout-radio-desc { font-size: 12px; color: var(--mid); margin-top: 3px; }
+.checkout-radio-price { color: var(--accent); font-weight: 600; }
+.checkout-summary { background: var(--cream); padding: 20px; border: 1px solid var(--border); margin: 20px 0; }
+.checkout-summary h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; margin-bottom: 15px; }
+.checkout-sum-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+.checkout-sum-row.grand { font-size: 18px; font-weight: 600; color: var(--accent); border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+
+/* SUCCESS ԷՋ */
+.success-container { max-width: 600px; margin: 0 auto; padding: 140px 30px 60px; text-align: center; }
+.success-icon { font-size: 60px; color: #25D366; margin-bottom: 20px; }
+.success-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 15px; }
+.success-order-num { background: var(--cream); padding: 15px; border: 1px solid var(--border); margin: 20px 0; font-size: 16px; }
+.success-order-num strong { color: var(--accent); font-size: 24px; font-family: 'Cormorant Garamond', serif; }
+
+/* ADMIN ORDERS */
+.orders-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+.orders-tab { padding: 10px 20px; cursor: pointer; background: transparent; border: none; font-family: inherit; font-size: 13px; color: var(--mid); position: relative; }
+.orders-tab.on { color: var(--dark); border-bottom: 2px solid var(--accent); margin-bottom: -2px; font-weight: 600; }
+.orders-tab-badge { background: #c33; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 11px; margin-left: 5px; }
+.order-card { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 20px; margin-bottom: 15px; }
+.order-card.status-new { border-left-color: #c33; }
+.order-card.status-confirmed { border-left-color: #3a7bd5; }
+.order-card.status-shipped { border-left-color: #f5a623; }
+.order-card.status-delivered { border-left-color: #4caf50; }
+.order-card.status-cancelled { border-left-color: #999; opacity: 0.7; }
+.order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+.order-num { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent); }
+.order-date { font-size: 12px; color: var(--mid); }
+.order-status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.status-new .order-status-badge { background: #c33; color: #fff; }
+.status-confirmed .order-status-badge { background: #3a7bd5; color: #fff; }
+.status-shipped .order-status-badge { background: #f5a623; color: #fff; }
+.status-delivered .order-status-badge { background: #4caf50; color: #fff; }
+.status-cancelled .order-status-badge { background: #999; color: #fff; }
+.order-customer { background: var(--cream); padding: 12px; margin-bottom: 12px; font-size: 13px; line-height: 1.7; }
+.order-items { margin-bottom: 12px; }
+.order-item-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+.order-item-row:last-child { border-bottom: none; }
+.order-totals { text-align: right; margin-bottom: 15px; font-size: 13px; }
+.order-totals .grand { font-size: 17px; color: var(--accent); font-weight: 600; margin-top: 5px; }
+.order-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.order-actions select { padding: 8px 12px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; background: #fff; cursor: pointer; }
+.order-wa-btn { background: #25D366; color: #fff; border: none; padding: 8px 15px; text-decoration: none; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-family: inherit; }
+.order-del-btn { background: transparent; border: 1px solid var(--border); padding: 8px 15px; cursor: pointer; font-family: inherit; font-size: 12px; color: var(--mid); }
+.order-del-btn:hover { color: #c33; border-color: #c33; }
+
+.det-img { height: calc(100vh - 68px); position: sticky; top: 68px; background: #f5f1eb; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+.det-img-main { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; cursor: zoom-in; min-height: 0; padding: 10px; }
+.det-img-main img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+.det-thumbs { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center; max-width: 100%; }
+.det-thumb { width: 70px; height: 70px; border: 2px solid var(--border); cursor: pointer; overflow: hidden; background: #fff; transition: border-color 0.2s; flex-shrink: 0; }
+.det-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.det-thumb.active { border-color: var(--accent); }
+.det-thumb:hover { border-color: var(--accent); }
 
 /* LIGHTBOX ԼԻԱԷԿՐԱՆ ՆԿԱՐ */
 .lightbox-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: zoom-out; padding: 20px; }
 .lightbox-overlay.on { display: flex; }
 .lightbox-overlay img { max-width: 95vw; max-height: 95vh; width: auto; height: auto; object-fit: contain; }
-.lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; background: none; border: none; line-height: 1; font-family: inherit; }
+.lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; background: none; border: none; line-height: 1; font-family: inherit; z-index: 10001; }
 .lightbox-close:hover { opacity: 0.7; }
+.lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: none; font-size: 30px; width: 50px; height: 70px; cursor: pointer; font-family: inherit; line-height: 1; transition: background 0.2s; z-index: 10001; }
+.lightbox-arrow:hover { background: rgba(255,255,255,0.3); }
+.lightbox-arrow.prev { left: 20px; }
+.lightbox-arrow.next { right: 20px; }
+.lightbox-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 14px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 15px; }
+
+/* ADMIN-Ի ՆԿԱՐՆԵՐԻ THUMBNAIL-ՆԵՐ */
+.adm-images-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.adm-img-thumb { width: 80px; height: 80px; position: relative; border: 1px solid var(--border); overflow: hidden; }
+.adm-img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.adm-img-remove { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.7); color: #fff; border: none; width: 22px; height: 22px; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; }
+.adm-img-remove:hover { background: rgba(255,0,0,0.8); }
 .det-info { padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
 .size-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 25px 0 35px; max-width: 400px; }
 .sz { border: 1px solid var(--border); padding: 12px 0; text-align: center; cursor: pointer; font-size: 14px; }
@@ -110,7 +279,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     .hero, .det-grid, .cat-grid, .prod-grid{grid-template-columns:1fr}
     .hero-r, .nav-links{display:none}
     .hero-l{padding: 60px 30px}
-    .det-img{height:60vh; position: relative; top:0; padding: 20px;}
+    .det-img{height:auto; min-height:60vh; position: relative; top:0; padding: 20px;}
+    .det-img-main{min-height: 50vh;}
+    .lightbox-arrow { width: 40px; height: 60px; font-size: 24px; }
+    .lightbox-arrow.prev { left: 5px; }
+    .lightbox-arrow.next { right: 5px; }
+    .checkout-row { grid-template-columns: 1fr; }
+    .cart-item { grid-template-columns: 80px 1fr; }
+    .cart-item > :last-child { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+    .cart-container, .checkout-container { padding: 90px 15px 40px; }
+    .order-actions { flex-direction: column; align-items: stretch; }
+    .order-actions select, .order-wa-btn, .order-del-btn { width: 100%; text-align: center; justify-content: center; }
     .payment-logos-box { padding: 10px 15px; }
     .payment-logos-box img { height: 28px; }
 }
@@ -127,7 +306,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     <li onclick="go('home')" data-key="nav_home">Գլխավոր</li>
     <li onclick="go('cat')" data-key="nav_shop">Խանութ</li>
   </ul>
-  <div style="display:flex;gap:10px">
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="user-nav-box" id="user-nav-box" onclick="window.toggleUserMenu(event)">
+      <span class="user-icon">👤</span>
+      <span id="user-nav-text" data-key="login_signup">Մուտք</span>
+      <div class="user-dropdown" id="user-dropdown"></div>
+    </div>
+    <div class="cart-icon" onclick="go('cart')" title="Զամբյուղ">
+      🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span>
+    </div>
     <div style="display:flex;gap:2px">
       <button class="control-btn" id="lHY" onclick="window.setLang('hy')">ՀՅ</button>
       <button class="control-btn" id="lEN" onclick="window.setLang('en')">EN</button>
@@ -177,14 +364,85 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   <div class="det-grid" id="detail-content"></div>
 </div>
 
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="window.closeAuth()">×</button>
+    <h2 class="auth-title" id="auth-title">Մուտք</h2>
+    <p class="auth-sub" id="auth-sub">Բարի վերադարձ Hovakimyan's Family</p>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="auth-tab-login" onclick="window.setAuthMode('login')">Մուտք</button>
+      <button class="auth-tab" id="auth-tab-signup" onclick="window.setAuthMode('signup')">Գրանցում</button>
+    </div>
+    <div id="auth-form-content"></div>
+    <div class="auth-divider" data-key="or">կամ</div>
+    <button class="auth-google" onclick="window.signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span data-key="google_signin">Մուտք Google-ով</span>
+    </button>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- ACCOUNT PAGE -->
+<div class="pg" id="pg-account">
+  <div class="account-container">
+    <div class="account-header">
+      <h1 data-key="my_account">Իմ Էջը</h1>
+      <p id="account-welcome"></p>
+    </div>
+    <div class="account-tabs">
+      <button class="account-tab on" id="at-profile" onclick="window.setAccountTab('profile')" data-key="my_profile">Իմ տվյալները</button>
+      <button class="account-tab" id="at-orders" onclick="window.setAccountTab('orders')" data-key="my_orders">Իմ պատվերները</button>
+      <button class="account-tab" id="at-wishlist" onclick="window.setAccountTab('wishlist')" data-key="my_wishlist">Սիրված</button>
+    </div>
+    <div id="account-content"></div>
+  </div>
+</div>
+
+<div class="pg" id="pg-cart">
+  <div class="cart-container">
+    <h2 class="cart-title" data-key="cart_title">Զամբյուղ</h2>
+    <div id="cart-content"></div>
+  </div>
+</div>
+
+<div class="pg" id="pg-checkout">
+  <div class="checkout-container">
+    <h2 class="cart-title" data-key="checkout_title">Պատվերի ձեւակերպում</h2>
+    <div id="checkout-content"></div>
+  </div>
+</div>
+
+<div class="pg" id="pg-success">
+  <div class="success-container">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title" data-key="success_title">Շնորհակալություն պատվերի համար</h1>
+    <p style="color:var(--mid); line-height:1.8" data-key="success_msg">Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։</p>
+    <div class="success-order-num">
+      <span data-key="order_number">Պատվերի համարը</span>: <strong id="success-order-num"></strong>
+    </div>
+    <button class="btn-wa" style="background:var(--accent)" onclick="go('home')" data-key="back_home">Վերադառնալ գլխավոր</button>
+  </div>
+</div>
+
 <div id="admin-panel">
     <h2>Ադմին Պանել</h2>
+    
+    <div class="orders-tabs" style="margin-top:20px">
+      <button class="orders-tab on" onclick="window.admTab('products')" id="admt-products">Ապրանքներ</button>
+      <button class="orders-tab" onclick="window.admTab('orders')" id="admt-orders">Պատվերներ <span class="orders-tab-badge" id="new-orders-badge" style="display:none">0</span></button>
+      <button class="orders-tab" onclick="window.admTab('users')" id="admt-users">Հաճախորդներ</button>
+    </div>
+
+    <div id="adm-section-products">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px">
         <div class="admin-input-group">
-            <label>Նկար</label>
-            <input type="file" id="adm-file" accept="image/*">
+            <label>Նկարներ (կարող եք մի քանիսը ընտրել)</label>
+            <input type="file" id="adm-file" accept="image/*" multiple>
             <input type="hidden" id="adm-img-base64">
             <div id="file-size-info" style="font-size:10px; color:var(--accent)"></div>
+            <div class="adm-images-preview" id="adm-images-preview"></div>
         </div>
         <div class="admin-input-group"><label>Տեսակ</label><select id="adm-cat"><option value="sneakers">Sneakers</option><option value="loafers">Loafers</option></select></div>
         <div class="admin-input-group"><label>Անուն (HY)</label><input type="text" id="adm-name-hy"></div>
@@ -195,11 +453,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     </div>
     <button id="adm-main-btn" onclick="window.addNewProduct()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; margin-top:10px; cursor:pointer; font-weight:bold">ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ</button>
     <div id="admin-list" style="margin-top:30px"></div>
+    </div>
+
+    <div id="adm-section-orders" style="display:none; margin-top:20px">
+      <div class="orders-tabs" style="margin-bottom:20px">
+        <button class="orders-tab on" onclick="window.filterOrders('all')" id="fot-all">Բոլորը</button>
+        <button class="orders-tab" onclick="window.filterOrders('new')" id="fot-new">Նոր</button>
+        <button class="orders-tab" onclick="window.filterOrders('confirmed')" id="fot-confirmed">Հաստատված</button>
+        <button class="orders-tab" onclick="window.filterOrders('shipped')" id="fot-shipped">Ուղարկված</button>
+        <button class="orders-tab" onclick="window.filterOrders('delivered')" id="fot-delivered">Առաքված</button>
+        <button class="orders-tab" onclick="window.filterOrders('cancelled')" id="fot-cancelled">Չեղարկված</button>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+
+    <div id="adm-section-users" style="display:none; margin-top:20px">
+      <div id="users-list"></div>
+    </div>
 </div>
 
 <div class="lightbox-overlay" id="lightbox" onclick="window.closeLightbox()">
-    <button class="lightbox-close" onclick="window.closeLightbox()">×</button>
-    <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-close" onclick="event.stopPropagation(); window.closeLightbox()">×</button>
+    <button class="lightbox-arrow prev" id="lb-prev" onclick="event.stopPropagation(); window.lbNav(-1)">‹</button>
+    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    <button class="lightbox-arrow next" id="lb-next" onclick="event.stopPropagation(); window.lbNav(1)">›</button>
+    <div class="lightbox-counter" id="lb-counter"></div>
 </div>
 
 <footer class="site-footer">
@@ -231,7 +509,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyClodivmz2FQiKy7KPpd7t35KW8ZOYCfW8",
@@ -244,12 +523,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
   const prodsCol = collection(db, "products");
   const reviewsCol = collection(db, "reviews");
+  const ordersCol = collection(db, "orders");
+  const usersCol = collection(db, "users");
 
   let PRODUCTS = [];
   let REVIEWS = [];
+  let ORDERS = [];
+  let USERS = [];
+  let CART = [];
+  let WISHLIST = [];
+  let currentUser = null;
+  let currentUserData = null;
   let selectedRating = 0;
+  let currentOrderFilter = 'all';
+  let currentAdmTab = 'products';
+  let checkoutShipping = 'yerevan';
+  let checkoutPayment = 'cod';
+  let authMode = 'login';
+  let accountTab = 'profile';
   let RATES = { AMD: 1, USD: 400, RUB: 4.5 }; 
   
   async function fetchLiveRates() {
@@ -262,12 +557,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     } catch (e) { console.log("Default rates used"); }
   }
 
-  let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null;
+  let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null, currentImageIndex = 0, lightboxImages = [], lightboxIndex = 0;
 
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating." },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку." }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error" },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации" }
   };
 
   onSnapshot(prodsCol, (snapshot) => {
@@ -296,6 +591,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }
   });
 
+  onSnapshot(ordersCol, (snapshot) => {
+    ORDERS = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    ORDERS.sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    updateNewOrdersBadge();
+    if (currentAdmTab === 'orders' && document.getElementById('admin-panel').style.display === 'block') {
+      renderOrders();
+    }
+  });
+
   window.setLang = (l) => {
     currentLang = l;
     document.querySelectorAll('[id^="l"]').forEach(b => b.classList.remove('active-btn'));
@@ -314,9 +622,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       const key = el.getAttribute('data-key');
       if (TRANSLATIONS[currentLang][key]) el.innerText = TRANSLATIONS[currentLang][key];
     });
+    updateUserNav();
     if (PRODUCTS.length > 0) {
         const lastProd = PRODUCTS[PRODUCTS.length - 1];
-        document.getElementById('hero-main-img').src = lastProd.img;
+        const imgs = getProductImages(lastProd);
+        if (imgs[0]) document.getElementById('hero-main-img').src = imgs[0];
     }
     renderCategoryGrids();
     if(currentCategory) renderShop(currentCategory);
@@ -327,6 +637,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
     document.getElementById('pg-' + id).classList.add('on');
     window.scrollTo(0,0);
+    if (id === 'cart') renderCartPage();
+    if (id === 'checkout') renderCheckoutPage();
+    if (id === 'account') renderAccountPage();
   };
 
   window.openShop = (cat) => {
@@ -339,7 +652,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   function renderCategoryGrids() {
     const getI = (c) => { 
         const p = PRODUCTS.filter(x => x.cat === c); 
-        return p.length > 0 ? p[p.length-1].img : "https://via.placeholder.com/600x600?text=Hovakimyan"; 
+        if (p.length === 0) return "https://via.placeholder.com/600x600?text=Hovakimyan";
+        const lastP = p[p.length-1];
+        const imgs = getProductImages(lastP);
+        return imgs[0] || "https://via.placeholder.com/600x600?text=Hovakimyan";
     };
     const html = `
       <div class="cat-tile" onclick="openShop('sneakers')"><img src="${getI('sneakers')}"><div class="cat-tile-info"><h2 class="cat-name">${TRANSLATIONS[currentLang].sneakers}</h2></div></div>
@@ -352,9 +668,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const grid = document.getElementById('shop-grid');
     grid.innerHTML = '';
     PRODUCTS.filter(p => p.cat === cat).forEach(p => {
+      const imgs = getProductImages(p);
+      const firstImg = imgs[0] || '';
       grid.innerHTML += `
         <div class="prod-card" onclick="openDetail('${p.id}')">
-          <img src="${p.img}">
+          <img src="${firstImg}">
           <div class="prod-info">
             <h3 style="font-family:'Cormorant Garamond'; font-size:20px">${p['name_'+currentLang] || p.name_hy}</h3>
             <p style="color:var(--accent); font-family:'Cormorant Garamond'; font-size:20px">${formatPrice(p.price)}</p>
@@ -366,15 +684,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   window.openDetail = (id) => {
     currentProduct = PRODUCTS.find(x => x.id === id);
     selectedSize = null;
+    currentImageIndex = 0;
     refreshDetailPage();
     go('detail');
   };
+
+  function getProductImages(p) {
+    if (p.images && Array.isArray(p.images) && p.images.length > 0) return p.images;
+    if (p.img) return [p.img];
+    return [];
+  }
 
   function refreshDetailPage() {
     const p = currentProduct;
     if(!p) return;
     const t = TRANSLATIONS[currentLang];
     const productReviews = REVIEWS.filter(r => r.productId === p.id);
+    const images = getProductImages(p);
+    const mainImg = images[currentImageIndex] || images[0] || '';
     
     const reviewsHTML = productReviews.length > 0 
       ? productReviews.map(r => {
@@ -392,15 +719,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         }).join('')
       : `<p class="no-reviews">${t.no_reviews}</p>`;
 
+    const thumbsHTML = images.length > 1 
+      ? `<div class="det-thumbs">${images.map((img, i) => 
+          `<div class="det-thumb ${i === currentImageIndex ? 'active' : ''}" onclick="window.selectImage(${i})"><img src="${img}"></div>`
+        ).join('')}</div>`
+      : '';
+
     document.getElementById('detail-content').innerHTML = `
-      <div class="det-img" onclick="window.openLightbox('${p.img}')"><img src="${p.img}"></div>
+      <div class="det-img">
+        <button class="wishlist-btn-detail ${WISHLIST.includes(p.id)?'active':''}" onclick="event.stopPropagation(); window.toggleWishlist('${p.id}')" title="Սիրվածներ">${WISHLIST.includes(p.id)?'♥':'♡'}</button>
+        <div class="det-img-main" onclick="window.openLightbox(${currentImageIndex})"><img src="${mainImg}"></div>
+        ${thumbsHTML}
+      </div>
       <div class="det-info">
         <h1 style="font-family:'Cormorant Garamond'; font-size:42px">${p['name_'+currentLang] || p.name_hy}</h1>
         <div style="font-size:28px; color:var(--accent); margin:20px 0">${formatPrice(p.price)}</div>
         <p style="text-transform:uppercase; font-size:11px; color:var(--mid)">${t.select_size}</p>
         <div class="size-grid">${[39,40,41,42,43,44].map(s => `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`).join('')}</div>
         <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_hy'] || ''}</p>
-        <button class="btn-wa" onclick="window.orderWA()">${t.order_wa}</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn-wa" onclick="window.orderWA()">${t.order_wa}</button>
+          <button class="btn-wa" style="background:var(--accent)" onclick="window.addToCart()">${t.add_to_cart}</button>
+        </div>
         <p onclick="go('shop')" style="margin-top:30px; cursor:pointer; text-decoration:underline">← ${t.back}</p>
         
         <div class="reviews-section">
@@ -423,6 +763,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         </div>
       </div>`;
   }
+
+  window.selectImage = (i) => {
+    currentImageIndex = i;
+    refreshDetailPage();
+  };
 
   function escapeHtml(str) {
     const div = document.createElement('div');
@@ -465,10 +810,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }
   };
 
-  window.openLightbox = (imgSrc) => {
-    document.getElementById('lightbox-img').src = imgSrc;
+  window.openLightbox = (startIndex) => {
+    if (!currentProduct) return;
+    lightboxImages = getProductImages(currentProduct);
+    if (lightboxImages.length === 0) return;
+    lightboxIndex = (typeof startIndex === 'number') ? startIndex : 0;
+    updateLightbox();
     document.getElementById('lightbox').classList.add('on');
     document.body.style.overflow = 'hidden';
+  };
+
+  function updateLightbox() {
+    document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
+    const showNav = lightboxImages.length > 1;
+    document.getElementById('lb-prev').style.display = showNav ? 'block' : 'none';
+    document.getElementById('lb-next').style.display = showNav ? 'block' : 'none';
+    document.getElementById('lb-counter').style.display = showNav ? 'block' : 'none';
+    if (showNav) {
+      document.getElementById('lb-counter').innerText = `${lightboxIndex + 1} / ${lightboxImages.length}`;
+    }
+  }
+
+  window.lbNav = (dir) => {
+    if (lightboxImages.length === 0) return;
+    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+    updateLightbox();
   };
 
   window.closeLightbox = () => {
@@ -477,7 +843,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   };
 
   document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('on')) return;
     if (e.key === 'Escape') window.closeLightbox();
+    if (e.key === 'ArrowLeft') window.lbNav(-1);
+    if (e.key === 'ArrowRight') window.lbNav(1);
   });
 
   window.selSz = (el, s) => { 
@@ -506,17 +875,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   window.addNewProduct = async () => {
     const btn = document.getElementById('adm-main-btn');
-    const imgData = document.getElementById('adm-img-base64').value;
     const name_hy = document.getElementById('adm-name-hy').value;
     const price = parseInt(document.getElementById('adm-price').value);
 
-    if(!imgData || !name_hy || isNaN(price)) return alert("Լրացրեք տվյալները");
+    if(admImagesArr.length === 0 || !name_hy || isNaN(price)) return alert("Լրացրեք տվյալները եւ ավելացրեք գոնե 1 նկար");
 
     btn.innerText = "Սպասեք...";
     btn.disabled = true;
 
     const data = {
-      img: imgData,
+      img: admImagesArr[0],
+      images: admImagesArr.slice(),
       cat: document.getElementById('adm-cat').value,
       name_hy: name_hy,
       name_en: document.getElementById('adm-name-en').value || name_hy,
@@ -544,11 +913,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const p = PRODUCTS.find(x=>x.id===id);
     editId = id;
     document.getElementById('adm-name-hy').value = p.name_hy;
+    document.getElementById('adm-name-en').value = p.name_en || '';
+    document.getElementById('adm-name-ru').value = p.name_ru || '';
     document.getElementById('adm-price').value = p.price;
     document.getElementById('adm-desc-hy').value = p.desc_hy || '';
-    document.getElementById('adm-img-base64').value = p.img;
     document.getElementById('adm-cat').value = p.cat;
+    admImagesArr = getProductImages(p).slice();
+    renderAdmImagesPreview();
     document.getElementById('adm-main-btn').innerText = "ՊԱՀՊԱՆԵԼ";
+    document.getElementById('admin-panel').scrollIntoView({behavior: 'smooth'});
   };
 
   function renderAdminList() {
@@ -563,31 +936,66 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('adm-file').value = '';
     document.getElementById('adm-img-base64').value = '';
     document.getElementById('adm-name-hy').value = '';
+    document.getElementById('adm-name-en').value = '';
+    document.getElementById('adm-name-ru').value = '';
     document.getElementById('adm-price').value = '';
     document.getElementById('adm-desc-hy').value = '';
     document.getElementById('file-size-info').innerText = '';
+    admImagesArr = [];
+    renderAdmImagesPreview();
+    editId = null;
+    document.getElementById('adm-main-btn').innerText = "ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ";
   }
 
-  document.getElementById('adm-file').onchange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-        let maxW = 800; 
-        let scale = maxW / img.width;
-        canvas.width = img.width * (scale < 1 ? scale : 1);
-        canvas.height = img.height * (scale < 1 ? scale : 1);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-        document.getElementById('adm-img-base64').value = dataURL;
-        document.getElementById('file-size-info').innerText = "Պատրաստ է";
+  let admImagesArr = [];
+
+  function renderAdmImagesPreview() {
+    const c = document.getElementById('adm-images-preview');
+    c.innerHTML = admImagesArr.map((img, i) => 
+      `<div class="adm-img-thumb">
+        <img src="${img}">
+        <button class="adm-img-remove" onclick="window.removeAdmImage(${i})" type="button">×</button>
+      </div>`
+    ).join('');
+    document.getElementById('file-size-info').innerText = admImagesArr.length > 0 ? `${admImagesArr.length} նկար պատրաստ է` : '';
+  }
+
+  window.removeAdmImage = (i) => {
+    admImagesArr.splice(i, 1);
+    renderAdmImagesPreview();
+  };
+
+  function processImageFile(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let ctx = canvas.getContext('2d');
+          let maxW = 800; 
+          let scale = maxW / img.width;
+          canvas.width = img.width * (scale < 1 ? scale : 1);
+          canvas.height = img.height * (scale < 1 ? scale : 1);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.src = ev.target.result;
       };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('adm-file').onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    document.getElementById('file-size-info').innerText = "Բեռնում...";
+    for (const file of files) {
+      const dataURL = await processImageFile(file);
+      admImagesArr.push(dataURL);
+    }
+    renderAdmImagesPreview();
+    e.target.value = '';
   };
 
   let tapCount = 0;
@@ -598,6 +1006,838 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         tapCount = 0; 
     }
   };
+
+  // ============= CART LOGIC =============
+  
+  function loadCart() {
+    try {
+      const saved = localStorage.getItem('hf_cart');
+      if (saved) CART = JSON.parse(saved) || [];
+    } catch(e) { CART = []; }
+    updateCartBadge();
+  }
+
+  function saveCart() {
+    try { localStorage.setItem('hf_cart', JSON.stringify(CART)); } catch(e){}
+    updateCartBadge();
+  }
+
+  function updateCartBadge() {
+    const totalQty = CART.reduce((s, i) => s + (i.qty || 1), 0);
+    const badge = document.getElementById('cart-badge');
+    if (badge) {
+      badge.innerText = totalQty;
+      badge.style.display = totalQty > 0 ? 'flex' : 'none';
+    }
+  }
+
+  window.addToCart = () => {
+    if (!currentProduct) return;
+    if (!selectedSize) {
+      alert(TRANSLATIONS[currentLang].select_size_first);
+      return;
+    }
+    const existing = CART.find(c => c.productId === currentProduct.id && c.size === selectedSize);
+    if (existing) {
+      existing.qty = (existing.qty || 1) + 1;
+    } else {
+      const imgs = getProductImages(currentProduct);
+      CART.push({
+        productId: currentProduct.id,
+        name_hy: currentProduct.name_hy,
+        name_en: currentProduct.name_en || currentProduct.name_hy,
+        name_ru: currentProduct.name_ru || currentProduct.name_hy,
+        price: currentProduct.price,
+        size: selectedSize,
+        qty: 1,
+        img: imgs[0] || ''
+      });
+    }
+    saveCart();
+    alert(TRANSLATIONS[currentLang].added_to_cart);
+  };
+
+  window.removeFromCart = (i) => {
+    CART.splice(i, 1);
+    saveCart();
+    renderCartPage();
+  };
+
+  window.cartQty = (i, delta) => {
+    if (!CART[i]) return;
+    CART[i].qty = (CART[i].qty || 1) + delta;
+    if (CART[i].qty < 1) CART[i].qty = 1;
+    saveCart();
+    renderCartPage();
+  };
+
+  function getCartSubtotal() {
+    return CART.reduce((s, i) => s + (i.price * (i.qty || 1)), 0);
+  }
+
+  function renderCartPage() {
+    const t = TRANSLATIONS[currentLang];
+    const container = document.getElementById('cart-content');
+    if (!container) return;
+    if (CART.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <p style="font-size:40px; margin-bottom:20px">🛒</p>
+          <p>${t.cart_empty}</p>
+          <p style="margin-top:20px"><a onclick="go('cat')" style="color:var(--accent); cursor:pointer; text-decoration:underline">${t.continue_shopping}</a></p>
+        </div>`;
+      return;
+    }
+    const itemsHTML = CART.map((item, i) => {
+      const name = item['name_'+currentLang] || item.name_hy;
+      return `
+        <div class="cart-item">
+          <img src="${item.img}">
+          <div>
+            <div class="cart-item-name">${name}</div>
+            <div class="cart-item-meta">${t.size}: ${item.size}</div>
+            <div class="cart-item-price">${formatPrice(item.price)}</div>
+            <div class="cart-qty">
+              <button onclick="window.cartQty(${i}, -1)">−</button>
+              <span>${item.qty || 1}</span>
+              <button onclick="window.cartQty(${i}, 1)">+</button>
+            </div>
+          </div>
+          <button class="cart-remove" onclick="window.removeFromCart(${i})" title="Հեռացնել">×</button>
+        </div>`;
+    }).join('');
+
+    const subtotal = getCartSubtotal();
+    container.innerHTML = `
+      ${itemsHTML}
+      <div class="cart-total-box">
+        <div class="cart-total-row grand">
+          <span>${t.total}</span>
+          <span>${formatPrice(subtotal)}</span>
+        </div>
+        <button class="cart-checkout-btn" onclick="go('checkout'); renderCheckoutPage();">${t.checkout}</button>
+        <div class="cart-continue">
+          <a onclick="go('cat')">← ${t.continue_shopping}</a>
+        </div>
+      </div>`;
+  }
+
+  // ============= CHECKOUT =============
+
+  function getShippingCost() {
+    if (checkoutShipping === 'yerevan') return 1000;
+    if (checkoutShipping === 'regions') return 1500;
+    return 0;
+  }
+
+  function renderCheckoutPage() {
+    const t = TRANSLATIONS[currentLang];
+    const container = document.getElementById('checkout-content');
+    if (!container) return;
+    if (CART.length === 0) {
+      go('cart');
+      return;
+    }
+    const subtotal = getCartSubtotal();
+    const shippingCost = getShippingCost();
+    const total = subtotal + shippingCost;
+
+    const itemsHTML = CART.map(item => {
+      const name = item['name_'+currentLang] || item.name_hy;
+      return `<div class="checkout-sum-row"><span>${name} (${item.size}) × ${item.qty || 1}</span><span>${formatPrice(item.price * (item.qty || 1))}</span></div>`;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="checkout-grid">
+        <div class="checkout-row">
+          <div class="checkout-field">
+            <label>${t.full_name} *</label>
+            <input type="text" id="co-name" value="${escapeHtml(currentUserData?.name || '')}" required>
+          </div>
+          <div class="checkout-field">
+            <label>${t.phone} *</label>
+            <input type="tel" id="co-phone" value="${escapeHtml(currentUserData?.phone || '')}" placeholder="+374 XX XXX XXX" required>
+          </div>
+        </div>
+        <div class="checkout-field">
+          <label>${t.email_opt}</label>
+          <input type="email" id="co-email" value="${escapeHtml(currentUser?.email || '')}">
+        </div>
+        
+        <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:22px; margin-top:15px">${t.shipping_method}</h3>
+        <div class="checkout-radio-group" id="shipping-group">
+          <label class="checkout-radio ${checkoutShipping==='yerevan'?'on':''}" onclick="window.selShipping('yerevan')">
+            <input type="radio" name="ship" value="yerevan" ${checkoutShipping==='yerevan'?'checked':''}>
+            <div class="checkout-radio-info">
+              <div class="checkout-radio-title">${t.shipping_yerevan}</div>
+              <div class="checkout-radio-desc">1-2 օր</div>
+            </div>
+            <div class="checkout-radio-price">${formatPrice(1000)}</div>
+          </label>
+          <label class="checkout-radio ${checkoutShipping==='regions'?'on':''}" onclick="window.selShipping('regions')">
+            <input type="radio" name="ship" value="regions" ${checkoutShipping==='regions'?'checked':''}>
+            <div class="checkout-radio-info">
+              <div class="checkout-radio-title">${t.shipping_regions}</div>
+              <div class="checkout-radio-desc">2-3 օր (ՀայՓոստ)</div>
+            </div>
+            <div class="checkout-radio-price">${formatPrice(1500)}</div>
+          </label>
+          <label class="checkout-radio ${checkoutShipping==='pickup'?'on':''}" onclick="window.selShipping('pickup')">
+            <input type="radio" name="ship" value="pickup" ${checkoutShipping==='pickup'?'checked':''}>
+            <div class="checkout-radio-info">
+              <div class="checkout-radio-title">${t.pickup}</div>
+              <div class="checkout-radio-desc">Սմբատ Զորավարի 11/1, Ա65</div>
+            </div>
+            <div class="checkout-radio-price">${formatPrice(0)}</div>
+          </label>
+        </div>
+
+        ${checkoutShipping !== 'pickup' ? `
+        <div class="checkout-field">
+          <label>${t.region} *</label>
+          <input type="text" id="co-region" value="${escapeHtml(currentUserData?.region || '')}" required>
+        </div>
+        <div class="checkout-field">
+          <label>${t.address} *</label>
+          <input type="text" id="co-address" value="${escapeHtml(currentUserData?.address || '')}" required>
+        </div>
+        ` : ''}
+
+        <div class="checkout-field">
+          <label>${t.notes}</label>
+          <textarea id="co-notes"></textarea>
+        </div>
+
+        <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:22px; margin-top:15px">${t.payment_method}</h3>
+        <div class="checkout-radio-group">
+          <label class="checkout-radio on">
+            <input type="radio" name="pay" value="cod" checked>
+            <div class="checkout-radio-info">
+              <div class="checkout-radio-title">💵 ${t.pay_on_delivery}</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="checkout-summary">
+          <h3>${t.order_summary}</h3>
+          ${itemsHTML}
+          <div class="checkout-sum-row"><span>${t.subtotal}</span><span>${formatPrice(subtotal)}</span></div>
+          <div class="checkout-sum-row"><span>${t.shipping}</span><span>${formatPrice(shippingCost)}</span></div>
+          <div class="checkout-sum-row grand"><span>${t.total}</span><span>${formatPrice(total)}</span></div>
+        </div>
+
+        <button class="cart-checkout-btn" onclick="window.submitOrder()">${t.confirm_order}</button>
+        <div class="cart-continue">
+          <a onclick="go('cart')">← ${t.cart_title}</a>
+        </div>
+      </div>`;
+  }
+
+  window.selShipping = (val) => {
+    checkoutShipping = val;
+    const savedName = document.getElementById('co-name')?.value || '';
+    const savedPhone = document.getElementById('co-phone')?.value || '';
+    const savedEmail = document.getElementById('co-email')?.value || '';
+    const savedRegion = document.getElementById('co-region')?.value || '';
+    const savedAddress = document.getElementById('co-address')?.value || '';
+    const savedNotes = document.getElementById('co-notes')?.value || '';
+    renderCheckoutPage();
+    if (document.getElementById('co-name')) document.getElementById('co-name').value = savedName;
+    if (document.getElementById('co-phone')) document.getElementById('co-phone').value = savedPhone;
+    if (document.getElementById('co-email')) document.getElementById('co-email').value = savedEmail;
+    if (document.getElementById('co-region')) document.getElementById('co-region').value = savedRegion;
+    if (document.getElementById('co-address')) document.getElementById('co-address').value = savedAddress;
+    if (document.getElementById('co-notes')) document.getElementById('co-notes').value = savedNotes;
+  };
+
+  window.submitOrder = async () => {
+    const t = TRANSLATIONS[currentLang];
+    const name = document.getElementById('co-name').value.trim();
+    const phone = document.getElementById('co-phone').value.trim();
+    const email = document.getElementById('co-email')?.value.trim() || (currentUser?.email || '');
+    const region = document.getElementById('co-region')?.value.trim() || '';
+    const address = document.getElementById('co-address')?.value.trim() || '';
+    const notes = document.getElementById('co-notes')?.value.trim() || '';
+
+    if (!name || !phone) {
+      alert(t.fill_required);
+      return;
+    }
+    if (checkoutShipping !== 'pickup' && (!region || !address)) {
+      alert(t.fill_required);
+      return;
+    }
+
+    const subtotal = getCartSubtotal();
+    const shippingCost = getShippingCost();
+    const orderNum = '#' + Math.floor(1000 + Math.random() * 9000);
+
+    const orderData = {
+      orderNumber: orderNum,
+      userId: currentUser?.uid || null,
+      customer: { name, phone, email, region, address, notes },
+      items: CART.map(c => ({
+        productId: c.productId,
+        name_hy: c.name_hy,
+        size: c.size,
+        qty: c.qty || 1,
+        price: c.price
+      })),
+      subtotal: subtotal,
+      shippingMethod: checkoutShipping,
+      shippingCost: shippingCost,
+      paymentMethod: 'cod',
+      total: subtotal + shippingCost,
+      status: 'new',
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      await addDoc(ordersCol, orderData);
+      // Save address to user profile if logged in
+      if (currentUser && currentUserData && checkoutShipping !== 'pickup') {
+        try {
+          await updateDoc(doc(db, "users", currentUser.uid), {
+            name: name,
+            phone: phone,
+            region: region,
+            address: address
+          });
+          Object.assign(currentUserData, { name, phone, region, address });
+        } catch(e){}
+      }
+      document.getElementById('success-order-num').innerText = orderNum;
+      CART = [];
+      saveCart();
+      go('success');
+    } catch(e) {
+      alert("Սխալ: " + e.message);
+    }
+  };
+
+  // ============= ADMIN ORDERS =============
+
+  function updateNewOrdersBadge() {
+    const newCount = ORDERS.filter(o => o.status === 'new').length;
+    const b = document.getElementById('new-orders-badge');
+    if (b) {
+      b.innerText = newCount;
+      b.style.display = newCount > 0 ? 'inline-block' : 'none';
+    }
+  }
+
+  window.admTab = (tab) => {
+    currentAdmTab = tab;
+    document.getElementById('admt-products').classList.toggle('on', tab === 'products');
+    document.getElementById('admt-orders').classList.toggle('on', tab === 'orders');
+    document.getElementById('admt-users').classList.toggle('on', tab === 'users');
+    document.getElementById('adm-section-products').style.display = tab === 'products' ? 'block' : 'none';
+    document.getElementById('adm-section-orders').style.display = tab === 'orders' ? 'block' : 'none';
+    document.getElementById('adm-section-users').style.display = tab === 'users' ? 'block' : 'none';
+    if (tab === 'orders') renderOrders();
+    if (tab === 'users') renderUsersAdmin();
+  };
+
+  window.filterOrders = (filter) => {
+    currentOrderFilter = filter;
+    ['all','new','confirmed','shipped','delivered','cancelled'].forEach(f => {
+      const el = document.getElementById('fot-'+f);
+      if (el) el.classList.toggle('on', f === filter);
+    });
+    renderOrders();
+  };
+
+  function renderOrders() {
+    const list = document.getElementById('orders-list');
+    if (!list) return;
+    const statusLabels = {
+      new: 'Նոր',
+      confirmed: 'Հաստատված',
+      shipped: 'Ուղարկված',
+      delivered: 'Առաքված',
+      cancelled: 'Չեղարկված'
+    };
+    const filtered = currentOrderFilter === 'all' 
+      ? ORDERS 
+      : ORDERS.filter(o => o.status === currentOrderFilter);
+    
+    if (filtered.length === 0) {
+      list.innerHTML = '<p style="text-align:center; padding:40px; color:var(--mid)">Պատվերներ չկան</p>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(o => {
+      const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('hy-AM') : '';
+      const shipLabel = o.shippingMethod === 'yerevan' ? 'Երեւան' : (o.shippingMethod === 'regions' ? 'Մարզ' : 'Ինքնուրույն վերցնում');
+      const itemsHTML = (o.items || []).map(it => 
+        `<div class="order-item-row"><span>${it.name_hy} (չ.${it.size}) × ${it.qty}</span><span>${(it.price * it.qty).toLocaleString()} ֏</span></div>`
+      ).join('');
+      const customer = o.customer || {};
+      const phoneDigits = (customer.phone || '').replace(/\D/g, '');
+      const addressLine = o.shippingMethod === 'pickup' ? 'Ինքնուրույն կվերցնի խանութից' : `${customer.region || ''}, ${customer.address || ''}`;
+      
+      return `
+        <div class="order-card status-${o.status || 'new'}">
+          <div class="order-header">
+            <div>
+              <div class="order-num">${o.orderNumber || o.id}</div>
+              <div class="order-date">${dateStr}</div>
+            </div>
+            <span class="order-status-badge">${statusLabels[o.status] || o.status}</span>
+          </div>
+          <div class="order-customer">
+            <strong>${customer.name || ''}</strong><br>
+            📞 ${customer.phone || ''}<br>
+            ${customer.email ? '✉️ ' + customer.email + '<br>' : ''}
+            📍 ${addressLine}<br>
+            🚚 ${shipLabel}
+            ${customer.notes ? '<br>📝 ' + customer.notes : ''}
+          </div>
+          <div class="order-items">${itemsHTML}</div>
+          <div class="order-totals">
+            <div>Ենթագումար: ${(o.subtotal || 0).toLocaleString()} ֏</div>
+            <div>Առաքում: ${(o.shippingCost || 0).toLocaleString()} ֏</div>
+            <div class="grand">Ընդհանուր: ${(o.total || 0).toLocaleString()} ֏</div>
+          </div>
+          <div class="order-actions">
+            <select onchange="window.updateOrderStatus('${o.id}', this.value)">
+              <option value="new" ${o.status==='new'?'selected':''}>Նոր</option>
+              <option value="confirmed" ${o.status==='confirmed'?'selected':''}>Հաստատված</option>
+              <option value="shipped" ${o.status==='shipped'?'selected':''}>Ուղարկված</option>
+              <option value="delivered" ${o.status==='delivered'?'selected':''}>Առաքված</option>
+              <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Չեղարկված</option>
+            </select>
+            <a class="order-wa-btn" href="https://wa.me/${phoneDigits}?text=${encodeURIComponent('Ողջույն, ձեր պատվերի համար ' + (o.orderNumber||''))}" target="_blank">💬 WhatsApp</a>
+            <button class="order-del-btn" onclick="window.deleteOrder('${o.id}')">Ջնջել</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  window.updateOrderStatus = async (id, status) => {
+    try {
+      await updateDoc(doc(db, "orders", id), { status });
+    } catch(e) { alert("Սխալ"); }
+  };
+
+  window.deleteOrder = async (id) => {
+    if (!confirm("Ջնջե՞լ պատվերը")) return;
+    try {
+      await deleteDoc(doc(db, "orders", id));
+    } catch(e) { alert("Սխալ"); }
+  };
+
+  // ============= AUTH LOGIC =============
+
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    if (user) {
+      const uDoc = await getDoc(doc(db, "users", user.uid));
+      if (uDoc.exists()) {
+        currentUserData = uDoc.data();
+      } else {
+        currentUserData = {
+          uid: user.uid,
+          name: user.displayName || '',
+          email: user.email,
+          phone: '',
+          region: '',
+          address: '',
+          createdAt: serverTimestamp()
+        };
+        await setDoc(doc(db, "users", user.uid), currentUserData);
+      }
+      WISHLIST = currentUserData.wishlist || [];
+      updateUserNav();
+    } else {
+      currentUserData = null;
+      WISHLIST = [];
+      loadWishlistLocal();
+      updateUserNav();
+    }
+    // Refresh current view
+    if (document.getElementById('pg-account').classList.contains('on')) renderAccountPage();
+    if (document.getElementById('pg-detail').classList.contains('on') && currentProduct) refreshDetailPage();
+  });
+
+  function loadWishlistLocal() {
+    try {
+      const w = localStorage.getItem('hf_wishlist');
+      if (w) WISHLIST = JSON.parse(w) || [];
+    } catch(e) { WISHLIST = []; }
+  }
+
+  function saveWishlistLocal() {
+    try { localStorage.setItem('hf_wishlist', JSON.stringify(WISHLIST)); } catch(e){}
+  }
+
+  async function saveWishlist() {
+    if (currentUser) {
+      try {
+        await updateDoc(doc(db, "users", currentUser.uid), { wishlist: WISHLIST });
+        if (currentUserData) currentUserData.wishlist = WISHLIST;
+      } catch(e){}
+    } else {
+      saveWishlistLocal();
+    }
+  }
+
+  function updateUserNav() {
+    const txtEl = document.getElementById('user-nav-text');
+    const dropdown = document.getElementById('user-dropdown');
+    const t = TRANSLATIONS[currentLang];
+    if (currentUser) {
+      const displayName = currentUserData?.name || currentUser.displayName || currentUser.email.split('@')[0];
+      txtEl.innerText = displayName.length > 15 ? displayName.substring(0,15)+'...' : displayName;
+      dropdown.innerHTML = `
+        <div class="ud-email">${currentUser.email}</div>
+        <a onclick="window.goAccount('profile')">👤 ${t.my_profile}</a>
+        <a onclick="window.goAccount('orders')">📦 ${t.my_orders}</a>
+        <a onclick="window.goAccount('wishlist')">♥ ${t.my_wishlist}</a>
+        <a onclick="window.doLogout()">🚪 ${t.logout}</a>`;
+    } else {
+      txtEl.innerText = t.login_signup;
+      dropdown.innerHTML = `
+        <a onclick="window.openAuth('login')">🔑 ${t.login}</a>
+        <a onclick="window.openAuth('signup')">✨ ${t.signup}</a>`;
+    }
+  }
+
+  window.toggleUserMenu = (e) => {
+    e.stopPropagation();
+    const dropdown = document.getElementById('user-dropdown');
+    dropdown.classList.toggle('on');
+  };
+
+  document.addEventListener('click', (e) => {
+    const box = document.getElementById('user-nav-box');
+    if (box && !box.contains(e.target)) {
+      document.getElementById('user-dropdown').classList.remove('on');
+    }
+  });
+
+  window.openAuth = (mode) => {
+    authMode = mode || 'login';
+    document.getElementById('user-dropdown').classList.remove('on');
+    document.getElementById('auth-overlay').classList.add('on');
+    document.getElementById('auth-error').innerText = '';
+    renderAuthForm();
+  };
+
+  window.closeAuth = () => {
+    document.getElementById('auth-overlay').classList.remove('on');
+  };
+
+  window.setAuthMode = (mode) => {
+    authMode = mode;
+    document.getElementById('auth-tab-login').classList.toggle('on', mode === 'login');
+    document.getElementById('auth-tab-signup').classList.toggle('on', mode === 'signup');
+    document.getElementById('auth-error').innerText = '';
+    renderAuthForm();
+  };
+
+  function renderAuthForm() {
+    const t = TRANSLATIONS[currentLang];
+    const container = document.getElementById('auth-form-content');
+    document.getElementById('auth-title').innerText = authMode === 'login' ? t.login : t.signup;
+    document.getElementById('auth-sub').innerText = authMode === 'login' ? t.welcome_back : t.create_account;
+    
+    if (authMode === 'signup') {
+      container.innerHTML = `
+        <div class="auth-field">
+          <label>${t.full_name}</label>
+          <input type="text" id="auth-name">
+        </div>
+        <div class="auth-field">
+          <label>${t.phone}</label>
+          <input type="tel" id="auth-phone" placeholder="+374 XX XXX XXX">
+        </div>
+        <div class="auth-field">
+          <label>${t.email}</label>
+          <input type="email" id="auth-email">
+        </div>
+        <div class="auth-field">
+          <label>${t.password}</label>
+          <input type="password" id="auth-password">
+        </div>
+        <button class="auth-submit" onclick="window.doSignup()">${t.signup}</button>`;
+    } else {
+      container.innerHTML = `
+        <div class="auth-field">
+          <label>${t.email}</label>
+          <input type="email" id="auth-email">
+        </div>
+        <div class="auth-field">
+          <label>${t.password}</label>
+          <input type="password" id="auth-password">
+        </div>
+        <button class="auth-submit" onclick="window.doLogin()">${t.login}</button>`;
+    }
+  }
+
+  function authErrorMsg(code) {
+    const t = TRANSLATIONS[currentLang];
+    if (code === 'auth/email-already-in-use') return t.email_used;
+    if (code === 'auth/invalid-email') return t.invalid_email;
+    if (code === 'auth/weak-password') return t.pass_min;
+    if (code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'auth/invalid-credential') return t.wrong_login;
+    return t.auth_error;
+  }
+
+  window.doSignup = async () => {
+    const name = document.getElementById('auth-name').value.trim();
+    const phone = document.getElementById('auth-phone').value.trim();
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errEl = document.getElementById('auth-error');
+    const t = TRANSLATIONS[currentLang];
+
+    if (!name || !email || !password) {
+      errEl.innerText = t.fill_required;
+      return;
+    }
+    if (password.length < 6) {
+      errEl.innerText = t.pass_min;
+      return;
+    }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      if (name) await updateProfile(cred.user, { displayName: name });
+      await setDoc(doc(db, "users", cred.user.uid), {
+        uid: cred.user.uid,
+        name: name,
+        email: email,
+        phone: phone,
+        region: '',
+        address: '',
+        wishlist: WISHLIST,
+        createdAt: serverTimestamp()
+      });
+      window.closeAuth();
+    } catch(e) {
+      errEl.innerText = authErrorMsg(e.code);
+    }
+  };
+
+  window.doLogin = async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errEl = document.getElementById('auth-error');
+    const t = TRANSLATIONS[currentLang];
+
+    if (!email || !password) {
+      errEl.innerText = t.fill_required;
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.closeAuth();
+    } catch(e) {
+      errEl.innerText = authErrorMsg(e.code);
+    }
+  };
+
+  window.signInWithGoogle = async () => {
+    try {
+      const cred = await signInWithPopup(auth, googleProvider);
+      const uDoc = await getDoc(doc(db, "users", cred.user.uid));
+      if (!uDoc.exists()) {
+        await setDoc(doc(db, "users", cred.user.uid), {
+          uid: cred.user.uid,
+          name: cred.user.displayName || '',
+          email: cred.user.email,
+          phone: '',
+          region: '',
+          address: '',
+          wishlist: WISHLIST,
+          createdAt: serverTimestamp()
+        });
+      }
+      window.closeAuth();
+    } catch(e) {
+      document.getElementById('auth-error').innerText = authErrorMsg(e.code);
+    }
+  };
+
+  window.doLogout = async () => {
+    try { 
+      await signOut(auth); 
+      document.getElementById('user-dropdown').classList.remove('on');
+      go('home');
+    } catch(e){}
+  };
+
+  window.goAccount = (tab) => {
+    if (!currentUser) { window.openAuth('login'); return; }
+    document.getElementById('user-dropdown').classList.remove('on');
+    accountTab = tab || 'profile';
+    go('account');
+    renderAccountPage();
+  };
+
+  window.setAccountTab = (tab) => {
+    accountTab = tab;
+    ['profile','orders','wishlist'].forEach(t => {
+      document.getElementById('at-'+t).classList.toggle('on', t === tab);
+    });
+    renderAccountPage();
+  };
+
+  function renderAccountPage() {
+    if (!currentUser || !currentUserData) return;
+    const t = TRANSLATIONS[currentLang];
+    document.getElementById('account-welcome').innerText = `${t.welcome_back}, ${currentUserData.name || currentUser.email}`;
+    const container = document.getElementById('account-content');
+    
+    if (accountTab === 'profile') {
+      container.innerHTML = `
+        <div class="profile-form">
+          <div class="auth-field">
+            <label>${t.full_name}</label>
+            <input type="text" id="pr-name" value="${escapeHtml(currentUserData.name || '')}">
+          </div>
+          <div class="auth-field">
+            <label>${t.phone}</label>
+            <input type="tel" id="pr-phone" value="${escapeHtml(currentUserData.phone || '')}">
+          </div>
+          <div class="auth-field">
+            <label>${t.email}</label>
+            <input type="email" value="${escapeHtml(currentUser.email)}" disabled style="opacity:0.6">
+          </div>
+          <div class="auth-field">
+            <label>${t.region}</label>
+            <input type="text" id="pr-region" value="${escapeHtml(currentUserData.region || '')}">
+          </div>
+          <div class="auth-field">
+            <label>${t.address}</label>
+            <input type="text" id="pr-address" value="${escapeHtml(currentUserData.address || '')}">
+          </div>
+          <button class="auth-submit" onclick="window.saveProfile()">${t.save_profile}</button>
+        </div>`;
+    } else if (accountTab === 'orders') {
+      const myOrders = ORDERS.filter(o => (o.customer?.email === currentUser.email) || o.userId === currentUser.uid);
+      if (myOrders.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding:40px; color:var(--mid)">${t.no_orders}</p>`;
+      } else {
+        const statusLabels = { new:'Նոր', confirmed:'Հաստատված', shipped:'Ուղարկված', delivered:'Առաքված', cancelled:'Չեղարկված' };
+        container.innerHTML = myOrders.map(o => {
+          const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('hy-AM') : '';
+          const items = (o.items || []).map(it => `${it.name_hy} (${t.size} ${it.size}) × ${it.qty}`).join(', ');
+          return `
+            <div class="user-order-card status-${o.status||'new'}" style="border-left:4px solid ${o.status==='delivered'?'#4caf50':o.status==='shipped'?'#f5a623':o.status==='confirmed'?'#3a7bd5':o.status==='cancelled'?'#999':'#c33'}">
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px">
+                <div>
+                  <div class="order-num">${o.orderNumber || o.id}</div>
+                  <div style="font-size:12px; color:var(--mid)">${dateStr}</div>
+                </div>
+                <span class="order-status-badge" style="background:${o.status==='delivered'?'#4caf50':o.status==='shipped'?'#f5a623':o.status==='confirmed'?'#3a7bd5':o.status==='cancelled'?'#999':'#c33'}; color:#fff">${statusLabels[o.status]||o.status}</span>
+              </div>
+              <div class="user-order-items">${items}</div>
+              <div style="margin-top:10px; font-weight:600; color:var(--accent)">${(o.total||0).toLocaleString()} ֏</div>
+            </div>`;
+        }).join('');
+      }
+    } else if (accountTab === 'wishlist') {
+      const wlProducts = PRODUCTS.filter(p => WISHLIST.includes(p.id));
+      if (wlProducts.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding:40px; color:var(--mid)">${t.no_wishlist}</p>`;
+      } else {
+        container.innerHTML = `<div class="wishlist-grid">${wlProducts.map(p => {
+          const imgs = getProductImages(p);
+          return `
+            <div class="wishlist-card">
+              <button class="wishlist-remove" onclick="event.stopPropagation(); window.toggleWishlist('${p.id}')" title="Հեռացնել">×</button>
+              <div onclick="openDetail('${p.id}')">
+                <img src="${imgs[0] || ''}">
+                <div class="wishlist-card-info">
+                  <h3 style="font-family:'Cormorant Garamond'; font-size:18px">${p['name_'+currentLang] || p.name_hy}</h3>
+                  <p style="color:var(--accent); margin-top:5px">${formatPrice(p.price)}</p>
+                </div>
+              </div>
+            </div>`;
+        }).join('')}</div>`;
+      }
+    }
+  }
+
+  window.saveProfile = async () => {
+    const t = TRANSLATIONS[currentLang];
+    const data = {
+      name: document.getElementById('pr-name').value.trim(),
+      phone: document.getElementById('pr-phone').value.trim(),
+      region: document.getElementById('pr-region').value.trim(),
+      address: document.getElementById('pr-address').value.trim()
+    };
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), data);
+      Object.assign(currentUserData, data);
+      updateUserNav();
+      alert(t.profile_saved);
+    } catch(e) { alert("Սխալ"); }
+  };
+
+  window.toggleWishlist = async (prodId) => {
+    const idx = WISHLIST.indexOf(prodId);
+    if (idx === -1) WISHLIST.push(prodId);
+    else WISHLIST.splice(idx, 1);
+    await saveWishlist();
+    if (document.getElementById('pg-account').classList.contains('on')) renderAccountPage();
+    if (currentProduct) refreshDetailPage();
+  };
+
+  // ============= ADMIN USERS =============
+
+  onSnapshot(usersCol, (snapshot) => {
+    USERS = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    USERS.sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (currentAdmTab === 'users' && document.getElementById('admin-panel').style.display === 'block') {
+      renderUsersAdmin();
+    }
+  });
+
+  function renderUsersAdmin() {
+    const list = document.getElementById('users-list');
+    if (!list) return;
+    if (USERS.length === 0) {
+      list.innerHTML = '<p style="text-align:center; padding:40px; color:var(--mid)">Հաճախորդներ չկան</p>';
+      return;
+    }
+    let html = `
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Անուն</th>
+            <th>Email</th>
+            <th>Հեռախոս</th>
+            <th>Պատվերներ</th>
+            <th>Ընդհանուր</th>
+            <th>Գրանցում</th>
+          </tr>
+        </thead>
+        <tbody>`;
+    USERS.forEach(u => {
+      const userOrders = ORDERS.filter(o => o.customer?.email === u.email);
+      const totalSpent = userOrders.reduce((s, o) => s + (o.total || 0), 0);
+      const dateStr = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('hy-AM') : '-';
+      html += `
+        <tr>
+          <td>${u.name || '-'}</td>
+          <td>${u.email || '-'}</td>
+          <td>${u.phone || '-'}</td>
+          <td>${userOrders.length}</td>
+          <td>${totalSpent.toLocaleString()} ֏</td>
+          <td>${dateStr}</td>
+        </tr>`;
+    });
+    html += `</tbody></table>`;
+    list.innerHTML = html;
+  }
+
+  loadCart();
 
   fetchLiveRates();
   window.setLang('hy');
