@@ -114,6 +114,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .user-detail-modal { background: #fff; padding: 30px; max-width: 700px; margin: 0 auto; }
 .user-stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 
+/* ZEGHCHER */
+.price-block { display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.price-old { text-decoration: line-through; color: var(--mid); font-size: 0.7em; opacity: 0.7; }
+.price-new { color: var(--accent); font-weight: 600; }
+.discount-badge { display: inline-block; background: #c33; color: #fff; padding: 3px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.discount-badge-card { position: absolute; top: 10px; left: 10px; background: #c33; color: #fff; padding: 5px 10px; font-size: 12px; font-weight: 600; letter-spacing: 1px; z-index: 3; }
+.prod-card { position: relative; }
+.first-order-banner { background: linear-gradient(135deg, #c33 0%, #a00 100%); color: #fff; padding: 15px 20px; text-align: center; margin-bottom: 20px; font-size: 14px; letter-spacing: 1px; }
+.first-order-banner strong { font-size: 16px; }
+.discount-input-row { display: grid; grid-template-columns: 1fr 80px; gap: 10px; align-items: end; }
+
 /* ZAMBYUGHI ԵՎ CHECKOUT */
 .cart-icon { position: relative; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 5px 10px; font-size: 18px; }
 .cart-badge { background: var(--accent); color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; position: absolute; top: -5px; right: -5px; font-weight: 600; }
@@ -446,7 +457,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         </div>
         <div class="admin-input-group"><label>Տեսակ</label><select id="adm-cat"><option value="sneakers">Sneakers</option><option value="loafers">Loafers</option></select></div>
         <div class="admin-input-group"><label>Անուն (HY)</label><input type="text" id="adm-name-hy"></div>
-        <div class="admin-input-group"><label>Գին (AMD)</label><input type="number" id="adm-price"></div>
+        <div class="admin-input-group">
+            <label>Գին եւ Զեղչ (AMD)</label>
+            <div class="discount-input-row">
+                <input type="number" id="adm-price" placeholder="Հիմնական գին">
+                <input type="number" id="adm-discount" placeholder="% զեղչ" min="0" max="99">
+            </div>
+            <div style="font-size:10px; color:var(--mid); margin-top:5px">Զեղչ դաշտը թողեք դատարկ՝ առանց զեղչի</div>
+        </div>
         <div class="admin-input-group"><label>Ինֆո (HY)</label><textarea id="adm-desc-hy"></textarea></div>
         <div class="admin-input-group"><label>Անուն (EN)</label><input type="text" id="adm-name-en"></div>
         <div class="admin-input-group"><label>Անուն (RU)</label><input type="text" id="adm-name-ru"></div>
@@ -513,14 +531,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
-  apiKey: "AIzaSyClodivmz2FQIkY7KpPd7t35KW8Z0YCfW8",
-  authDomain: "hovakimyan-s-family.firebaseapp.com",
-  projectId: "hovakimyan-s-family",
-  storageBucket: "hovakimyan-s-family.firebasestorage.app",
-  messagingSenderId: "175248908456",
-  appId: "1:175248908456:web:cf6a3a6615e9dba756629d",
-  measurementId: "G-G9F1892JJR"
-};
+    apiKey: "AIzaSyClodivmz2FQiKy7KPpd7t35KW8ZOYCfW8",
+    authDomain: "hovakimyan-s-family.firebaseapp.com",
+    projectId: "hovakimyan-s-family",
+    storageBucket: "hovakimyan-s-family.firebasestorage.app",
+    messagingSenderId: "175248908456",
+    appId: "1:175248908456:web:cf6a3a6615e9dba756629d"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -561,9 +578,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null, currentImageIndex = 0, lightboxImages = [], lightboxIndex = 0;
 
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error" },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации" }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order" },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ" }
   };
 
   onSnapshot(prodsCol, (snapshot) => {
@@ -671,12 +688,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     PRODUCTS.filter(p => p.cat === cat).forEach(p => {
       const imgs = getProductImages(p);
       const firstImg = imgs[0] || '';
+      const discBadge = hasDiscount(p) ? `<div class="discount-badge-card">-${p.discount}%</div>` : '';
       grid.innerHTML += `
         <div class="prod-card" onclick="openDetail('${p.id}')">
+          ${discBadge}
           <img src="${firstImg}">
           <div class="prod-info">
             <h3 style="font-family:'Cormorant Garamond'; font-size:20px">${p['name_'+currentLang] || p.name_hy}</h3>
-            <p style="color:var(--accent); font-family:'Cormorant Garamond'; font-size:20px">${formatPrice(p.price)}</p>
+            <p style="font-family:'Cormorant Garamond'; font-size:20px; margin-top:5px">${formatPriceBlock(p)}</p>
           </div>
         </div>`;
     });
@@ -734,7 +753,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       </div>
       <div class="det-info">
         <h1 style="font-family:'Cormorant Garamond'; font-size:42px">${p['name_'+currentLang] || p.name_hy}</h1>
-        <div style="font-size:28px; color:var(--accent); margin:20px 0">${formatPrice(p.price)}</div>
+        ${hasDiscount(p) ? `<div style="margin-top:10px"><span class="discount-badge">-${p.discount}% ${t.discount}</span></div>` : ''}
+        <div style="font-size:28px; margin:20px 0">${formatPriceBlock(p, '28px')}</div>
         <p style="text-transform:uppercase; font-size:11px; color:var(--mid)">${t.select_size}</p>
         <div class="size-grid">${[39,40,41,42,43,44].map(s => `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`).join('')}</div>
         <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_hy'] || ''}</p>
@@ -865,7 +885,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   
   window.orderWA = () => {
     if(!selectedSize) return alert("Ընտրեք չափսը");
-    const text = `Ողջույն, ցանկանում եմ պատվիրել:\nՄոդել: ${currentProduct.name_hy}\nՉափս: ${selectedSize}\nԳին: ${formatPrice(currentProduct.price)}`;
+    const finalPrice = getDiscountedPrice(currentProduct);
+    const discountInfo = hasDiscount(currentProduct) ? `\nԶեղչ: ${currentProduct.discount}%` : '';
+    const text = `Ողջույն, ցանկանում եմ պատվիրել:\nՄոդել: ${currentProduct.name_hy}\nՉափս: ${selectedSize}${discountInfo}\nԳին: ${formatPrice(finalPrice)}`;
     window.open(`https://wa.me/37498930066?text=${encodeURIComponent(text)}`);
   };
 
@@ -874,12 +896,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     return currentCur==='AMD'? v.toLocaleString()+' ֏' : (currentCur==='USD'? '$'+v : v.toLocaleString()+' ₽');
   }
 
+  function getDiscountedPrice(product) {
+    const d = product.discount || 0;
+    if (d > 0 && d < 100) {
+      return Math.round(product.price * (100 - d) / 100);
+    }
+    return product.price;
+  }
+
+  function hasDiscount(product) {
+    return product && product.discount && product.discount > 0 && product.discount < 100;
+  }
+
+  function formatPriceBlock(product, bigSize) {
+    const size = bigSize || 'inherit';
+    if (hasDiscount(product)) {
+      const oldP = formatPrice(product.price);
+      const newP = formatPrice(getDiscountedPrice(product));
+      return `<span class="price-block" style="font-size:${size}">
+        <span class="price-old">${oldP}</span>
+        <span class="price-new">${newP}</span>
+      </span>`;
+    }
+    return `<span style="color:var(--accent); font-size:${size}">${formatPrice(product.price)}</span>`;
+  }
+
+  // Check if current user is eligible for first-order 20% discount
+  function isEligibleForFirstOrderDiscount() {
+    if (!currentUser || !currentUser.email) return false;
+    const userOrders = ORDERS.filter(o => 
+      (o.customer?.email === currentUser.email || o.userId === currentUser.uid) &&
+      o.status !== 'cancelled'
+    );
+    return userOrders.length === 0;
+  }
+
   window.addNewProduct = async () => {
     const btn = document.getElementById('adm-main-btn');
     const name_hy = document.getElementById('adm-name-hy').value;
     const price = parseInt(document.getElementById('adm-price').value);
+    const discountRaw = document.getElementById('adm-discount').value;
+    const discount = discountRaw === '' ? 0 : parseInt(discountRaw);
 
     if(admImagesArr.length === 0 || !name_hy || isNaN(price)) return alert("Լրացրեք տվյալները եւ ավելացրեք գոնե 1 նկար");
+    if (discount < 0 || discount > 99) return alert("Զեղչը պետք է լինի 0-99 %");
 
     btn.innerText = "Սպասեք...";
     btn.disabled = true;
@@ -892,6 +952,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       name_en: document.getElementById('adm-name-en').value || name_hy,
       name_ru: document.getElementById('adm-name-ru').value || name_hy,
       price: price,
+      discount: discount,
       desc_hy: document.getElementById('adm-desc-hy').value
     };
 
@@ -917,6 +978,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('adm-name-en').value = p.name_en || '';
     document.getElementById('adm-name-ru').value = p.name_ru || '';
     document.getElementById('adm-price').value = p.price;
+    document.getElementById('adm-discount').value = p.discount || '';
     document.getElementById('adm-desc-hy').value = p.desc_hy || '';
     document.getElementById('adm-cat').value = p.cat;
     admImagesArr = getProductImages(p).slice();
@@ -940,6 +1002,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('adm-name-en').value = '';
     document.getElementById('adm-name-ru').value = '';
     document.getElementById('adm-price').value = '';
+    document.getElementById('adm-discount').value = '';
     document.getElementById('adm-desc-hy').value = '';
     document.getElementById('file-size-info').innerText = '';
     admImagesArr = [];
@@ -1043,12 +1106,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       existing.qty = (existing.qty || 1) + 1;
     } else {
       const imgs = getProductImages(currentProduct);
+      const effectivePrice = getDiscountedPrice(currentProduct);
       CART.push({
         productId: currentProduct.id,
         name_hy: currentProduct.name_hy,
         name_en: currentProduct.name_en || currentProduct.name_hy,
         name_ru: currentProduct.name_ru || currentProduct.name_hy,
-        price: currentProduct.price,
+        price: effectivePrice,
+        originalPrice: currentProduct.price,
+        productDiscount: currentProduct.discount || 0,
         size: selectedSize,
         qty: 1,
         img: imgs[0] || ''
@@ -1091,13 +1157,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }
     const itemsHTML = CART.map((item, i) => {
       const name = item['name_'+currentLang] || item.name_hy;
+      const hasD = item.productDiscount && item.productDiscount > 0;
+      const priceDisplay = hasD 
+        ? `<span class="price-old" style="font-size:14px">${formatPrice(item.originalPrice)}</span> <span class="price-new">${formatPrice(item.price)}</span>`
+        : `<span style="color:var(--accent)">${formatPrice(item.price)}</span>`;
       return `
         <div class="cart-item">
           <img src="${item.img}">
           <div>
             <div class="cart-item-name">${name}</div>
             <div class="cart-item-meta">${t.size}: ${item.size}</div>
-            <div class="cart-item-price">${formatPrice(item.price)}</div>
+            <div class="cart-item-price">${priceDisplay}</div>
             <div class="cart-qty">
               <button onclick="window.cartQty(${i}, -1)">−</button>
               <span>${item.qty || 1}</span>
@@ -1141,14 +1211,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }
     const subtotal = getCartSubtotal();
     const shippingCost = getShippingCost();
-    const total = subtotal + shippingCost;
+    
+    // Check first-order discount
+    const firstOrderEligible = isEligibleForFirstOrderDiscount();
+    const firstOrderDiscount = firstOrderEligible ? Math.round(subtotal * 0.20) : 0;
+    
+    const total = subtotal - firstOrderDiscount + shippingCost;
 
     const itemsHTML = CART.map(item => {
       const name = item['name_'+currentLang] || item.name_hy;
       return `<div class="checkout-sum-row"><span>${name} (${item.size}) × ${item.qty || 1}</span><span>${formatPrice(item.price * (item.qty || 1))}</span></div>`;
     }).join('');
 
+    const firstOrderBanner = firstOrderEligible ? `
+      <div class="first-order-banner">
+        🎁 <strong>${t.first_order_title}</strong><br>
+        <span style="font-size:12px; opacity:0.95">${t.first_order_msg}</span>
+      </div>` : '';
+
     container.innerHTML = `
+      ${firstOrderBanner}
       <div class="checkout-grid">
         <div class="checkout-row">
           <div class="checkout-field">
@@ -1223,6 +1305,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           <h3>${t.order_summary}</h3>
           ${itemsHTML}
           <div class="checkout-sum-row"><span>${t.subtotal}</span><span>${formatPrice(subtotal)}</span></div>
+          ${firstOrderEligible ? `<div class="checkout-sum-row" style="color:#c33"><span>${t.first_order_discount}</span><span>−${formatPrice(firstOrderDiscount)}</span></div>` : ''}
           <div class="checkout-sum-row"><span>${t.shipping}</span><span>${formatPrice(shippingCost)}</span></div>
           <div class="checkout-sum-row grand"><span>${t.total}</span><span>${formatPrice(total)}</span></div>
         </div>
@@ -1271,6 +1354,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
     const subtotal = getCartSubtotal();
     const shippingCost = getShippingCost();
+    const firstOrderEligible = isEligibleForFirstOrderDiscount();
+    const firstOrderDiscount = firstOrderEligible ? Math.round(subtotal * 0.20) : 0;
     const orderNum = '#' + Math.floor(1000 + Math.random() * 9000);
 
     const orderData = {
@@ -1282,13 +1367,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         name_hy: c.name_hy,
         size: c.size,
         qty: c.qty || 1,
-        price: c.price
+        price: c.price,
+        originalPrice: c.originalPrice || c.price,
+        productDiscount: c.productDiscount || 0
       })),
       subtotal: subtotal,
+      firstOrderDiscount: firstOrderDiscount,
       shippingMethod: checkoutShipping,
       shippingCost: shippingCost,
       paymentMethod: 'cod',
-      total: subtotal + shippingCost,
+      total: subtotal - firstOrderDiscount + shippingCost,
       status: 'new',
       createdAt: serverTimestamp()
     };
@@ -1397,6 +1485,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           <div class="order-items">${itemsHTML}</div>
           <div class="order-totals">
             <div>Ենթագումար: ${(o.subtotal || 0).toLocaleString()} ֏</div>
+            ${o.firstOrderDiscount && o.firstOrderDiscount > 0 ? `<div style="color:#c33">Առաջին պատվերի զեղչ (20%): −${o.firstOrderDiscount.toLocaleString()} ֏</div>` : ''}
             <div>Առաքում: ${(o.shippingCost || 0).toLocaleString()} ֏</div>
             <div class="grand">Ընդհանուր: ${(o.total || 0).toLocaleString()} ֏</div>
           </div>
@@ -1745,14 +1834,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       } else {
         container.innerHTML = `<div class="wishlist-grid">${wlProducts.map(p => {
           const imgs = getProductImages(p);
+          const discBadge = hasDiscount(p) ? `<div class="discount-badge-card">-${p.discount}%</div>` : '';
           return `
             <div class="wishlist-card">
+              ${discBadge}
               <button class="wishlist-remove" onclick="event.stopPropagation(); window.toggleWishlist('${p.id}')" title="Հեռացնել">×</button>
               <div onclick="openDetail('${p.id}')">
                 <img src="${imgs[0] || ''}">
                 <div class="wishlist-card-info">
                   <h3 style="font-family:'Cormorant Garamond'; font-size:18px">${p['name_'+currentLang] || p.name_hy}</h3>
-                  <p style="color:var(--accent); margin-top:5px">${formatPrice(p.price)}</p>
+                  <p style="margin-top:5px">${formatPriceBlock(p)}</p>
                 </div>
               </div>
             </div>`;
