@@ -114,6 +114,47 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .user-detail-modal { background: #fff; padding: 30px; max-width: 700px; margin: 0 auto; }
 .user-stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 
+/* SINGLE-COLUMN INFO PAGES (Privacy, Return) */
+.info-single-container { max-width: 800px; margin: 0 auto; padding: 120px 30px 60px; }
+.info-single-container .info-page-header { margin-bottom: 40px; }
+.info-single-block { background: #fff; border: 1px solid var(--border); padding: 40px; }
+.info-single-block p { font-size: 15px; line-height: 1.9; color: var(--dark); margin-bottom: 18px; }
+.info-single-block p strong { color: var(--accent); }
+.info-single-block ul { list-style: none; padding: 0; margin: 18px 0 25px; }
+.info-single-block ul li { padding: 10px 0 10px 28px; position: relative; font-size: 14px; line-height: 1.7; color: var(--dark); border-bottom: 1px solid var(--border); }
+.info-single-block ul li:last-child { border-bottom: none; }
+.info-single-block ul li::before { content: "✓"; position: absolute; left: 0; top: 10px; color: var(--accent); font-weight: bold; font-size: 16px; }
+.info-single-block .info-highlight { background: var(--cream); padding: 18px 22px; border-left: 3px solid var(--accent); margin-top: 25px; font-size: 14px; line-height: 1.7; }
+
+@media(max-width:900px) {
+  .info-single-block { padding: 25px 20px; }
+  .info-single-container { padding: 90px 15px 40px; }
+}
+
+/* SHIPPING & RETURN ԷՋ */
+.info-page-container { max-width: 1200px; margin: 0 auto; padding: 120px 30px 60px; }
+.info-page-header { text-align: center; margin-bottom: 50px; }
+.info-page-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; margin-bottom: 15px; }
+.info-page-header p { color: var(--mid); font-size: 15px; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+.info-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 40px; }
+.info-column { padding: 0 15px; }
+.info-column h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; text-align: center; margin-bottom: 30px; color: var(--dark); }
+.info-item { display: flex; gap: 15px; margin-bottom: 22px; align-items: flex-start; }
+.info-item-icon { flex-shrink: 0; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; background: var(--cream); border: 1px solid var(--border); font-size: 18px; color: var(--accent); }
+.info-item-text { flex: 1; font-size: 14px; line-height: 1.75; color: var(--dark); padding-top: 8px; }
+.info-item-text strong { color: var(--accent); font-weight: 600; }
+.info-sub-list { list-style: none; margin-top: 8px; padding: 0; }
+.info-sub-list li { padding: 5px 0 5px 18px; position: relative; font-size: 13px; color: var(--mid); }
+.info-sub-list li::before { content: "•"; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+.info-divider { border-top: 1px solid var(--border); margin: 20px 0; }
+
+@media(max-width:900px) {
+  .info-columns { grid-template-columns: 1fr; gap: 20px; }
+  .info-column { padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .info-column:last-child { border-bottom: none; }
+  .info-page-header h1 { font-size: 36px; }
+}
+
 /* ZEGHCHER */
 .price-block { display: inline-flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .price-old { text-decoration: line-through; color: var(--mid); font-size: 0.7em; opacity: 0.7; }
@@ -437,6 +478,157 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   </div>
 </div>
 
+<div class="pg" id="pg-shipping-info">
+  <div class="info-page-container">
+    <div class="info-page-header">
+      <h1 data-key="shipping_page_title">Առաքում եւ Վճարում</h1>
+      <p data-key="shipping_page_sub">Մեր առաքման եւ վճարման պայմանները</p>
+    </div>
+    <div class="info-columns" style="grid-template-columns: 1fr 1fr; max-width: 900px; margin: 40px auto 0;">
+      
+      <div class="info-column">
+        <h2 data-key="ship_col_shipping">Առաքում</h2>
+        
+        <div class="info-item">
+          <div class="info-item-icon">🏠</div>
+          <div class="info-item-text">
+            <strong>Երեւանի տարածքում</strong><br>
+            Պատվերների առաքումն իրականացվում է հիմնականում 24 ժամվա ընթացքում։
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">📍</div>
+          <div class="info-item-text">
+            <strong>Մարզեր</strong><br>
+            Առաքումն իրականացվում է մինչեւ 3 աշխատանքային օրվա ընթացքում։
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">✈️</div>
+          <div class="info-item-text">
+            <strong>Արտերկիր</strong><br>
+            Առաքումն իրականացվում է ամբողջ աշխարհում՝ փոստի միջոցով։ Առաքման ժամկետը սովորաբար 7-15 օր է։
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">✕</div>
+          <div class="info-item-text">
+            Պատվերը կարող եք չեղարկել նախքան առաքումը։
+          </div>
+        </div>
+      </div>
+
+      <div class="info-column">
+        <h2 data-key="ship_col_payment">Վճարում</h2>
+        
+        <div class="info-item">
+          <div class="info-item-icon">🏢</div>
+          <div class="info-item-text">
+            <strong>Վճարում (Երեւան)</strong><br>
+            Վճարման համար կարող եք ընտրել ստորեւ նշված տարբերակներից մեկը՝
+            <ul class="info-sub-list">
+              <li>Առձեռն (առաքման պահին)</li>
+              <li>Կայքի քարտային համակարգով</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">🗺️</div>
+          <div class="info-item-text">
+            <strong>Վճարում (Մարզ)</strong><br>
+            Կատարվում է միայն կայքի քարտային համակարգով։
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">🌍</div>
+          <div class="info-item-text">
+            <strong>Վճարում (Արտերկիր)</strong><br>
+            Կատարվում է միայն կայքի քարտային համակարգով։
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-item-icon">🔖</div>
+          <div class="info-item-text">
+            <strong>Ամրագրում</strong><br>
+            Ապրանքը կարող եք ամրագրել 1 օրվա ընթացքում։ 1 օրից ավելի մնալու դեպքում ամրագրումն ավտոմատ չեղարկվում է։
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-return-info">
+  <div class="info-single-container">
+    <div class="info-page-header">
+      <h1 data-key="return_page_title">Վերադարձ եւ Փոխանակում</h1>
+      <p data-key="return_page_sub">Ապրանքի վերադարձի պայմանները</p>
+    </div>
+    <div class="info-single-block">
+      <p data-key="return_p1">
+        Համաձայն <strong>ՀՀ օրենսդրության</strong>՝ ապրանքի վերադարձը կամ փոխանակումը կատարվում է գնման օրվանից <strong>14 օրվա ընթացքում</strong>։
+      </p>
+      
+      <p style="margin-bottom:5px" data-key="return_conditions_title"><strong>Պարտադիր պայմաններ՝</strong></p>
+      <ul>
+        <li data-key="return_cond_1">Ներկայացվի գնման կտրոնը (չեկը)</li>
+        <li data-key="return_cond_2">Ապրանքը լինի չօգտագործված եւ անվնաս տեսքով</li>
+        <li data-key="return_cond_3">Պահպանված լինեն ապրանքի ապրանքային տեսքը, սպառողական հատկանիշները եւ պիտակները</li>
+      </ul>
+
+      <p data-key="return_p2">
+        <strong>Մարզեր առաքման դեպքում</strong> հաճախորդը ապրանքը հետ է ուղարկում նույն կերպ՝ վերը նշված պայմանների պահպանմամբ։
+      </p>
+
+      <p data-key="return_p3">
+        <strong>Արտերկիր առաքման դեպքում</strong> վերադարձ չի կատարվում, քանի որ միջազգային առաքման ժամկետը կարող է գերազանցել 14 օրը։
+      </p>
+
+      <div class="info-highlight" data-key="return_contact">
+        <strong>📞 Կապ մեզ հետ</strong><br>
+        Վերադարձի կամ փոխանակման համար զանգահարեք՝ <strong>+374 98 93 00 66</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-privacy-info">
+  <div class="info-single-container">
+    <div class="info-page-header">
+      <h1 data-key="privacy_page_title">Գաղտնիության Քաղաքականություն</h1>
+      <p data-key="privacy_page_sub">Ձեր անձնական տվյալների պաշտպանությունը</p>
+    </div>
+    <div class="info-single-block">
+      <p data-key="privacy_p1">
+        Կայքում գրանցվելու համար անհրաժեշտ է տրամադրել հետեւյալ անձնական տվյալները՝ <strong>էլ. փոստ, անուն, ազգանուն</strong>։
+      </p>
+      
+      <p data-key="privacy_p2">
+        Ապահով եւ հարմարավետ ծառայություն մատուցելու համար Ձեր տրամադրած տեղեկատվությունը օգտագործվում է հետեւյալ նպատակներով՝
+      </p>
+
+      <ul>
+        <li data-key="privacy_reason_1">Սպասարկում իրականացնելու համար</li>
+        <li data-key="privacy_reason_2">Տեխնիկական բարդությունների դեպքում աջակցելու համար</li>
+        <li data-key="privacy_reason_3">Ձեր պահանջները ավելի արդյունավետ բավարարելու համար</li>
+        <li data-key="privacy_reason_4">Նորությունների կամ նոր ծառայությունների մասին Ձեզ տեղեկացնելու համար</li>
+        <li data-key="privacy_reason_5">Հատուկ առաջարկների մասին տեղեկատվություն ուղարկելու համար</li>
+      </ul>
+
+      <div class="info-highlight" data-key="privacy_highlight">
+        <strong>🔒 Մենք չենք տրամադրում Ձեր տվյալները երրորդ անձանց։</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="admin-panel">
     <h2>Ադմին Պանել</h2>
     
@@ -510,9 +702,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         </div>
 
         <div class="footer-links">
-            <a onclick="alert('ԳԱՂՏՆԻՈՒԹՅԱՆ ՔԱՂԱՔԱԿԱՆՈՒԹՅՈՒՆ\n\nՁեր անձնական տվյալները օգտագործվում են միայն պատվերների մշակման և առաքման նպատակով։ Մենք չենք տրամադրում ձեր տվյալները երրորդ անձանց։')">Գաղտնիություն</a>
-            <a onclick="alert('ԱՌԱՔՄԱՆ ՊԱՅՄԱՆՆԵՐ\n\n• Երևանում՝ Նույն օրը կամ հաջորդ օրը (1,000 - 2,000 դրամ)\n• Մարզեր՝ ՀայՓոստով մինչև 3 աշխատանքային օր (1,000 դրամ)')">Առաքում և Վճարում</a>
-            <a onclick="alert('ՎԵՐԱԴԱՐՁԻ ՔԱՂԱՔԱԿԱՆՈՒԹՅՈՒՆ\n\nՀամաձայն ՀՀ օրենսդրության, ապրանքի փոխանակումը կամ վերադարձը կատարվում է 14 օրվա ընթացքում, եթե ապրանքը չի օգտագործվել և պահպանված է տեսքը:')">Վերադարձ</a>
+            <a onclick="go('privacy-info')" data-key="footer_privacy">Գաղտնիություն</a>
+            <a onclick="go('shipping-info')" data-key="footer_shipping">Առաքում և Վճարում</a>
+            <a onclick="go('return-info')" data-key="footer_return">Վերադարձ</a>
         </div>
 
         <div class="payment-methods">
@@ -579,9 +771,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null, currentImageIndex = 0, lightboxImages = [], lightboxIndex = 0;
 
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order" },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ" }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին", shipping_page_title:"Առաքում եւ Վճարում", shipping_page_sub:"Մեր առաքման եւ վճարման պայմանները", ship_col_shipping:"Առաքում", ship_col_payment:"Վճարում", ship_col_return:"Վերադարձ / Փոխանակում", return_page_title:"Վերադարձ եւ Փոխանակում", return_page_sub:"Ապրանքի վերադարձի պայմանները", privacy_page_title:"Գաղտնիության Քաղաքականություն", privacy_page_sub:"Ձեր անձնական տվյալների պաշտպանությունը", footer_privacy:"Գաղտնիություն", footer_shipping:"Առաքում և Վճարում", footer_return:"Վերադարձ" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order", shipping_page_title:"Shipping & Payment", shipping_page_sub:"Our shipping and payment terms", ship_col_shipping:"Shipping", ship_col_payment:"Payment", ship_col_return:"Return / Exchange", return_page_title:"Return & Exchange", return_page_sub:"Product return conditions", privacy_page_title:"Privacy Policy", privacy_page_sub:"Protection of your personal data", footer_privacy:"Privacy", footer_shipping:"Shipping & Payment", footer_return:"Returns" },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ", shipping_page_title:"Доставка и Оплата", shipping_page_sub:"Наши условия доставки и оплаты", ship_col_shipping:"Доставка", ship_col_payment:"Оплата", ship_col_return:"Возврат / Обмен", return_page_title:"Возврат и Обмен", return_page_sub:"Условия возврата товара", privacy_page_title:"Политика Конфиденциальности", privacy_page_sub:"Защита ваших персональных данных", footer_privacy:"Конфиденциальность", footer_shipping:"Доставка и Оплата", footer_return:"Возврат" }
   };
 
   onSnapshot(prodsCol, (snapshot) => {
@@ -1197,8 +1389,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   // ============= CHECKOUT =============
 
   function getShippingCost() {
-    if (checkoutShipping === 'yerevan') return 1000;
-    if (checkoutShipping === 'regions') return 1500;
+    if (checkoutShipping === 'yerevan') return 1500;
+    if (checkoutShipping === 'regions') return 1000;
     return 0;
   }
 
@@ -1254,17 +1446,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             <input type="radio" name="ship" value="yerevan" ${checkoutShipping==='yerevan'?'checked':''}>
             <div class="checkout-radio-info">
               <div class="checkout-radio-title">${t.shipping_yerevan}</div>
-              <div class="checkout-radio-desc">1-2 օր</div>
+              <div class="checkout-radio-desc">24 ժամվա ընթացքում</div>
             </div>
-            <div class="checkout-radio-price">${formatPrice(1000)}</div>
+            <div class="checkout-radio-price">${formatPrice(1500)}</div>
           </label>
           <label class="checkout-radio ${checkoutShipping==='regions'?'on':''}" onclick="window.selShipping('regions')">
             <input type="radio" name="ship" value="regions" ${checkoutShipping==='regions'?'checked':''}>
             <div class="checkout-radio-info">
               <div class="checkout-radio-title">${t.shipping_regions}</div>
-              <div class="checkout-radio-desc">2-3 օր (ՀայՓոստ)</div>
+              <div class="checkout-radio-desc">մինչեւ 3 աշխատանքային օր</div>
             </div>
-            <div class="checkout-radio-price">${formatPrice(1500)}</div>
+            <div class="checkout-radio-price">${formatPrice(1000)}</div>
           </label>
           <label class="checkout-radio ${checkoutShipping==='pickup'?'on':''}" onclick="window.selShipping('pickup')">
             <input type="radio" name="ship" value="pickup" ${checkoutShipping==='pickup'?'checked':''}>
