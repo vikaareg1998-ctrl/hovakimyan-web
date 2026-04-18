@@ -17,6 +17,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .nav-links li{cursor:pointer;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);transition:color .2s}
 .nav-links li:hover{color:var(--dark)}
 
+/* MOBILE MENU */
+.mobile-menu-btn { display:none; background:none; border:none; cursor:pointer; padding:8px; font-family:inherit; }
+.mobile-menu-btn span { display:block; width:22px; height:2px; background:var(--dark); margin:5px 0; transition:0.3s; }
+.mobile-menu-btn.on span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mobile-menu-btn.on span:nth-child(2) { opacity: 0; }
+.mobile-menu-btn.on span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-drawer { display: none; position: fixed; top: 58px; left: 0; right: 0; background: rgba(245,241,235,.98); backdrop-filter: blur(8px); z-index: 999; border-bottom: 1px solid var(--border); padding: 20px; flex-direction: column; gap: 15px; max-height: calc(100vh - 58px); overflow-y: auto; }
+.mobile-drawer.on { display: flex; }
+.mobile-drawer-links { display: flex; flex-direction: column; gap: 0; }
+.mobile-drawer-links li { cursor: pointer; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--dark); padding: 14px 0; border-bottom: 1px solid var(--border); list-style: none; }
+.mobile-drawer-section { display: flex; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.mobile-drawer-section:last-child { border-bottom: none; }
+.mobile-drawer-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mid); margin-right: 10px; align-self: center; min-width: 55px; }
+
 .pg{display:none; min-height:100vh}
 .pg.on{display:block}
 
@@ -328,25 +343,99 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .form-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; display: block; }
 
 @media(max-width:900px){
+    /* Nav - compact */
+    nav { padding: 0 15px; height: 58px; }
+    .logo { font-size: 17px; }
+    .nav-links, .nav-desktop-controls { display: none !important; }
+    .nav-mobile-controls { display: flex !important; }
+    .mobile-menu-btn { display: block; }
+    
+    /* Hero - compact vertical layout */
     .hero, .det-grid, .cat-grid, .prod-grid{grid-template-columns:1fr}
-    .hero-r, .nav-links{display:none}
-    .hero-l{padding: 60px 30px}
+    .hero { margin-top: 58px; height: auto; min-height: calc(100vh - 58px); }
+    .hero-l{padding: 50px 25px 40px; min-height: 60vh; display: flex; flex-direction: column; justify-content: center;}
+    .hero-eyebrow { font-size: 9px; letter-spacing: 3px; margin-bottom: 15px; }
+    .hero-h1 { font-size: 44px !important; line-height: 1.1; margin-bottom: 18px; }
+    .hero-sub { font-size: 13px; margin-bottom: 30px; }
+    .hero-r { display: block; height: 300px; order: 2; }
+    .hero-r img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Sections */
+    .sec-padding { padding: 50px 20px; }
+    .sec-title { font-size: 32px !important; }
+    
+    /* Categories and products grid */
+    .cat-grid { padding: 0 15px 40px; gap: 12px; }
+    .cat-name { font-size: 26px; }
+    .prod-grid { padding: 20px 15px; gap: 12px; }
+    .prod-info h3 { font-size: 17px !important; }
+    .prod-info p { font-size: 17px !important; }
+    
+    /* Product detail */
     .det-img{height:auto; min-height:60vh; position: relative; top:0; padding: 20px;}
     .det-img-main{min-height: 50vh;}
+    .det-info { padding: 40px 25px 50px !important; }
+    .det-info h1 { font-size: 32px !important; }
+    
+    /* Lightbox */
     .lightbox-arrow { width: 40px; height: 60px; font-size: 24px; }
     .lightbox-arrow.prev { left: 5px; }
     .lightbox-arrow.next { right: 5px; }
+    
+    /* Checkout and cart */
     .checkout-row { grid-template-columns: 1fr; }
     .cart-item { grid-template-columns: 80px 1fr; }
     .cart-item > :last-child { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
-    .cart-container, .checkout-container { padding: 90px 15px 40px; }
+    .cart-container, .checkout-container { padding: 80px 15px 40px; }
+    .cart-title { font-size: 32px !important; }
+    
+    /* Admin orders */
     .order-actions { flex-direction: column; align-items: stretch; }
     .order-actions select, .order-wa-btn, .order-del-btn { width: 100%; text-align: center; justify-content: center; }
+    
+    /* Footer */
+    .site-footer { padding: 40px 15px 25px; }
     .payment-logos-box { padding: 10px 15px; }
     .payment-logos-box img { height: 28px; }
+    .footer-contacts p { font-size: 13px; }
+    .footer-links { gap: 15px; }
+    
+    /* Account */
+    .account-container { padding: 80px 15px 40px; }
+    .account-header h1 { font-size: 32px; }
+    .account-tab { padding: 10px 15px; font-size: 11px; }
+    
+    /* Auth modal */
+    .auth-modal { padding: 30px 20px; }
+    .auth-title { font-size: 26px; }
+    
+    /* Info pages */
+    .info-page-container { padding: 80px 15px 40px; }
+    .info-page-header h1 { font-size: 32px; }
+    .info-single-container { padding: 80px 15px 40px; }
+    .info-single-block { padding: 25px 20px; }
+    .info-columns { grid-template-columns: 1fr !important; gap: 20px !important; }
+    .info-column { padding: 15px 0; border-bottom: 1px solid var(--border); }
+    .info-column:last-child { border-bottom: none; }
+    .info-column h2 { font-size: 26px; margin-bottom: 20px; }
+    
+    /* Reviews */
+    .reviews-title { font-size: 24px; }
+    .review-form { padding: 20px; }
+    
+    /* Navigation user/cart stays visible but compact */
+    .user-nav-box { padding: 4px 8px; font-size: 11px; }
+    .user-nav-box .user-icon { font-size: 13px; }
+    #user-nav-text { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cart-icon { padding: 4px 6px; font-size: 15px; }
+    .cart-badge { width: 17px; height: 17px; font-size: 10px; }
 }
 @media(max-width:480px){
     .payment-logos-box img { height: 22px; }
+    .hero-h1 { font-size: 38px !important; }
+    .logo { font-size: 15px; }
+    #user-nav-text { display: none; }
+    .user-nav-box { padding: 6px; }
 }
 </style>
 </head>
@@ -358,7 +447,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     <li onclick="go('home')" data-key="nav_home">Գլխավոր</li>
     <li onclick="go('cat')" data-key="nav_shop">Խանութ</li>
   </ul>
-  <div style="display:flex;gap:10px;align-items:center">
+  <div class="nav-desktop-controls" style="display:flex;gap:10px;align-items:center">
     <div class="user-nav-box" id="user-nav-box" onclick="window.toggleUserMenu(event)">
       <span class="user-icon">👤</span>
       <span id="user-nav-text" data-key="login_signup">Մուտք</span>
@@ -378,7 +467,43 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       <button class="control-btn" id="cRUB" onclick="window.setCur('RUB')">₽</button>
     </div>
   </div>
+  
+  <!-- Mobile-only controls (visible only on phones) -->
+  <div class="nav-mobile-controls" style="display:none; gap:8px; align-items:center">
+    <div class="user-nav-box" id="user-nav-box-m" onclick="window.toggleUserMenuMobile(event)">
+      <span class="user-icon">👤</span>
+      <div class="user-dropdown" id="user-dropdown-m"></div>
+    </div>
+    <div class="cart-icon" onclick="go('cart')" title="Զամբյուղ">
+      🛒<span class="cart-badge" id="cart-badge-m" style="display:none">0</span>
+    </div>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="window.toggleMobileDrawer()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
 </nav>
+
+<!-- Mobile Drawer Menu -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <ul class="mobile-drawer-links">
+    <li onclick="window.mobileGo('home')" data-key="nav_home">Գլխավոր</li>
+    <li onclick="window.mobileGo('cat')" data-key="nav_shop">Խանութ</li>
+  </ul>
+  <div class="mobile-drawer-section">
+    <span class="mobile-drawer-label" data-key="mobile_language">Լեզու</span>
+    <button class="control-btn" id="lHY-m" onclick="window.setLang('hy')">ՀՅ</button>
+    <button class="control-btn" id="lEN-m" onclick="window.setLang('en')">EN</button>
+    <button class="control-btn" id="lRU-m" onclick="window.setLang('ru')">RU</button>
+  </div>
+  <div class="mobile-drawer-section">
+    <span class="mobile-drawer-label" data-key="mobile_currency">Արժույթ</span>
+    <button class="control-btn" id="cAMD-m" onclick="window.setCur('AMD')">֏</button>
+    <button class="control-btn" id="cUSD-m" onclick="window.setCur('USD')">$</button>
+    <button class="control-btn" id="cRUB-m" onclick="window.setCur('RUB')">₽</button>
+  </div>
+</div>
 
 <div class="pg on" id="pg-home">
   <div class="hero">
@@ -771,9 +896,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null, currentImageIndex = 0, lightboxImages = [], lightboxIndex = 0;
 
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին", shipping_page_title:"Առաքում եւ Վճարում", shipping_page_sub:"Մեր առաքման եւ վճարման պայմանները", ship_col_shipping:"Առաքում", ship_col_payment:"Վճարում", ship_col_return:"Վերադարձ / Փոխանակում", return_page_title:"Վերադարձ եւ Փոխանակում", return_page_sub:"Ապրանքի վերադարձի պայմանները", privacy_page_title:"Գաղտնիության Քաղաքականություն", privacy_page_sub:"Ձեր անձնական տվյալների պաշտպանությունը", footer_privacy:"Գաղտնիություն", footer_shipping:"Առաքում և Վճարում", footer_return:"Վերադարձ" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order", shipping_page_title:"Shipping & Payment", shipping_page_sub:"Our shipping and payment terms", ship_col_shipping:"Shipping", ship_col_payment:"Payment", ship_col_return:"Return / Exchange", return_page_title:"Return & Exchange", return_page_sub:"Product return conditions", privacy_page_title:"Privacy Policy", privacy_page_sub:"Protection of your personal data", footer_privacy:"Privacy", footer_shipping:"Shipping & Payment", footer_return:"Returns" },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ", shipping_page_title:"Доставка и Оплата", shipping_page_sub:"Наши условия доставки и оплаты", ship_col_shipping:"Доставка", ship_col_payment:"Оплата", ship_col_return:"Возврат / Обмен", return_page_title:"Возврат и Обмен", return_page_sub:"Условия возврата товара", privacy_page_title:"Политика Конфиденциальности", privacy_page_sub:"Защита ваших персональных данных", footer_privacy:"Конфиденциальность", footer_shipping:"Доставка и Оплата", footer_return:"Возврат" }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին", shipping_page_title:"Առաքում եւ Վճարում", shipping_page_sub:"Մեր առաքման եւ վճարման պայմանները", ship_col_shipping:"Առաքում", ship_col_payment:"Վճարում", ship_col_return:"Վերադարձ / Փոխանակում", return_page_title:"Վերադարձ եւ Փոխանակում", return_page_sub:"Ապրանքի վերադարձի պայմանները", privacy_page_title:"Գաղտնիության Քաղաքականություն", privacy_page_sub:"Ձեր անձնական տվյալների պաշտպանությունը", footer_privacy:"Գաղտնիություն", footer_shipping:"Առաքում և Վճարում", footer_return:"Վերադարձ", mobile_language:"Լեզու", mobile_currency:"Արժույթ" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order", shipping_page_title:"Shipping & Payment", shipping_page_sub:"Our shipping and payment terms", ship_col_shipping:"Shipping", ship_col_payment:"Payment", ship_col_return:"Return / Exchange", return_page_title:"Return & Exchange", return_page_sub:"Product return conditions", privacy_page_title:"Privacy Policy", privacy_page_sub:"Protection of your personal data", footer_privacy:"Privacy", footer_shipping:"Shipping & Payment", footer_return:"Returns", mobile_language:"Language", mobile_currency:"Currency" },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ", shipping_page_title:"Доставка и Оплата", shipping_page_sub:"Наши условия доставки и оплаты", ship_col_shipping:"Доставка", ship_col_payment:"Оплата", ship_col_return:"Возврат / Обмен", return_page_title:"Возврат и Обмен", return_page_sub:"Условия возврата товара", privacy_page_title:"Политика Конфиденциальности", privacy_page_sub:"Защита ваших персональных данных", footer_privacy:"Конфиденциальность", footer_shipping:"Доставка и Оплата", footer_return:"Возврат", mobile_language:"Язык", mobile_currency:"Валюта" }
   };
 
   onSnapshot(prodsCol, (snapshot) => {
@@ -817,14 +942,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   window.setLang = (l) => {
     currentLang = l;
-    document.querySelectorAll('[id^="l"]').forEach(b => b.classList.remove('active-btn'));
-    document.getElementById('l'+l.toUpperCase()).classList.add('active-btn');
+    document.querySelectorAll('[id^="lHY"],[id^="lEN"],[id^="lRU"]').forEach(b => b.classList.remove('active-btn'));
+    ['l'+l.toUpperCase(), 'l'+l.toUpperCase()+'-m'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active-btn');
+    });
     updateUI();
   };
   window.setCur = (c) => {
     currentCur = c;
-    document.querySelectorAll('[id^="c"]').forEach(b => b.classList.remove('active-btn'));
-    document.getElementById('c'+c).classList.add('active-btn');
+    document.querySelectorAll('[id^="cAMD"],[id^="cUSD"],[id^="cRUB"]').forEach(b => b.classList.remove('active-btn'));
+    ['c'+c, 'c'+c+'-m'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active-btn');
+    });
     updateUI();
   };
 
@@ -1281,11 +1412,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   function updateCartBadge() {
     const totalQty = CART.reduce((s, i) => s + (i.qty || 1), 0);
-    const badge = document.getElementById('cart-badge');
-    if (badge) {
-      badge.innerText = totalQty;
-      badge.style.display = totalQty > 0 ? 'flex' : 'none';
-    }
+    ['cart-badge', 'cart-badge-m'].forEach(id => {
+      const badge = document.getElementById(id);
+      if (badge) {
+        badge.innerText = totalQty;
+        badge.style.display = totalQty > 0 ? 'flex' : 'none';
+      }
+    });
   }
 
   window.addToCart = () => {
@@ -1768,23 +1901,47 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   function updateUserNav() {
     const txtEl = document.getElementById('user-nav-text');
     const dropdown = document.getElementById('user-dropdown');
+    const dropdownM = document.getElementById('user-dropdown-m');
     const t = TRANSLATIONS[currentLang];
     if (currentUser) {
       const displayName = currentUserData?.name || currentUser.displayName || currentUser.email.split('@')[0];
-      txtEl.innerText = displayName.length > 15 ? displayName.substring(0,15)+'...' : displayName;
-      dropdown.innerHTML = `
+      if (txtEl) txtEl.innerText = displayName.length > 15 ? displayName.substring(0,15)+'...' : displayName;
+      const loggedInHTML = `
         <div class="ud-email">${currentUser.email}</div>
         <a onclick="window.goAccount('profile')">👤 ${t.my_profile}</a>
         <a onclick="window.goAccount('orders')">📦 ${t.my_orders}</a>
         <a onclick="window.goAccount('wishlist')">♥ ${t.my_wishlist}</a>
         <a onclick="window.doLogout()">🚪 ${t.logout}</a>`;
+      if (dropdown) dropdown.innerHTML = loggedInHTML;
+      if (dropdownM) dropdownM.innerHTML = loggedInHTML;
     } else {
-      txtEl.innerText = t.login_signup;
-      dropdown.innerHTML = `
+      if (txtEl) txtEl.innerText = t.login_signup;
+      const loggedOutHTML = `
         <a onclick="window.openAuth('login')">🔑 ${t.login}</a>
         <a onclick="window.openAuth('signup')">✨ ${t.signup}</a>`;
+      if (dropdown) dropdown.innerHTML = loggedOutHTML;
+      if (dropdownM) dropdownM.innerHTML = loggedOutHTML;
     }
   }
+
+  window.toggleMobileDrawer = () => {
+    const drawer = document.getElementById('mobile-drawer');
+    const btn = document.getElementById('mobile-menu-btn');
+    drawer.classList.toggle('on');
+    btn.classList.toggle('on');
+  };
+
+  window.mobileGo = (id) => {
+    document.getElementById('mobile-drawer').classList.remove('on');
+    document.getElementById('mobile-menu-btn').classList.remove('on');
+    go(id);
+  };
+
+  window.toggleUserMenuMobile = (e) => {
+    e.stopPropagation();
+    const dropdown = document.getElementById('user-dropdown-m');
+    dropdown.classList.toggle('on');
+  };
 
   window.toggleUserMenu = (e) => {
     e.stopPropagation();
@@ -1794,8 +1951,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   document.addEventListener('click', (e) => {
     const box = document.getElementById('user-nav-box');
+    const boxM = document.getElementById('user-nav-box-m');
     if (box && !box.contains(e.target)) {
       document.getElementById('user-dropdown').classList.remove('on');
+    }
+    if (boxM && !boxM.contains(e.target)) {
+      const dm = document.getElementById('user-dropdown-m');
+      if (dm) dm.classList.remove('on');
     }
   });
 
