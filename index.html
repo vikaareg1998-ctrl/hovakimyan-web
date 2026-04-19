@@ -775,7 +775,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let selectedRating = 0;
   let currentOrderFilter = 'all';
   let currentAdmTab = 'products';
-  let checkoutShipping = 'yerevan';
+  let checkoutShipping = 'car';
   let checkoutPayment = 'cod';
   let authMode = 'login';
   let accountTab = 'profile';
@@ -793,10 +793,196 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   let currentLang = 'hy', currentCur = 'AMD', selectedSize = null, currentProduct = null, currentCategory = '', editId = null, currentImageIndex = 0, lightboxImages = [], lightboxIndex = 0;
 
+  // ============= POSTAL OFFICES (HayPost) =============
+  const POSTAL_OFFICES = {
+    "Երեւան": [
+      {code: "0010", name: "Երեւան Կենտրոն"},
+      {code: "0015", name: "Երեւան Մաշտոց"},
+      {code: "0018", name: "Երեւան Արաբկիր"},
+      {code: "0019", name: "Երեւան Կասյան"},
+      {code: "0025", name: "Երեւան Կոմիտաս"},
+      {code: "0026", name: "Երեւան Սարյան"},
+      {code: "0028", name: "Երեւան Զեյթուն"},
+      {code: "0033", name: "Երեւան Գյուլբենկյան"},
+      {code: "0038", name: "Երեւան Մալաթիա-Սեբաստիա"},
+      {code: "0040", name: "Երեւան Շենգավիթ"},
+      {code: "0043", name: "Երեւան Նուբարաշեն"},
+      {code: "0047", name: "Երեւան Էրեբունի"},
+      {code: "0051", name: "Երեւան Նորք-Մարաշ"},
+      {code: "0054", name: "Երեւան Քանաքեռ-Զեյթուն"},
+      {code: "0064", name: "Երեւան Ավան"},
+      {code: "0069", name: "Երեւան Նոր Նորք"},
+      {code: "0071", name: "Երեւան Դավիթաշեն"},
+      {code: "0072", name: "Երեւան Աջափնյակ"},
+      {code: "0078", name: "Երեւան Բաղրամյան"}
+    ],
+    "Արագածոտնի մարզ": [
+      {code: "0201", name: "Աշտարակ"},
+      {code: "0301", name: "Ապարան"},
+      {code: "0401", name: "Թալին"},
+      {code: "0501", name: "Ծաղկահովիտ"}
+    ],
+    "Արարատի մարզ": [
+      {code: "0601", name: "Արտաշատ"},
+      {code: "0701", name: "Արարատ"},
+      {code: "0801", name: "Մասիս"},
+      {code: "0901", name: "Վեդի"}
+    ],
+    "Արմավիրի մարզ": [
+      {code: "1001", name: "Արմավիր"},
+      {code: "1101", name: "Էջմիածին (Վաղարշապատ)"},
+      {code: "1201", name: "Մեծամոր"},
+      {code: "1301", name: "Բաղրամյան"}
+    ],
+    "Գեղարքունիքի մարզ": [
+      {code: "1401", name: "Գավառ"},
+      {code: "1501", name: "Ճամբարակ"},
+      {code: "1601", name: "Մարտունի"},
+      {code: "1701", name: "Սեւան"},
+      {code: "1801", name: "Վարդենիս"}
+    ],
+    "Կոտայքի մարզ": [
+      {code: "2201", name: "Աբովյան"},
+      {code: "2301", name: "Հրազդան"},
+      {code: "2401", name: "Ծաղկաձոր"},
+      {code: "2501", name: "Չարենցավան"},
+      {code: "2601", name: "Նոր Հաճըն"},
+      {code: "2701", name: "Բյուրեղավան"}
+    ],
+    "Լոռու մարզ": [
+      {code: "1901", name: "Վանաձոր"},
+      {code: "2001", name: "Ալավերդի"},
+      {code: "2101", name: "Ստեփանավան"},
+      {code: "2801", name: "Սպիտակ"},
+      {code: "2901", name: "Տաշիր"}
+    ],
+    "Շիրակի մարզ": [
+      {code: "3101", name: "Գյումրի"},
+      {code: "3201", name: "Արթիկ"},
+      {code: "3301", name: "Մարալիկ"},
+      {code: "3401", name: "Աշոցք"}
+    ],
+    "Սյունիքի մարզ": [
+      {code: "3501", name: "Կապան"},
+      {code: "3601", name: "Գորիս"},
+      {code: "3701", name: "Սիսյան"},
+      {code: "3801", name: "Մեղրի"},
+      {code: "3901", name: "Ագարակ"},
+      {code: "4001", name: "Քաջարան"}
+    ],
+    "Վայոց Ձորի մարզ": [
+      {code: "4101", name: "Եղեգնաձոր"},
+      {code: "4201", name: "Ջերմուկ"},
+      {code: "4301", name: "Վայք"}
+    ],
+    "Տավուշի մարզ": [
+      {code: "4401", name: "Իջեւան"},
+      {code: "4501", name: "Դիլիջան"},
+      {code: "4601", name: "Բերդ"},
+      {code: "4701", name: "Նոյեմբերյան"}
+    ]
+  };
+
+  const COUNTRIES = [
+    "Ռուսաստան", "Ամերիկայի Միացյալ Նահանգներ", "Ֆրանսիա", "Գերմանիա",
+    "Մեծ Բրիտանիա", "Իտալիա", "Իսպանիա", "Կանադա", "Վրաստան", "Իրան",
+    "Չինաստան", "Ճապոնիա", "Հարավային Կորեա", "Ավստրալիա", "Հնդկաստան",
+    "Թուրքիա", "Ուկրաինա", "Բելառուս", "Ղազախստան", "Ղրղզստան",
+    "Ուզբեկստան", "Տաջիկստան", "Արաբական Միացյալ Էմիրություններ", "Իսրայել",
+    "Լիբանան", "Հորդանան", "Եգիպտոս", "Սաուդյան Արաբիա", "Քաթար",
+    "Քուվեյթ", "Բահրեյն", "Հոլանդիա", "Բելգիա", "Լյուքսեմբուրգ",
+    "Շվեյցարիա", "Ավստրիա", "Շվեդիա", "Նորվեգիա", "Դանիա", "Ֆինլանդիա",
+    "Իռլանդիա", "Պորտուգալիա", "Հունաստան", "Չեխիա", "Սլովակիա",
+    "Լեհաստան", "Հունգարիա", "Ռումինիա", "Բուլղարիա", "Սերբիա", "Խորվաթիա",
+    "Կիպրոս", "Էստոնիա", "Լատվիա", "Լիտվա", "Մոլդովա",
+    "Սինգապուր", "Մալայզիա", "Թաիլանդ", "Վիետնամ",
+    "Հոնկոնգ", "Նոր Զելանդիա", "Մեքսիկա",
+    "Բրազիլիա", "Արգենտինա", "Չիլի"
+  ];
+
+  // Store location: Smbat Zoravar Street, 11/1, Yerevan (Fair market area)
+  const STORE_LAT = 40.154879;
+  const STORE_LNG = 44.505432;
+  
+  // Shipping tariff
+  const BASE_SHIPPING_COST = 1000;  // Fixed for 0-5 km
+  const FREE_KM_THRESHOLD = 5;      // First 5 km included in base
+  const COST_PER_KM_YEREVAN = 150;  // Per km after 5 km in Yerevan
+  const COST_PER_KM_REGION = 100;   // Per km outside Yerevan
+  
+  // Yerevan bounding box (approximate)
+  const YEREVAN_BOUNDS = {
+    latMin: 40.13, latMax: 40.23,
+    lngMin: 44.40, lngMax: 44.60
+  };
+  
+  function isInYerevan(lat, lng) {
+    return lat >= YEREVAN_BOUNDS.latMin && lat <= YEREVAN_BOUNDS.latMax &&
+           lng >= YEREVAN_BOUNDS.lngMin && lng <= YEREVAN_BOUNDS.lngMax;
+  }
+
+  // ============= GEOCODING & DISTANCE (OpenStreetMap Nominatim) =============
+  
+  function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  async function geocodeAddress(address) {
+    try {
+      const q = encodeURIComponent(address + ', Armenia');
+      const url = `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=am`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), display: data[0].display_name };
+      }
+      return null;
+    } catch(e) {
+      console.error('Geocoding error:', e);
+      return null;
+    }
+  }
+
+  async function calculateCarShipping(address) {
+    const geo = await geocodeAddress(address);
+    if (!geo) return null;
+    const straightDistance = calculateDistance(STORE_LAT, STORE_LNG, geo.lat, geo.lng);
+    const roadDistance = straightDistance * 1.3;
+    const distKm = Math.round(roadDistance * 10) / 10;
+    const inYerevan = isInYerevan(geo.lat, geo.lng);
+    
+    // Calculation:
+    // 0-5 km: 1000 AMD fixed
+    // 5+ km in Yerevan: 1000 + extra km × 150
+    // 5+ km outside Yerevan: 1000 + extra km × 100
+    let price;
+    if (distKm <= FREE_KM_THRESHOLD) {
+      price = BASE_SHIPPING_COST;
+    } else {
+      const extraKm = distKm - FREE_KM_THRESHOLD;
+      const ratePerKm = inYerevan ? COST_PER_KM_YEREVAN : COST_PER_KM_REGION;
+      price = BASE_SHIPPING_COST + Math.ceil(extraKm) * ratePerKm;
+    }
+    
+    return {
+      distance: distKm,
+      price: price,
+      location: geo.display,
+      inYerevan: inYerevan
+    };
+  }
+
   const TRANSLATIONS = {
-    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին", shipping_page_title:"Առաքում եւ Վճարում", shipping_page_sub:"Մեր առաքման եւ վճարման պայմանները", ship_col_shipping:"Առաքում", ship_col_payment:"Վճարում", ship_col_return:"Վերադարձ / Փոխանակում", return_page_title:"Վերադարձ եւ Փոխանակում", return_page_sub:"Ապրանքի վերադարձի պայմանները", privacy_page_title:"Գաղտնիության Քաղաքականություն", privacy_page_sub:"Ձեր անձնական տվյալների պաշտպանությունը", footer_privacy:"Գաղտնիություն", footer_shipping:"Առաքում և Վճարում", footer_return:"Վերադարձ", mobile_language:"Լեզու", mobile_currency:"Արժույթ", view_grid:"Ցանց", view_list:"Ցուցակ" },
-    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order", shipping_page_title:"Shipping & Payment", shipping_page_sub:"Our shipping and payment terms", ship_col_shipping:"Shipping", ship_col_payment:"Payment", ship_col_return:"Return / Exchange", return_page_title:"Return & Exchange", return_page_sub:"Product return conditions", privacy_page_title:"Privacy Policy", privacy_page_sub:"Protection of your personal data", footer_privacy:"Privacy", footer_shipping:"Shipping & Payment", footer_return:"Returns", mobile_language:"Language", mobile_currency:"Currency", view_grid:"Grid", view_list:"List" },
-    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ", shipping_page_title:"Доставка и Оплата", shipping_page_sub:"Наши условия доставки и оплаты", ship_col_shipping:"Доставка", ship_col_payment:"Оплата", ship_col_return:"Возврат / Обмен", return_page_title:"Возврат и Обмен", return_page_sub:"Условия возврата товара", privacy_page_title:"Политика Конфиденциальности", privacy_page_sub:"Защита ваших персональных данных", footer_privacy:"Конфиденциальность", footer_shipping:"Доставка и Оплата", footer_return:"Возврат", mobile_language:"Язык", mobile_currency:"Валюта", view_grid:"Сетка", view_list:"Список" }
+    hy: { nav_home:"Գլխավոր", nav_shop:"Խանութ", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Ստեղծված", hero_title_em:"Նրանց համար", hero_sub:"Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:", btn_shop:"Դիտել հավաքածուն", cat_label:"Ոճը ըստ տեսակի", cat_title:"Մեր հավաքածուն", sneakers:"Սպորտային", loafers:"Կոշիկներ", select_size:"Ընտրել չափսը", order_wa:"Պատվիրել WhatsApp-ով", back:"← Վերադառնալ", reviews_title:"Մեկնաբանություններ", leave_review:"Թողնել մեկնաբանություն", your_name:"Ձեր անունը", your_review:"Ձեր մեկնաբանությունը", rating:"Գնահատական", submit_review:"Ուղարկել", no_reviews:"Դեռ մեկնաբանություններ չկան։ Եղեք առաջինը։", review_thanks:"Շնորհակալություն մեկնաբանության համար։", fill_all:"Լրացրեք բոլոր դաշտերը եւ ընտրեք գնահատական։", add_to_cart:"Ավելացնել զամբյուղում", cart_title:"Զամբյուղ", cart_empty:"Ձեր զամբյուղը դատարկ է", continue_shopping:"Շարունակել գնումները", subtotal:"Ենթագումար", shipping:"Առաքում", total:"Ընդհանուր", checkout:"Պատվիրել", checkout_title:"Պատվերի ձեւակերպում", full_name:"Անուն Ազգանուն", phone:"Հեռախոսահամար", email_opt:"Email (ոչ պարտադիր)", region:"Մարզ / Քաղաք", address:"Հասցե (փողոց, շենք, բնակարան)", notes:"Լրացուցիչ նշումներ", shipping_method:"Առաքման եղանակ", shipping_yerevan:"Առաքում Երեւանում", shipping_regions:"Առաքում մարզեր", pickup:"Ինքնուրույն վերցնել (խանութից)", payment_method:"Վճարման եղանակ", pay_on_delivery:"Վճարել ստանալիս", confirm_order:"Հաստատել պատվերը", order_summary:"Պատվերի ամփոփում", size:"Չափս", success_title:"Շնորհակալություն պատվերի համար", success_msg:"Ձեր պատվերը ընդունված է։ Մենք շուտով կկապվենք ձեզ հետ։", order_number:"Պատվերի համարը", back_home:"Վերադառնալ գլխավոր", added_to_cart:"Ավելացվեց զամբյուղում", select_size_first:"Նախ ընտրեք չափսը", fill_required:"Լրացրեք պարտադիր դաշտերը", login_signup:"Մուտք", login:"Մուտք", signup:"Գրանցում", email:"Email", password:"Գաղտնաբառ", or:"կամ", google_signin:"Մուտք Google-ով", my_account:"Իմ Էջը", my_profile:"Իմ տվյալները", my_orders:"Իմ պատվերները", my_wishlist:"Սիրված", logout:"Ելք", save_profile:"Պահպանել", profile_saved:"Տվյալները պահպանված են", no_orders:"Դեռ պատվերներ չեք կատարել", no_wishlist:"Սիրված ապրանքներ չկան", welcome_back:"Բարի վերադարձ", create_account:"Ստեղծեք անձնական էջ", pass_min:"Գաղտնաբառը պետք է լինի նվազագույնը 6 նիշ", invalid_email:"Սխալ email", email_used:"Այս email-ը արդեն օգտագործվում է", wrong_login:"Սխալ email կամ գաղտնաբառ", auth_error:"Մուտքի սխալ", discount:"Զեղչ", first_order_title:"Առաջին պատվերի զեղչ", first_order_msg:"Շնորհավոր, դուք ստանում եք ավտոմատ 20% զեղչ ձեր առաջին պատվերի համար", first_order_discount:"20% զեղչ առաջին պատվերին", shipping_page_title:"Առաքում եւ Վճարում", shipping_page_sub:"Մեր առաքման եւ վճարման պայմանները", ship_col_shipping:"Առաքում", ship_col_payment:"Վճարում", ship_col_return:"Վերադարձ / Փոխանակում", return_page_title:"Վերադարձ եւ Փոխանակում", return_page_sub:"Ապրանքի վերադարձի պայմանները", privacy_page_title:"Գաղտնիության Քաղաքականություն", privacy_page_sub:"Ձեր անձնական տվյալների պաշտպանությունը", footer_privacy:"Գաղտնիություն", footer_shipping:"Առաքում և Վճարում", footer_return:"Վերադարձ", mobile_language:"Լեզու", mobile_currency:"Արժույթ", view_grid:"Ցանց", view_list:"Ցուցակ", ship_car_title:"Առաքում մեքենայով", ship_car_desc:"ՀՀ տարածք՝ սկսած 1 000 ֏-ից (մինչեւ 5 կմ)", ship_post_title:"Փոստով առաքում (ՀայՓոստ)", ship_post_desc:"Մինչեւ 3 աշխատանքային օր", ship_intl_title:"Արտերկիր առաքում", ship_intl_desc:"Գինը կհաստատվի մենեջերի կողմից", ship_pickup_desc:"Սմբատ Զորավարի 11/1", calc_shipping:"Հաշվել առաքման արժեքը", calculating:"Հաշվում...", address_placeholder:"օր.՝ Մաշտոցի 15, Երեւան", address_not_found:"Հասցեն չգտնվեց։ Փորձեք ավելի կոնկրետ գրել", zone_yerevan:"Երեւան", zone_region:"Մարզ", distance:"Հեռավորություն", shipping_price:"Առաքման արժեք", car_shipping_info:"Մուտքագրեք ձեր հասցեն (ՀՀ տարածքում) եւ մեր համակարգը կհաշվարկի առաքման արժեքը", post_shipping_info:"Մուտքագրեք ստացողի տվյալները եւ ձեր փոստային ինդեքսի համարը։ Առաքումը կատարվում է ՀայՓոստով։", intl_shipping_info:"Ընտրեք երկիրը եւ մուտքագրեք ձեր հասցեն։ Առաքման արժեքը կհաստատվի մեր մենեջերի կողմից եւ կուղարկվի ձեր email-ին։", intl_warning:"Առաքման գինը կհաստատվի պատվերը ստանալուց հետո։ Մենք կկապվենք ձեզ հետ email-ով՝ վերջնական գումարը հաստատելու համար։", postal_index:"Փոստային ինդեքս", recipient_name:"Անուն Ազգանուն (ստացողի)", recipient_phone:"Հեռախոսահամար (ստացողի)", country:"Երկիր", full_address_intl:"Ամբողջ հասցե (քաղաք, փողոց, շենք, ZIP)", select_country:"-- Ընտրեք երկիրը --", to_calculate:"հաշվարկի", pending_quote:"հարցում", pending_confirm:"կհաստատվի", payment_info_title:"Վճարումը իրականացվում է միայն քարտային համակարգով։", payment_info_msg:"Մենք կկապվենք ձեզ հետ պատվերի մանրամասները ճշտելու եւ վճարման հետագա քայլերի համար։", cancel_order:"Չեղարկել պատվերը", request_return:"Վերադարձի հարցում", confirm_cancel:"Վստա՞հ եք, որ ցանկանում եք չեղարկել պատվերը", confirm_return:"Ուղարկել վերադարձի հարցում", return_info:"Վերադարձի համար բերեք կոշիկը խանութ 14 օրվա ընթացքում։ Գումարը կվերադարձվի նույն եղանակով։", return_requested:"Վերադարձի հարցումը ուղարկված է։ Մենք կկապվենք ձեզ հետ։", order_cancelled:"Պատվերը չեղարկված է։", status_new:"Նոր", status_confirmed:"Հաստատված", status_shipped:"Ուղարկված", status_delivered:"Առաքված", status_cancelled:"Չեղարկված", status_pending_price:"Սպասում գնին", status_return_requested:"Վերադարձի հարցում", status_returned:"Վերադարձված" },
+    en: { nav_home:"Home", nav_shop:"Shop", hero_eyebrow:"PREMIUM COLLECTION", hero_title:"Crafted for", hero_title_em:"Excellence", hero_sub:"Premium footwear. Sizes 39–44.", btn_shop:"View Collection", cat_label:"Shop by Category", cat_title:"Our Collection", sneakers:"Sneakers", loafers:"Loafers", select_size:"Select Size", order_wa:"Order via WhatsApp", back:"← Back", reviews_title:"Reviews", leave_review:"Leave a Review", your_name:"Your name", your_review:"Your review", rating:"Rating", submit_review:"Submit", no_reviews:"No reviews yet. Be the first!", review_thanks:"Thank you for your review!", fill_all:"Please fill all fields and select a rating.", add_to_cart:"Add to Cart", cart_title:"Shopping Cart", cart_empty:"Your cart is empty", continue_shopping:"Continue Shopping", subtotal:"Subtotal", shipping:"Shipping", total:"Total", checkout:"Checkout", checkout_title:"Checkout", full_name:"Full Name", phone:"Phone", email_opt:"Email (optional)", region:"Region / City", address:"Address (street, building, apt)", notes:"Additional notes", shipping_method:"Shipping method", shipping_yerevan:"Delivery in Yerevan", shipping_regions:"Delivery to regions", pickup:"Pickup from store", payment_method:"Payment method", pay_on_delivery:"Pay on delivery", confirm_order:"Confirm Order", order_summary:"Order Summary", size:"Size", success_title:"Thank you for your order!", success_msg:"Your order has been received. We will contact you soon.", order_number:"Order number", back_home:"Back to Home", added_to_cart:"Added to cart", select_size_first:"Please select a size first", fill_required:"Please fill required fields", login_signup:"Login", login:"Login", signup:"Sign Up", email:"Email", password:"Password", or:"or", google_signin:"Sign in with Google", my_account:"My Account", my_profile:"My Profile", my_orders:"My Orders", my_wishlist:"Wishlist", logout:"Logout", save_profile:"Save", profile_saved:"Profile saved", no_orders:"You have no orders yet", no_wishlist:"No wishlist items", welcome_back:"Welcome back", create_account:"Create your account", pass_min:"Password must be at least 6 characters", invalid_email:"Invalid email", email_used:"This email is already in use", wrong_login:"Wrong email or password", auth_error:"Authentication error", discount:"Discount", first_order_title:"First Order Discount", first_order_msg:"Congratulations, you get an automatic 20% discount on your first order", first_order_discount:"20% off first order", shipping_page_title:"Shipping & Payment", shipping_page_sub:"Our shipping and payment terms", ship_col_shipping:"Shipping", ship_col_payment:"Payment", ship_col_return:"Return / Exchange", return_page_title:"Return & Exchange", return_page_sub:"Product return conditions", privacy_page_title:"Privacy Policy", privacy_page_sub:"Protection of your personal data", footer_privacy:"Privacy", footer_shipping:"Shipping & Payment", footer_return:"Returns", mobile_language:"Language", mobile_currency:"Currency", view_grid:"Grid", view_list:"List", ship_car_title:"Car delivery", ship_car_desc:"Armenia: starting from 1,000 ֏ (up to 5 km)", ship_post_title:"Postal delivery (HayPost)", ship_post_desc:"Up to 3 business days", ship_intl_title:"International shipping", ship_intl_desc:"Price will be confirmed by manager", ship_pickup_desc:"Smbat Zoravar 11/1", calc_shipping:"Calculate shipping cost", calculating:"Calculating...", address_placeholder:"e.g., Mashtots 15, Yerevan", address_not_found:"Address not found. Try more specific", zone_yerevan:"Yerevan", zone_region:"Region", distance:"Distance", shipping_price:"Shipping cost", car_shipping_info:"Enter your address (in Armenia) and our system will calculate the shipping cost", post_shipping_info:"Enter recipient details and postal index number. Delivery via HayPost.", intl_shipping_info:"Select country and enter your address. Shipping cost will be confirmed by our manager and sent to your email.", intl_warning:"Shipping cost will be confirmed after receiving the order. We will contact you via email to confirm the final amount.", postal_index:"Postal index", recipient_name:"Recipient name", recipient_phone:"Recipient phone", country:"Country", full_address_intl:"Full address (city, street, building, ZIP)", select_country:"-- Select country --", to_calculate:"calculate", pending_quote:"quote", pending_confirm:"pending", payment_info_title:"Payment is made by card only.", payment_info_msg:"We will contact you to discuss order details and further payment steps.", cancel_order:"Cancel order", request_return:"Request return", confirm_cancel:"Are you sure you want to cancel this order?", confirm_return:"Send return request", return_info:"Bring the shoes to our store within 14 days. Refund will be made via the same method.", return_requested:"Return request sent. We will contact you.", order_cancelled:"Order cancelled.", status_new:"New", status_confirmed:"Confirmed", status_shipped:"Shipped", status_delivered:"Delivered", status_cancelled:"Cancelled", status_pending_price:"Pending price", status_return_requested:"Return requested", status_returned:"Returned" },
+    ru: { nav_home:"Главная", nav_shop:"Магазин", hero_eyebrow:"ПРЕМИУМ КОЛЛЕКЦИЯ", hero_title:"Создано для", hero_title_em:"Вас", hero_sub:"Обувь ручной работы, размеры 39–44.", btn_shop:"Посмотреть коллекцию", cat_label:"Стиль по типу", cat_title:"Наша коллекция", sneakers:"Кроссовки", loafers:"Лоферы", select_size:"Выберите размер", order_wa:"Заказать через WhatsApp", back:"← Назад", reviews_title:"Отзывы", leave_review:"Оставить отзыв", your_name:"Ваше имя", your_review:"Ваш отзыв", rating:"Оценка", submit_review:"Отправить", no_reviews:"Пока нет отзывов. Будьте первым!", review_thanks:"Спасибо за ваш отзыв!", fill_all:"Пожалуйста, заполните все поля и выберите оценку.", add_to_cart:"В корзину", cart_title:"Корзина", cart_empty:"Ваша корзина пуста", continue_shopping:"Продолжить покупки", subtotal:"Подитог", shipping:"Доставка", total:"Итого", checkout:"Оформить заказ", checkout_title:"Оформление заказа", full_name:"Имя и фамилия", phone:"Номер телефона", email_opt:"Email (необязательно)", region:"Регион / Город", address:"Адрес (улица, дом, квартира)", notes:"Дополнительные заметки", shipping_method:"Способ доставки", shipping_yerevan:"Доставка по Еревану", shipping_regions:"Доставка в регионы", pickup:"Самовывоз", payment_method:"Способ оплаты", pay_on_delivery:"Оплата при получении", confirm_order:"Подтвердить заказ", order_summary:"Сводка заказа", size:"Размер", success_title:"Спасибо за ваш заказ!", success_msg:"Ваш заказ принят. Мы скоро свяжемся с вами.", order_number:"Номер заказа", back_home:"На главную", added_to_cart:"Добавлено в корзину", select_size_first:"Сначала выберите размер", fill_required:"Заполните обязательные поля", login_signup:"Вход", login:"Вход", signup:"Регистрация", email:"Email", password:"Пароль", or:"или", google_signin:"Войти через Google", my_account:"Мой профиль", my_profile:"Мои данные", my_orders:"Мои заказы", my_wishlist:"Избранное", logout:"Выйти", save_profile:"Сохранить", profile_saved:"Данные сохранены", no_orders:"У вас пока нет заказов", no_wishlist:"Нет избранных товаров", welcome_back:"Рады видеть вас снова", create_account:"Создайте учетную запись", pass_min:"Пароль должен быть не менее 6 символов", invalid_email:"Неверный email", email_used:"Этот email уже используется", wrong_login:"Неверный email или пароль", auth_error:"Ошибка авторизации", discount:"Скидка", first_order_title:"Скидка на первый заказ", first_order_msg:"Поздравляем, вы получаете автоматическую скидку 20% на ваш первый заказ", first_order_discount:"20% скидка на первый заказ", shipping_page_title:"Доставка и Оплата", shipping_page_sub:"Наши условия доставки и оплаты", ship_col_shipping:"Доставка", ship_col_payment:"Оплата", ship_col_return:"Возврат / Обмен", return_page_title:"Возврат и Обмен", return_page_sub:"Условия возврата товара", privacy_page_title:"Политика Конфиденциальности", privacy_page_sub:"Защита ваших персональных данных", footer_privacy:"Конфиденциальность", footer_shipping:"Доставка и Оплата", footer_return:"Возврат", mobile_language:"Язык", mobile_currency:"Валюта", view_grid:"Сетка", view_list:"Список", ship_car_title:"Доставка машиной", ship_car_desc:"Армения: от 1 000 ֏ (до 5 км)", ship_post_title:"Почтовая доставка (АрмПочта)", ship_post_desc:"До 3 рабочих дней", ship_intl_title:"Международная доставка", ship_intl_desc:"Цена будет подтверждена менеджером", ship_pickup_desc:"Смбата Зоравара 11/1", calc_shipping:"Рассчитать стоимость", calculating:"Рассчитываю...", address_placeholder:"напр., Маштоца 15, Ереван", address_not_found:"Адрес не найден. Попробуйте конкретнее", zone_yerevan:"Ереван", zone_region:"Регион", distance:"Расстояние", shipping_price:"Стоимость доставки", car_shipping_info:"Введите ваш адрес (в Армении) и наша система рассчитает стоимость доставки", post_shipping_info:"Введите данные получателя и номер почтового индекса. Доставка АрмПочтой.", intl_shipping_info:"Выберите страну и введите ваш адрес. Стоимость доставки будет подтверждена нашим менеджером и отправлена вам на email.", intl_warning:"Стоимость доставки будет подтверждена после получения заказа. Мы свяжемся с вами по email для подтверждения окончательной суммы.", postal_index:"Почтовый индекс", recipient_name:"Имя Фамилия (получателя)", recipient_phone:"Телефон (получателя)", country:"Страна", full_address_intl:"Полный адрес (город, улица, дом, ZIP)", select_country:"-- Выберите страну --", to_calculate:"рассчитать", pending_quote:"запрос", pending_confirm:"ожидается", payment_info_title:"Оплата производится только банковской картой.", payment_info_msg:"Мы свяжемся с вами для уточнения деталей заказа и дальнейших шагов оплаты.", cancel_order:"Отменить заказ", request_return:"Запросить возврат", confirm_cancel:"Вы уверены, что хотите отменить заказ?", confirm_return:"Отправить запрос на возврат", return_info:"Принесите обувь в наш магазин в течение 14 дней. Сумма будет возвращена тем же способом.", return_requested:"Запрос на возврат отправлен. Мы свяжемся с вами.", order_cancelled:"Заказ отменён.", status_new:"Новый", status_confirmed:"Подтверждён", status_shipped:"Отправлен", status_delivered:"Доставлен", status_cancelled:"Отменён", status_pending_price:"Ожидает цены", status_return_requested:"Запрос возврата", status_returned:"Возвращён" }
   };
 
   const INFO_CONTENT = {
@@ -1735,11 +1921,73 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   // ============= CHECKOUT =============
 
+  // Shipping state variables
+  let carShippingPrice = null;    // Calculated car shipping price
+  let carShippingDist = null;     // Distance in km
+  let postalIndex = '';            // Postal code (e.g., 2301)
+  let postalRecipientName = '';    // Recipient name
+  let postalRecipientPhone = '';   // Recipient phone
+  let intlCountry = '';            // Selected international country
+  let intlAddress = '';            // International address typed
+
   function getShippingCost() {
-    if (checkoutShipping === 'yerevan') return 1500;
-    if (checkoutShipping === 'regions') return 1000;
+    if (checkoutShipping === 'car') return carShippingPrice || 0;
+    if (checkoutShipping === 'post') return 1000;
+    if (checkoutShipping === 'international') return 0; // Price TBD by admin
+    if (checkoutShipping === 'pickup') return 0;
     return 0;
   }
+
+  window.selShipping = (m) => {
+    checkoutShipping = m;
+    renderCheckoutPage();
+  };
+
+  window.changeCarAddress = () => {
+    const t = TRANSLATIONS[currentLang];
+    const input = document.getElementById('co-car-address');
+    if (!input) return;
+    const address = input.value.trim();
+    if (!address) {
+      alert(t.address_placeholder);
+      return;
+    }
+    const btn = document.getElementById('car-calc-btn');
+    const info = document.getElementById('car-calc-info');
+    btn.innerText = t.calculating;
+    btn.disabled = true;
+    info.innerText = '';
+    
+    calculateCarShipping(address).then(result => {
+      btn.innerText = t.calc_shipping;
+      btn.disabled = false;
+      if (!result) {
+        info.innerHTML = `<span style="color:#c33">❌ ${t.address_not_found}</span>`;
+        carShippingPrice = null;
+        carShippingDist = null;
+      } else {
+        carShippingPrice = result.price;
+        carShippingDist = result.distance;
+        let calcDetail;
+        const zone = result.inYerevan ? t.zone_yerevan : t.zone_region;
+        const kmLabel = currentLang === 'ru' ? 'км' : (currentLang === 'en' ? 'km' : 'կմ');
+        if (result.distance <= FREE_KM_THRESHOLD) {
+          calcDetail = `${t.distance} ≤ ${FREE_KM_THRESHOLD} ${kmLabel}: ${BASE_SHIPPING_COST.toLocaleString()} ֏`;
+        } else {
+          const extraKm = Math.ceil(result.distance - FREE_KM_THRESHOLD);
+          const ratePerKm = result.inYerevan ? COST_PER_KM_YEREVAN : COST_PER_KM_REGION;
+          calcDetail = `${zone}: ${BASE_SHIPPING_COST.toLocaleString()} ֏ (${FREE_KM_THRESHOLD} ${kmLabel}) + ${extraKm} × ${ratePerKm} ֏ = ${result.price.toLocaleString()} ֏`;
+        }
+        info.innerHTML = `<span style="color:#4a7c59">✓ ${zone} | ${t.distance}: <strong>${result.distance} ${kmLabel}</strong><br>${t.shipping_price}: <strong>${result.price.toLocaleString()} ֏</strong><br><span style="font-size:12px; color:var(--mid)">${calcDetail}</span></span>`;
+        renderCheckoutPage();
+      }
+    });
+  };
+
+  window.changeIntlCountry = () => {
+    const sel = document.getElementById('co-intl-country');
+    intlCountry = sel.value;
+  };
 
   function renderCheckoutPage() {
     const t = TRANSLATIONS[currentLang];
@@ -1752,7 +2000,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const subtotal = getCartSubtotal();
     const shippingCost = getShippingCost();
     
-    // Check first-order discount
     const firstOrderEligible = isEligibleForFirstOrderDiscount();
     const firstOrderDiscount = firstOrderEligible ? Math.round(subtotal * 0.20) : 0;
     
@@ -1769,6 +2016,59 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         <span style="font-size:12px; opacity:0.95">${t.first_order_msg}</span>
       </div>` : '';
 
+    // Car shipping UI
+    const carShippingUI = checkoutShipping === 'car' ? `
+      <div style="background:#f8f5f0; padding:15px; border-left:3px solid var(--accent); margin-top:10px">
+        <div style="font-size:13px; margin-bottom:10px; color:var(--mid)">${t.car_shipping_info}<br>• 0-${FREE_KM_THRESHOLD} ${t.zone_yerevan==='Երեւան'?'կմ':'km'}՝ <strong>${BASE_SHIPPING_COST.toLocaleString()} ֏</strong><br>• ${FREE_KM_THRESHOLD}+ ${t.zone_yerevan}՝ <strong>${COST_PER_KM_YEREVAN} ֏/${t.zone_yerevan==='Երեւան'?'կմ':'km'}</strong><br>• ${FREE_KM_THRESHOLD}+ ${t.zone_region}՝ <strong>${COST_PER_KM_REGION} ֏/${t.zone_yerevan==='Երեւան'?'կմ':'km'}</strong></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <input type="text" id="co-car-address" placeholder="${t.address_placeholder}" value="${escapeHtml(currentUserData?.address || '')}" style="flex:1; min-width:200px; padding:10px; border:1px solid var(--border); background:#fff; font-family:inherit">
+          <button id="car-calc-btn" onclick="window.changeCarAddress()" style="padding:10px 20px; background:var(--dark); color:#fff; border:none; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase">${t.calc_shipping}</button>
+        </div>
+        <div id="car-calc-info" style="margin-top:10px; font-size:13px; line-height:1.6"></div>
+      </div>
+    ` : '';
+
+    // Postal shipping UI - simple fields: index, name, phone
+    const postalUI = checkoutShipping === 'post' ? `
+      <div style="background:#f8f5f0; padding:15px; border-left:3px solid var(--accent); margin-top:10px">
+        <div style="font-size:13px; margin-bottom:12px; color:var(--mid)">${t.post_shipping_info}</div>
+        <div class="checkout-field" style="margin-bottom:10px">
+          <label>${t.postal_index} *</label>
+          <input type="text" id="co-post-index" placeholder="${currentLang==='hy'?'օր.՝ 2301':currentLang==='ru'?'напр., 2301':'e.g., 2301'}" value="${escapeHtml(postalIndex)}" maxlength="4" style="padding:10px; border:1px solid var(--border); background:#fff; font-family:inherit; width:100%">
+        </div>
+        <div class="checkout-field" style="margin-bottom:10px">
+          <label>${t.recipient_name} *</label>
+          <input type="text" id="co-post-name" value="${escapeHtml(postalRecipientName)}" style="padding:10px; border:1px solid var(--border); background:#fff; font-family:inherit; width:100%">
+        </div>
+        <div class="checkout-field">
+          <label>${t.recipient_phone} *</label>
+          <input type="tel" id="co-post-phone" placeholder="+374 XX XXX XXX" value="${escapeHtml(postalRecipientPhone)}" style="padding:10px; border:1px solid var(--border); background:#fff; font-family:inherit; width:100%">
+        </div>
+      </div>
+    ` : '';
+
+    // International shipping UI
+    const countryOpts = COUNTRIES.map(c => `<option value="${c}" ${intlCountry===c?'selected':''}>${c}</option>`).join('');
+    const intlUI = checkoutShipping === 'international' ? `
+      <div style="background:#f8f5f0; padding:15px; border-left:3px solid var(--accent); margin-top:10px">
+        <div style="font-size:13px; margin-bottom:10px; color:var(--mid)">${t.intl_shipping_info}</div>
+        <div class="checkout-field" style="margin-bottom:10px">
+          <label>${t.country} *</label>
+          <select id="co-intl-country" onchange="window.changeIntlCountry()">
+            <option value="">${t.select_country}</option>
+            ${countryOpts}
+          </select>
+        </div>
+        <div class="checkout-field">
+          <label>${t.full_address_intl} *</label>
+          <textarea id="co-intl-address" rows="3">${escapeHtml(intlAddress)}</textarea>
+        </div>
+        <div style="background:#fff8e6; padding:10px; border:1px solid #e0c880; margin-top:10px; font-size:12px; line-height:1.6; color:#8b6f47">
+          <strong>⚠️</strong> ${t.intl_warning}
+        </div>
+      </div>
+    ` : '';
+
     container.innerHTML = `
       ${firstOrderBanner}
       <div class="checkout-grid">
@@ -1783,48 +2083,51 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           </div>
         </div>
         <div class="checkout-field">
-          <label>${t.email_opt}</label>
-          <input type="email" id="co-email" value="${escapeHtml(currentUser?.email || '')}">
+          <label>${t.email_opt}${checkoutShipping === 'international' ? ' *' : ''}</label>
+          <input type="email" id="co-email" value="${escapeHtml(currentUser?.email || '')}" ${checkoutShipping === 'international' ? 'required' : ''}>
         </div>
         
         <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:22px; margin-top:15px">${t.shipping_method}</h3>
-        <div class="checkout-radio-group" id="shipping-group">
-          <label class="checkout-radio ${checkoutShipping==='yerevan'?'on':''}" onclick="window.selShipping('yerevan')">
-            <input type="radio" name="ship" value="yerevan" ${checkoutShipping==='yerevan'?'checked':''}>
+        <div class="checkout-radio-group">
+          <label class="checkout-radio ${checkoutShipping==='car'?'on':''}" onclick="window.selShipping('car')">
+            <input type="radio" name="ship" value="car" ${checkoutShipping==='car'?'checked':''}>
             <div class="checkout-radio-info">
-              <div class="checkout-radio-title">${t.shipping_yerevan}</div>
-              <div class="checkout-radio-desc">24 ժամվա ընթացքում</div>
+              <div class="checkout-radio-title">🚗 ${t.ship_car_title}</div>
+              <div class="checkout-radio-desc">${t.ship_car_desc}</div>
             </div>
-            <div class="checkout-radio-price">${formatPrice(1500)}</div>
+            <div class="checkout-radio-price">${carShippingPrice ? formatPrice(carShippingPrice) : t.to_calculate}</div>
           </label>
-          <label class="checkout-radio ${checkoutShipping==='regions'?'on':''}" onclick="window.selShipping('regions')">
-            <input type="radio" name="ship" value="regions" ${checkoutShipping==='regions'?'checked':''}>
+          ${carShippingUI}
+          
+          <label class="checkout-radio ${checkoutShipping==='post'?'on':''}" onclick="window.selShipping('post')">
+            <input type="radio" name="ship" value="post" ${checkoutShipping==='post'?'checked':''}>
             <div class="checkout-radio-info">
-              <div class="checkout-radio-title">${t.shipping_regions}</div>
-              <div class="checkout-radio-desc">մինչեւ 3 աշխատանքային օր</div>
+              <div class="checkout-radio-title">📮 ${t.ship_post_title}</div>
+              <div class="checkout-radio-desc">${t.ship_post_desc}</div>
             </div>
             <div class="checkout-radio-price">${formatPrice(1000)}</div>
           </label>
+          ${postalUI}
+          
+          <label class="checkout-radio ${checkoutShipping==='international'?'on':''}" onclick="window.selShipping('international')">
+            <input type="radio" name="ship" value="international" ${checkoutShipping==='international'?'checked':''}>
+            <div class="checkout-radio-info">
+              <div class="checkout-radio-title">✈️ ${t.ship_intl_title}</div>
+              <div class="checkout-radio-desc">${t.ship_intl_desc}</div>
+            </div>
+            <div class="checkout-radio-price" style="font-size:11px">${t.pending_quote}</div>
+          </label>
+          ${intlUI}
+          
           <label class="checkout-radio ${checkoutShipping==='pickup'?'on':''}" onclick="window.selShipping('pickup')">
             <input type="radio" name="ship" value="pickup" ${checkoutShipping==='pickup'?'checked':''}>
             <div class="checkout-radio-info">
-              <div class="checkout-radio-title">${t.pickup}</div>
-              <div class="checkout-radio-desc">Սմբատ Զորավարի 11/1, Ա65</div>
+              <div class="checkout-radio-title">🏪 ${t.pickup}</div>
+              <div class="checkout-radio-desc">${t.ship_pickup_desc}</div>
             </div>
             <div class="checkout-radio-price">${formatPrice(0)}</div>
           </label>
         </div>
-
-        ${checkoutShipping !== 'pickup' ? `
-        <div class="checkout-field">
-          <label>${t.region} *</label>
-          <input type="text" id="co-region" value="${escapeHtml(currentUserData?.region || '')}" required>
-        </div>
-        <div class="checkout-field">
-          <label>${t.address} *</label>
-          <input type="text" id="co-address" value="${escapeHtml(currentUserData?.address || '')}" required>
-        </div>
-        ` : ''}
 
         <div class="checkout-field">
           <label>${t.notes}</label>
@@ -1832,6 +2135,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         </div>
 
         <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:22px; margin-top:15px">${t.payment_method}</h3>
+        ${(checkoutShipping === 'post' || checkoutShipping === 'international') ? `
+        <div style="background:#fff8e6; padding:15px; border:1px solid #e0c880; font-size:13px; line-height:1.7; color:#8b6f47">
+          <strong>💳 ${t.payment_info_title}</strong><br>
+          ${t.payment_info_msg}
+        </div>
+        ` : `
         <div class="checkout-radio-group">
           <label class="checkout-radio on">
             <input type="radio" name="pay" value="cod" checked>
@@ -1840,14 +2149,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             </div>
           </label>
         </div>
+        `}
 
         <div class="checkout-summary">
           <h3>${t.order_summary}</h3>
           ${itemsHTML}
           <div class="checkout-sum-row"><span>${t.subtotal}</span><span>${formatPrice(subtotal)}</span></div>
           ${firstOrderEligible ? `<div class="checkout-sum-row" style="color:#c33"><span>${t.first_order_discount}</span><span>−${formatPrice(firstOrderDiscount)}</span></div>` : ''}
-          <div class="checkout-sum-row"><span>${t.shipping}</span><span>${formatPrice(shippingCost)}</span></div>
-          <div class="checkout-sum-row grand"><span>${t.total}</span><span>${formatPrice(total)}</span></div>
+          ${checkoutShipping === 'international' 
+            ? `<div class="checkout-sum-row"><span>${t.shipping}</span><span style="color:var(--mid); font-size:12px">${t.pending_confirm}</span></div>`
+            : `<div class="checkout-sum-row"><span>${t.shipping}</span><span>${formatPrice(shippingCost)}</span></div>`}
+          <div class="checkout-sum-row grand"><span>${t.total}</span><span>${checkoutShipping === 'international' ? formatPrice(subtotal - firstOrderDiscount) + ' + ' + t.shipping.toLowerCase() : formatPrice(total)}</span></div>
         </div>
 
         <button class="cart-checkout-btn" onclick="window.submitOrder()">${t.confirm_order}</button>
@@ -1879,17 +2191,62 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const name = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email')?.value.trim() || (currentUser?.email || '');
-    const region = document.getElementById('co-region')?.value.trim() || '';
-    const address = document.getElementById('co-address')?.value.trim() || '';
     const notes = document.getElementById('co-notes')?.value.trim() || '';
 
     if (!name || !phone) {
       alert(t.fill_required);
       return;
     }
-    if (checkoutShipping !== 'pickup' && (!region || !address)) {
-      alert(t.fill_required);
-      return;
+
+    // Validate shipping method specific fields
+    let shippingDetails = {};
+    if (checkoutShipping === 'car') {
+      if (!carShippingPrice) {
+        alert("Մուտքագրեք հասցեն եւ սեղմեք «Հաշվել առաքման արժեքը»");
+        return;
+      }
+      const carAddr = document.getElementById('co-car-address')?.value.trim() || '';
+      shippingDetails = { 
+        method: 'car', 
+        address: carAddr, 
+        distance: carShippingDist || 0,
+        baseShippingCost: BASE_SHIPPING_COST,
+        freeKmThreshold: FREE_KM_THRESHOLD
+      };
+    } else if (checkoutShipping === 'post') {
+      // Read current values from inputs
+      postalIndex = document.getElementById('co-post-index')?.value.trim() || '';
+      postalRecipientName = document.getElementById('co-post-name')?.value.trim() || '';
+      postalRecipientPhone = document.getElementById('co-post-phone')?.value.trim() || '';
+      
+      if (!postalIndex || !postalRecipientName || !postalRecipientPhone) {
+        alert("Լրացրեք փոստային ինդեքսը, անուն ազգանունը եւ հեռախոսահամարը");
+        return;
+      }
+      shippingDetails = { 
+        method: 'post', 
+        postalIndex: postalIndex,
+        recipientName: postalRecipientName,
+        recipientPhone: postalRecipientPhone
+      };
+    } else if (checkoutShipping === 'international') {
+      const intlAddr = document.getElementById('co-intl-address')?.value.trim() || '';
+      if (!intlCountry || !intlAddr) {
+        alert("Ընտրեք երկիրը եւ մուտքագրեք հասցեն");
+        return;
+      }
+      if (!email) {
+        alert("Email-ը պարտադիր է արտերկիր առաքման համար");
+        return;
+      }
+      shippingDetails = { 
+        method: 'international', 
+        country: intlCountry, 
+        address: intlAddr, 
+        priceStatus: 'pending' 
+      };
+    } else if (checkoutShipping === 'pickup') {
+      shippingDetails = { method: 'pickup' };
     }
 
     const subtotal = getCartSubtotal();
@@ -1901,7 +2258,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const orderData = {
       orderNumber: orderNum,
       userId: currentUser?.uid || null,
-      customer: { name, phone, email, region, address, notes },
+      customer: { name, phone, email, notes },
       items: CART.map(c => ({
         productId: c.productId,
         name_hy: c.name_hy,
@@ -1914,10 +2271,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       subtotal: subtotal,
       firstOrderDiscount: firstOrderDiscount,
       shippingMethod: checkoutShipping,
+      shippingDetails: shippingDetails,
       shippingCost: shippingCost,
-      paymentMethod: 'cod',
+      paymentMethod: (checkoutShipping === 'post' || checkoutShipping === 'international') ? 'card_pending' : 'cod',
       total: subtotal - firstOrderDiscount + shippingCost,
-      status: 'new',
+      status: checkoutShipping === 'international' ? 'pending_price' : 'new',
       createdAt: serverTimestamp()
     };
 
@@ -1948,16 +2306,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         }
       }
       
-      // Save address to user profile if logged in
-      if (currentUser && currentUserData && checkoutShipping !== 'pickup') {
+      // Save name/phone to user profile if logged in
+      if (currentUser && currentUserData) {
         try {
-          await updateDoc(doc(db, "users", currentUser.uid), {
-            name: name,
-            phone: phone,
-            region: region,
-            address: address
-          });
-          Object.assign(currentUserData, { name, phone, region, address });
+          const updateData = { name: name, phone: phone };
+          await updateDoc(doc(db, "users", currentUser.uid), updateData);
+          Object.assign(currentUserData, updateData);
         } catch(e){}
       }
       document.getElementById('success-order-num').innerText = orderNum;
@@ -2009,7 +2363,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       confirmed: 'Հաստատված',
       shipped: 'Ուղարկված',
       delivered: 'Առաքված',
-      cancelled: 'Չեղարկված'
+      cancelled: 'Չեղարկված',
+      pending_price: 'Սպասում գնին',
+      return_requested: 'Վերադարձի հարցում',
+      returned: 'Վերադարձված'
     };
     const filtered = currentOrderFilter === 'all' 
       ? ORDERS 
@@ -2022,13 +2379,53 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
     list.innerHTML = filtered.map(o => {
       const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('hy-AM') : '';
-      const shipLabel = o.shippingMethod === 'yerevan' ? 'Երեւան' : (o.shippingMethod === 'regions' ? 'Մարզ' : 'Ինքնուրույն վերցնում');
+      const sd = o.shippingDetails || {};
+      
+      // Determine shipping label and address based on method
+      let shipLabel = '';
+      let addressLine = '';
+      if (o.shippingMethod === 'car') {
+        shipLabel = `🚗 Մեքենայով (${sd.distance || '?'} կմ)`;
+        addressLine = sd.address || '(հին պատվեր)';
+      } else if (o.shippingMethod === 'post') {
+        shipLabel = '📮 ՀայՓոստով';
+        const recipName = sd.recipientName || '';
+        const recipPhone = sd.recipientPhone || '';
+        addressLine = `Ինդեքս: ${sd.postalIndex || '?'}${recipName ? '<br>Ստացող: ' + recipName : ''}${recipPhone ? '<br>Ստացողի հեռ.: ' + recipPhone : ''}`;
+      } else if (o.shippingMethod === 'international') {
+        shipLabel = `✈️ Արտերկիր (${sd.country || ''})`;
+        addressLine = sd.address || '';
+      } else if (o.shippingMethod === 'pickup') {
+        shipLabel = '🏪 Ինքնուրույն վերցնում';
+        addressLine = 'Խանութից';
+      } else if (o.shippingMethod === 'yerevan') {
+        // Old format backward compat
+        shipLabel = 'Երեւան (հին)';
+        addressLine = `${(o.customer||{}).region || ''}, ${(o.customer||{}).address || ''}`;
+      } else if (o.shippingMethod === 'regions') {
+        shipLabel = 'Մարզ (հին)';
+        addressLine = `${(o.customer||{}).region || ''}, ${(o.customer||{}).address || ''}`;
+      } else {
+        shipLabel = o.shippingMethod || '';
+        addressLine = `${(o.customer||{}).region || ''}, ${(o.customer||{}).address || ''}`.trim();
+      }
+      
       const itemsHTML = (o.items || []).map(it => 
         `<div class="order-item-row"><span>${it.name_hy} (չ.${it.size}) × ${it.qty}</span><span>${(it.price * it.qty).toLocaleString()} ֏</span></div>`
       ).join('');
       const customer = o.customer || {};
       const phoneDigits = (customer.phone || '').replace(/\D/g, '');
-      const addressLine = o.shippingMethod === 'pickup' ? 'Ինքնուրույն կվերցնի խանութից' : `${customer.region || ''}, ${customer.address || ''}`;
+      
+      // International order with pending price: show input
+      const intlPendingBox = (o.shippingMethod === 'international' && sd.priceStatus === 'pending') ? `
+        <div style="background:#fff8e6; padding:12px; border:2px solid #e0c880; margin:10px 0; border-radius:4px">
+          <div style="font-size:12px; color:#8b6f47; margin-bottom:8px; font-weight:600">⚠️ Արտերկիր պատվեր - հաստատեք առաքման գինը</div>
+          <div style="display:flex; gap:8px">
+            <input type="number" id="intl-price-${o.id}" placeholder="Առաքման գին (֏)" style="flex:1; padding:8px; border:1px solid #ccc">
+            <button onclick="window.confirmIntlPrice('${o.id}')" style="padding:8px 15px; background:#8b6f47; color:#fff; border:none; cursor:pointer; font-family:inherit">Հաստատել</button>
+          </div>
+        </div>
+      ` : '';
       
       return `
         <div class="order-card status-${o.status || 'new'}">
@@ -2047,19 +2444,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             🚚 ${shipLabel}
             ${customer.notes ? '<br>📝 ' + customer.notes : ''}
           </div>
+          ${intlPendingBox}
           <div class="order-items">${itemsHTML}</div>
           <div class="order-totals">
             <div>Ենթագումար: ${(o.subtotal || 0).toLocaleString()} ֏</div>
             ${o.firstOrderDiscount && o.firstOrderDiscount > 0 ? `<div style="color:#c33">Առաջին պատվերի զեղչ (20%): −${o.firstOrderDiscount.toLocaleString()} ֏</div>` : ''}
-            <div>Առաքում: ${(o.shippingCost || 0).toLocaleString()} ֏</div>
+            <div>Առաքում: ${o.shippingMethod === 'international' && sd.priceStatus === 'pending' ? '<em style="color:#c33">կհաստատվի</em>' : (o.shippingCost || 0).toLocaleString() + ' ֏'}</div>
             <div class="grand">Ընդհանուր: ${(o.total || 0).toLocaleString()} ֏</div>
           </div>
           <div class="order-actions">
+            ${o.status === 'new' ? `<button onclick="window.confirmOrder('${o.id}')" style="background:#4a7c59; color:#fff; border:none; padding:10px 18px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600">✓ Հաստատել պատվերը</button>` : ''}
+            ${o.status === 'return_requested' ? `<button onclick="window.confirmReturn('${o.id}')" style="background:#e67e22; color:#fff; border:none; padding:10px 18px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600">✓ Հաստատել վերադարձը</button>` : ''}
             <select onchange="window.updateOrderStatus('${o.id}', this.value)">
               <option value="new" ${o.status==='new'?'selected':''}>Նոր</option>
+              <option value="pending_price" ${o.status==='pending_price'?'selected':''}>Սպասում գնին</option>
               <option value="confirmed" ${o.status==='confirmed'?'selected':''}>Հաստատված</option>
               <option value="shipped" ${o.status==='shipped'?'selected':''}>Ուղարկված</option>
               <option value="delivered" ${o.status==='delivered'?'selected':''}>Առաքված</option>
+              <option value="return_requested" ${o.status==='return_requested'?'selected':''}>Վերադարձի հարցում</option>
+              <option value="returned" ${o.status==='returned'?'selected':''}>Վերադարձված</option>
               <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Չեղարկված</option>
             </select>
             <a class="order-wa-btn" href="https://wa.me/${phoneDigits}?text=${encodeURIComponent('Ողջույն, ձեր պատվերի համար ' + (o.orderNumber||''))}" target="_blank">💬 WhatsApp</a>
@@ -2069,15 +2472,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }).join('');
   }
 
+  window.confirmIntlPrice = async (orderId) => {
+    const input = document.getElementById('intl-price-' + orderId);
+    const price = parseInt(input.value) || 0;
+    if (price <= 0) {
+      alert("Մուտքագրեք ճիշտ գին");
+      return;
+    }
+    const order = ORDERS.find(o => o.id === orderId);
+    if (!order) return;
+    const newTotal = (order.subtotal || 0) - (order.firstOrderDiscount || 0) + price;
+    try {
+      const newShippingDetails = { ...(order.shippingDetails || {}), priceStatus: 'confirmed' };
+      await updateDoc(doc(db, "orders", orderId), {
+        shippingCost: price,
+        shippingDetails: newShippingDetails,
+        total: newTotal,
+        status: 'new'
+      });
+      alert("Գինը հաստատված է։ Կապվեք հաճախորդի հետ, որ հաստատի։");
+    } catch(e) { alert("Սխալ: " + e.message); }
+  };
+
   window.updateOrderStatus = async (id, status) => {
     try {
       const order = ORDERS.find(o => o.id === id);
-      const wasNotCancelled = order && order.status !== 'cancelled';
+      const wasActive = order && order.status !== 'cancelled' && order.status !== 'returned';
       
       await updateDoc(doc(db, "orders", id), { status });
       
-      // If newly cancelled, restore stock
-      if (status === 'cancelled' && wasNotCancelled && order && order.items) {
+      // If newly cancelled or returned, restore stock
+      if ((status === 'cancelled' || status === 'returned') && wasActive && order && order.items) {
         for (const item of order.items) {
           try {
             const product = PRODUCTS.find(p => p.id === item.productId);
@@ -2099,6 +2524,53 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         }
       }
     } catch(e) { alert("Սխալ"); }
+  };
+
+  // Admin confirms a new order (changes status from "new" to "confirmed")
+  window.confirmOrder = async (orderId) => {
+    if (!confirm("Հաստատել այս պատվերը։ Հետո հաճախորդը չի կարող չեղարկել։")) return;
+    try {
+      await updateDoc(doc(db, "orders", orderId), { 
+        status: 'confirmed',
+        confirmedAt: serverTimestamp()
+      });
+    } catch(e) { alert("Սխալ: " + e.message); }
+  };
+
+  // Admin confirms return (product returned, refund given, stock restored)
+  window.confirmReturn = async (orderId) => {
+    if (!confirm("Հաստատել վերադարձը։ Կոշիկը վերադառնում է պահեստ, գումարը վերադարձվում է հաճախորդին։")) return;
+    
+    const order = ORDERS.find(o => o.id === orderId);
+    if (!order) return;
+    
+    try {
+      await updateDoc(doc(db, "orders", orderId), { 
+        status: 'returned',
+        returnedAt: serverTimestamp()
+      });
+      
+      // Restore stock for returned items
+      for (const item of (order.items || [])) {
+        try {
+          const product = PRODUCTS.find(p => p.id === item.productId);
+          if (product) {
+            let currentStock = {};
+            if (product.sizesStock && typeof product.sizesStock === 'object') {
+              currentStock = { ...product.sizesStock };
+            } else {
+              [39,40,41,42,43,44].forEach(s => { currentStock[s] = 4; });
+            }
+            const sizeNum = parseInt(item.size);
+            const qtyOrdered = item.qty || 1;
+            currentStock[sizeNum] = (currentStock[sizeNum] || 0) + qtyOrdered;
+            await updateDoc(doc(db, "products", item.productId), { sizesStock: currentStock });
+          }
+        } catch(stockErr) {
+          console.error('Stock restore error:', stockErr);
+        }
+      }
+    } catch(e) { alert("Սխալ: " + e.message); }
   };
 
   window.deleteOrder = async (id) => {
@@ -2429,21 +2901,51 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       if (myOrders.length === 0) {
         container.innerHTML = `<p style="text-align:center; padding:40px; color:var(--mid)">${t.no_orders}</p>`;
       } else {
-        const statusLabels = { new:'Նոր', confirmed:'Հաստատված', shipped:'Ուղարկված', delivered:'Առաքված', cancelled:'Չեղարկված' };
+        const statusLabels = { 
+          new: t.status_new, 
+          confirmed: t.status_confirmed, 
+          shipped: t.status_shipped, 
+          delivered: t.status_delivered, 
+          cancelled: t.status_cancelled,
+          pending_price: t.status_pending_price,
+          return_requested: t.status_return_requested,
+          returned: t.status_returned
+        };
         container.innerHTML = myOrders.map(o => {
           const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('hy-AM') : '';
-          const items = (o.items || []).map(it => `${it.name_hy} (${t.size} ${it.size}) × ${it.qty}`).join(', ');
+          const orderDate = o.createdAt?.toDate ? o.createdAt.toDate() : new Date();
+          const daysSinceOrder = Math.floor((new Date() - orderDate) / (1000 * 60 * 60 * 24));
+          const items = (o.items || []).map(it => `${it['name_'+currentLang] || it.name_hy} (${t.size} ${it.size}) × ${it.qty}`).join(', ');
+          
+          // Status color
+          const statusColor = o.status==='delivered'?'#4caf50':o.status==='shipped'?'#f5a623':o.status==='confirmed'?'#3a7bd5':(o.status==='cancelled'||o.status==='returned')?'#999':o.status==='return_requested'?'#e67e22':'#c33';
+          
+          // Can cancel: only if status is still "new" (not confirmed by admin yet)
+          const canCancel = o.status === 'new' || o.status === 'pending_price';
+          // Can request return: only if delivered AND within 14 days AND not already requested/returned
+          const canReturn = o.status === 'delivered' && daysSinceOrder <= 14;
+          
+          let actionBtns = '';
+          if (canCancel) {
+            actionBtns += `<button onclick="window.cancelMyOrder('${o.id}')" style="background:#c33; color:#fff; border:none; padding:8px 15px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-right:8px">✕ ${t.cancel_order}</button>`;
+          }
+          if (canReturn) {
+            actionBtns += `<button onclick="window.requestMyReturn('${o.id}')" style="background:#e67e22; color:#fff; border:none; padding:8px 15px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase">↩ ${t.request_return}</button>`;
+          }
+          
           return `
-            <div class="user-order-card status-${o.status||'new'}" style="border-left:4px solid ${o.status==='delivered'?'#4caf50':o.status==='shipped'?'#f5a623':o.status==='confirmed'?'#3a7bd5':o.status==='cancelled'?'#999':'#c33'}">
+            <div class="user-order-card status-${o.status||'new'}" style="border-left:4px solid ${statusColor}; padding:15px; margin-bottom:15px; background:#fff">
               <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px">
                 <div>
-                  <div class="order-num">${o.orderNumber || o.id}</div>
+                  <div class="order-num" style="font-weight:600">${o.orderNumber || o.id}</div>
                   <div style="font-size:12px; color:var(--mid)">${dateStr}</div>
                 </div>
-                <span class="order-status-badge" style="background:${o.status==='delivered'?'#4caf50':o.status==='shipped'?'#f5a623':o.status==='confirmed'?'#3a7bd5':o.status==='cancelled'?'#999':'#c33'}; color:#fff">${statusLabels[o.status]||o.status}</span>
+                <span class="order-status-badge" style="background:${statusColor}; color:#fff; padding:5px 12px; font-size:11px; letter-spacing:1px">${statusLabels[o.status]||o.status}</span>
               </div>
-              <div class="user-order-items">${items}</div>
+              <div class="user-order-items" style="margin-top:10px; font-size:13px; color:var(--dark)">${items}</div>
               <div style="margin-top:10px; font-weight:600; color:var(--accent)">${(o.total||0).toLocaleString()} ֏</div>
+              ${actionBtns ? `<div style="margin-top:12px">${actionBtns}</div>` : ''}
+              ${canReturn ? `<div style="margin-top:10px; font-size:12px; color:var(--mid); line-height:1.5">${t.return_info}</div>` : ''}
             </div>`;
         }).join('');
       }
@@ -2486,6 +2988,68 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       updateUserNav();
       alert(t.profile_saved);
     } catch(e) { alert("Սխալ"); }
+  };
+
+  // Customer cancels their own order
+  window.cancelMyOrder = async (orderId) => {
+    const t = TRANSLATIONS[currentLang];
+    if (!confirm(t.confirm_cancel)) return;
+    
+    const order = ORDERS.find(o => o.id === orderId);
+    if (!order) return;
+    
+    // Only allow if status is still "new" or "pending_price"
+    if (order.status !== 'new' && order.status !== 'pending_price') {
+      alert("Պատվերը այլեւս չի կարող չեղարկվել հաճախորդի կողմից");
+      return;
+    }
+    
+    try {
+      await updateDoc(doc(db, "orders", orderId), { 
+        status: 'cancelled',
+        cancelledBy: 'customer',
+        cancelledAt: serverTimestamp()
+      });
+      
+      // Restore stock for each item in the order
+      for (const item of (order.items || [])) {
+        try {
+          const product = PRODUCTS.find(p => p.id === item.productId);
+          if (product) {
+            let currentStock = {};
+            if (product.sizesStock && typeof product.sizesStock === 'object') {
+              currentStock = { ...product.sizesStock };
+            } else {
+              [39,40,41,42,43,44].forEach(s => { currentStock[s] = 4; });
+            }
+            const sizeNum = parseInt(item.size);
+            const qtyOrdered = item.qty || 1;
+            currentStock[sizeNum] = (currentStock[sizeNum] || 0) + qtyOrdered;
+            await updateDoc(doc(db, "products", item.productId), { sizesStock: currentStock });
+          }
+        } catch(stockErr) {
+          console.error('Stock restore error:', stockErr);
+        }
+      }
+      
+      alert(t.order_cancelled);
+      renderAccountPage();
+    } catch(e) { alert("Սխալ: " + e.message); }
+  };
+
+  // Customer requests a return
+  window.requestMyReturn = async (orderId) => {
+    const t = TRANSLATIONS[currentLang];
+    if (!confirm(t.confirm_return + '\n\n' + t.return_info)) return;
+    
+    try {
+      await updateDoc(doc(db, "orders", orderId), { 
+        status: 'return_requested',
+        returnRequestedAt: serverTimestamp()
+      });
+      alert(t.return_requested);
+      renderAccountPage();
+    } catch(e) { alert("Սխալ: " + e.message); }
   };
 
   window.toggleWishlist = async (prodId) => {
