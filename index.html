@@ -303,6 +303,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 .size-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 25px 0 35px; max-width: 400px; }
 .sz { border: 1px solid var(--border); padding: 12px 0; text-align: center; cursor: pointer; font-size: 14px; }
 .sz.on { background: var(--dark); color: white; border-color: var(--dark); }
+.sz.unavailable { background: #f0ece6; color: #bbb; cursor: not-allowed; opacity: 0.5; position: relative; }
+.sz.unavailable:hover { background: #f0ece6; }
+
+/* ADMIN ՉԱՓՍԵՐԻ ԲԱԺԻՆ */
+.adm-sizes-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 5px; }
+.adm-sz-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.adm-sz-label { font-size: 13px; font-weight: 600; color: var(--dark); }
+.adm-sz-qty { width: 100%; padding: 8px 4px; text-align: center; font-size: 14px; border: 1px solid var(--border); background: #fff; font-family: inherit; }
+.adm-sz-qty:focus { outline: none; border-color: var(--accent); }
+.adm-sz-qty.zero { background: #f5f1eb; color: var(--mid); }
 
 .btn-wa { background: #25D366; color: #fff; padding: 18px 30px; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; }
 .control-btn{background:transparent;border:1px solid var(--border);padding:5px 10px;cursor:pointer;font-size:10px}
@@ -521,10 +531,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 <div class="pg on" id="pg-home">
   <div class="hero">
     <div class="hero-l">
-      <p class="hero-eyebrow" data-key="hero_eyebrow">PREMIUM COLLECTION</p>
-      <h1 class="hero-h1"><span data-key="hero_title">Ստեղծված</span> <em data-key="hero_title_em">Նրանց համար</em></h1>
-      <p class="hero-sub" data-key="hero_sub">Պրեմիում կոշիկներ: Բարձրակարգ արհեստ, 39–44 չափսեր:</p>
-      <button class="btn-wa" style="background:var(--accent)" onclick="go('cat')" data-key="btn_shop">Դիտել հավաքածուն</button>
+      <p class="hero-eyebrow">PREMIUM COLLECTION</p>
+      <h1 class="hero-h1"><span>Crafted for</span> <em>Excellence</em></h1>
+      <button class="btn-wa" style="background:var(--accent)" onclick="go('cat')">VIEW COLLECTION</button>
     </div>
     <div class="hero-r"><img id="hero-main-img" src=""></div>
   </div>
@@ -665,6 +674,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
                 <input type="number" id="adm-discount" placeholder="% զեղչ" min="0" max="99">
             </div>
             <div style="font-size:10px; color:var(--mid); margin-top:5px">Զեղչ դաշտը թողեք դատարկ՝ առանց զեղչի</div>
+        </div>
+        <div class="admin-input-group">
+            <label>Չափսեր եւ քանակներ</label>
+            <div class="adm-sizes-grid" id="adm-sizes-grid"></div>
+            <div style="font-size:10px; color:var(--mid); margin-top:5px">Մուտքագրեք ամեն չափսի առկա քանակը (զույգերի թիվ)։ 0 նշանակում է չկա։ Հաճախորդը պատվիրելիս՝ քանակը ինքնաբար նվազում է, պատվերի չեղարկման դեպքում՝ ետ ավելանում է։</div>
         </div>
         <div class="admin-input-group"><label>Ինֆո (HY)</label><textarea id="adm-desc-hy"></textarea></div>
         <div class="admin-input-group"><label>Անուն (EN)</label><input type="text" id="adm-name-en"></div>
@@ -1081,9 +1095,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     updateUserNav();
     renderInfoPages();
     if (PRODUCTS.length > 0) {
-        const lastProd = PRODUCTS[PRODUCTS.length - 1];
-        const imgs = getProductImages(lastProd);
-        if (imgs[0]) document.getElementById('hero-main-img').src = imgs[0];
+        // Collect all images from all products
+        const allImages = [];
+        PRODUCTS.forEach(p => {
+          const imgs = getProductImages(p);
+          imgs.forEach(img => { if (img) allImages.push(img); });
+        });
+        if (allImages.length > 0) {
+          const randomImg = allImages[Math.floor(Math.random() * allImages.length)];
+          document.getElementById('hero-main-img').src = randomImg;
+        }
     }
     renderCategoryGrids();
     if(currentCategory) renderShop(currentCategory);
@@ -1213,7 +1234,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         ${hasDiscount(p) ? `<div style="margin-top:10px"><span class="discount-badge">-${p.discount}% ${t.discount}</span></div>` : ''}
         <div style="font-size:28px; margin:20px 0">${formatPriceBlock(p, '28px')}</div>
         <p style="text-transform:uppercase; font-size:11px; color:var(--mid)">${t.select_size}</p>
-        <div class="size-grid">${[39,40,41,42,43,44].map(s => `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`).join('')}</div>
+        <div class="size-grid">${[39,40,41,42,43,44].map(s => {
+          // Determine if size is available based on stock
+          let isAvailable = true;
+          if (p.sizesStock && typeof p.sizesStock === 'object') {
+            isAvailable = (p.sizesStock[s] || 0) > 0;
+          } else if (p.availableSizes && Array.isArray(p.availableSizes) && p.availableSizes.length > 0) {
+            // Backward compat with old format
+            isAvailable = p.availableSizes.includes(s);
+          }
+          if (!isAvailable) {
+            return `<div class="sz unavailable" title="Չկա առկա" onclick="event.preventDefault(); return false;">${s}</div>`;
+          }
+          return `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`;
+        }).join('')}</div>
         <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_hy'] || ''}</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <button class="btn-wa" onclick="window.orderWA()">${t.order_wa}</button>
@@ -1410,6 +1444,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       name_ru: document.getElementById('adm-name-ru').value || name_hy,
       price: price,
       discount: discount,
+      sizesStock: { ...admSizesStock },
       desc_hy: document.getElementById('adm-desc-hy').value
     };
 
@@ -1440,6 +1475,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('adm-cat').value = p.cat;
     admImagesArr = getProductImages(p).slice();
     renderAdmImagesPreview();
+    // Load sizesStock - support both new (sizesStock object) and old format (availableSizes array)
+    if (p.sizesStock && typeof p.sizesStock === 'object') {
+      admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0, ...p.sizesStock };
+    } else if (p.availableSizes && Array.isArray(p.availableSizes)) {
+      // Old format: convert array to object with 4 each
+      admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0 };
+      p.availableSizes.forEach(s => { admSizesStock[s] = 4; });
+    } else {
+      admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+    }
+    renderAdmSizes();
     document.getElementById('adm-main-btn').innerText = "ՊԱՀՊԱՆԵԼ";
     document.getElementById('admin-panel').scrollIntoView({behavior: 'smooth'});
   };
@@ -1464,9 +1510,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('file-size-info').innerText = '';
     admImagesArr = [];
     renderAdmImagesPreview();
+    admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+    renderAdmSizes();
     editId = null;
     document.getElementById('adm-main-btn').innerText = "ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ";
   }
+
+  let admSizesStock = { 39: 4, 40: 4, 41: 4, 42: 4, 43: 4, 44: 4 };
+
+  function renderAdmSizes() {
+    const grid = document.getElementById('adm-sizes-grid');
+    if (!grid) return;
+    grid.innerHTML = [39,40,41,42,43,44].map(s => {
+      const qty = admSizesStock[s] || 0;
+      return `<div class="adm-sz-cell">
+        <span class="adm-sz-label">${s}</span>
+        <input type="number" class="adm-sz-qty ${qty === 0 ? 'zero' : ''}" 
+               id="adm-sz-${s}" value="${qty}" min="0" 
+               onchange="window.updateAdmSize(${s}, this.value)" 
+               oninput="window.updateAdmSize(${s}, this.value)">
+      </div>`;
+    }).join('');
+  }
+
+  window.updateAdmSize = (s, val) => {
+    const n = parseInt(val) || 0;
+    admSizesStock[s] = n < 0 ? 0 : n;
+    const input = document.getElementById('adm-sz-' + s);
+    if (input) {
+      if (admSizesStock[s] === 0) input.classList.add('zero');
+      else input.classList.remove('zero');
+    }
+  };
 
   let admImagesArr = [];
 
@@ -1523,7 +1598,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   document.getElementById('admin-trigger').onclick = () => {
     tapCount++;
     if(tapCount === 3) { 
-        if(prompt("Password") === "vika1998areg") document.getElementById('admin-panel').style.display='block'; 
+        if(prompt("Password") === "vika1998areg") {
+          document.getElementById('admin-panel').style.display='block';
+          if (Object.keys(admSizesStock).length === 0) {
+            admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+          }
+          renderAdmSizes();
+        }
         tapCount = 0; 
     }
   };
@@ -1842,6 +1923,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
     try {
       await addDoc(ordersCol, orderData);
+      
+      // Decrement sizesStock for each ordered item
+      for (const item of CART) {
+        try {
+          const product = PRODUCTS.find(p => p.id === item.productId);
+          if (product) {
+            let currentStock = {};
+            if (product.sizesStock && typeof product.sizesStock === 'object') {
+              currentStock = { ...product.sizesStock };
+            } else if (product.availableSizes && Array.isArray(product.availableSizes)) {
+              // Convert old format
+              [39,40,41,42,43,44].forEach(s => { currentStock[s] = product.availableSizes.includes(s) ? 4 : 0; });
+            } else {
+              [39,40,41,42,43,44].forEach(s => { currentStock[s] = 4; });
+            }
+            const sizeNum = parseInt(item.size);
+            const qtyOrdered = item.qty || 1;
+            currentStock[sizeNum] = Math.max(0, (currentStock[sizeNum] || 0) - qtyOrdered);
+            await updateDoc(doc(db, "products", item.productId), { sizesStock: currentStock });
+          }
+        } catch(stockErr) {
+          console.error('Stock decrement error:', stockErr);
+        }
+      }
+      
       // Save address to user profile if logged in
       if (currentUser && currentUserData && checkoutShipping !== 'pickup') {
         try {
@@ -1965,7 +2071,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   window.updateOrderStatus = async (id, status) => {
     try {
+      const order = ORDERS.find(o => o.id === id);
+      const wasNotCancelled = order && order.status !== 'cancelled';
+      
       await updateDoc(doc(db, "orders", id), { status });
+      
+      // If newly cancelled, restore stock
+      if (status === 'cancelled' && wasNotCancelled && order && order.items) {
+        for (const item of order.items) {
+          try {
+            const product = PRODUCTS.find(p => p.id === item.productId);
+            if (product) {
+              let currentStock = {};
+              if (product.sizesStock && typeof product.sizesStock === 'object') {
+                currentStock = { ...product.sizesStock };
+              } else {
+                [39,40,41,42,43,44].forEach(s => { currentStock[s] = 4; });
+              }
+              const sizeNum = parseInt(item.size);
+              const qtyOrdered = item.qty || 1;
+              currentStock[sizeNum] = (currentStock[sizeNum] || 0) + qtyOrdered;
+              await updateDoc(doc(db, "products", item.productId), { sizesStock: currentStock });
+            }
+          } catch(stockErr) {
+            console.error('Stock restore error:', stockErr);
+          }
+        }
+      }
     } catch(e) { alert("Սխալ"); }
   };
 
