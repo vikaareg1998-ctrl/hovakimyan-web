@@ -666,7 +666,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             <div class="adm-images-preview" id="adm-images-preview"></div>
         </div>
         <div class="admin-input-group"><label>Տեսակ</label><select id="adm-cat"><option value="sneakers">Sneakers</option><option value="loafers">Loafers</option></select></div>
-        <div class="admin-input-group"><label>Անուն (HY)</label><input type="text" id="adm-name-hy"></div>
+        <div class="admin-input-group"><label>Անուն (անգլերեն)</label><input type="text" id="adm-name" placeholder="օր.՝ Mirror Specter"><div style="font-size:10px; color:var(--mid); margin-top:5px">Գրեք անունը անգլերեն։ Կայքում ինքնաբար կցուցադրվի բոլոր լեզուներով։</div></div>
         <div class="admin-input-group">
             <label>Գին եւ Զեղչ (AMD)</label>
             <div class="discount-input-row">
@@ -680,9 +680,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             <div class="adm-sizes-grid" id="adm-sizes-grid"></div>
             <div style="font-size:10px; color:var(--mid); margin-top:5px">Մուտքագրեք ամեն չափսի առկա քանակը (զույգերի թիվ)։ 0 նշանակում է չկա։ Հաճախորդը պատվիրելիս՝ քանակը ինքնաբար նվազում է, պատվերի չեղարկման դեպքում՝ ետ ավելանում է։</div>
         </div>
-        <div class="admin-input-group"><label>Ինֆո (HY)</label><textarea id="adm-desc-hy"></textarea></div>
-        <div class="admin-input-group"><label>Անուն (EN)</label><input type="text" id="adm-name-en"></div>
-        <div class="admin-input-group"><label>Անուն (RU)</label><input type="text" id="adm-name-ru"></div>
+        <div class="admin-input-group"><label>Ապրանքի մասին (հայերեն)</label><textarea id="adm-desc" placeholder="Նկարագրեք ապրանքը հայերենով"></textarea><div style="font-size:10px; color:var(--mid); margin-top:5px">Գրեք նկարագրությունը հայերեն։ Կայքում EN/RU լեզուներով հաճախորդը կտեսնի ինքնաբար թարգմանված տեսքով։</div></div>
     </div>
     <button id="adm-main-btn" onclick="window.addNewProduct()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; margin-top:10px; cursor:pointer; font-weight:bold">ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ</button>
     <div id="admin-list" style="margin-top:30px"></div>
@@ -883,22 +881,268 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     ]
   };
 
-  const COUNTRIES = [
-    "Ռուսաստան", "Ամերիկայի Միացյալ Նահանգներ", "Ֆրանսիա", "Գերմանիա",
-    "Մեծ Բրիտանիա", "Իտալիա", "Իսպանիա", "Կանադա", "Վրաստան", "Իրան",
-    "Չինաստան", "Ճապոնիա", "Հարավային Կորեա", "Ավստրալիա", "Հնդկաստան",
-    "Թուրքիա", "Ուկրաինա", "Բելառուս", "Ղազախստան", "Ղրղզստան",
-    "Ուզբեկստան", "Տաջիկստան", "Արաբական Միացյալ Էմիրություններ", "Իսրայել",
-    "Լիբանան", "Հորդանան", "Եգիպտոս", "Սաուդյան Արաբիա", "Քաթար",
-    "Քուվեյթ", "Բահրեյն", "Հոլանդիա", "Բելգիա", "Լյուքսեմբուրգ",
-    "Շվեյցարիա", "Ավստրիա", "Շվեդիա", "Նորվեգիա", "Դանիա", "Ֆինլանդիա",
-    "Իռլանդիա", "Պորտուգալիա", "Հունաստան", "Չեխիա", "Սլովակիա",
-    "Լեհաստան", "Հունգարիա", "Ռումինիա", "Բուլղարիա", "Սերբիա", "Խորվաթիա",
-    "Կիպրոս", "Էստոնիա", "Լատվիա", "Լիտվա", "Մոլդովա",
-    "Սինգապուր", "Մալայզիա", "Թաիլանդ", "Վիետնամ",
-    "Հոնկոնգ", "Նոր Զելանդիա", "Մեքսիկա",
-    "Բրազիլիա", "Արգենտինա", "Չիլի"
-  ];
+  // Country to HayPost zone mapping (based on HayPost's 9-zone system)
+  // Zone 1: EU countries
+  // Zone 2: USA & Canada
+  // Zone 3: Asia-Pacific
+  // Zone 4: CIS (Belarus, Georgia, Kazakhstan, Kyrgyzstan, Moldova, Tajikistan, Turkmenistan, Ukraine, Uzbekistan)
+  // Zone 5: Middle East & North Africa
+  // Zone 6: Latin America
+  // Zone 7: Central & Southern Africa
+  // Zone 8: Australia & New Zealand
+  // Zone 9: Russia
+  const COUNTRY_ZONES = {
+    // Zone 1 - EU
+    "Ավստրիա": 1, "Բելգիա": 1, "Բուլղարիա": 1, "Խորվաթիա": 1, "Կիպրոս": 1,
+    "Չեխիա": 1, "Դանիա": 1, "Էստոնիա": 1, "Ֆինլանդիա": 1, "Ֆրանսիա": 1,
+    "Գերմանիա": 1, "Հունաստան": 1, "Հունգարիա": 1, "Իռլանդիա": 1, "Իտալիա": 1,
+    "Լատվիա": 1, "Լիտվա": 1, "Լյուքսեմբուրգ": 1, "Մալթա": 1, "Հոլանդիա": 1,
+    "Լեհաստան": 1, "Պորտուգալիա": 1, "Ռումինիա": 1, "Սլովակիա": 1, "Սլովենիա": 1,
+    "Իսպանիա": 1, "Շվեդիա": 1, "Մեծ Բրիտանիա": 1, "Շվեյցարիա": 1, "Սերբիա": 1,
+    "Նորվեգիա": 1, "Իսլանդիա": 1, "Անդորա": 1, "Մոնակո": 1, "Լիխտենշտեյն": 1,
+    // Zone 2 - USA & Canada
+    "Ամերիկայի Միացյալ Նահանգներ": 2, "Կանադա": 2,
+    // Zone 3 - Asia-Pacific
+    "Չինաստան": 3, "Ճապոնիա": 3, "Հարավային Կորեա": 3, "Սինգապուր": 3,
+    "Մալայզիա": 3, "Թաիլանդ": 3, "Վիետնամ": 3, "Հոնկոնգ": 3, "Հնդկաստան": 3,
+    "Ինդոնեզիա": 3, "Ֆիլիպիններ": 3, "Մոնղոլիա": 3, "Նեպալ": 3, "Պակիստան": 3,
+    "Բանգլադեշ": 3, "Շրի Լանկա": 3, "Թայվան": 3,
+    // Zone 4 - CIS
+    "Բելառուս": 4, "Վրաստան": 4, "Ղազախստան": 4, "Ղրղզստան": 4, "Մոլդովա": 4,
+    "Տաջիկստան": 4, "Թուրքմենիստան": 4, "Ուկրաինա": 4, "Ուզբեկստան": 4,
+    // Zone 5 - Middle East & North Africa
+    "Իրան": 5, "Իսրայել": 5, "Թուրքիա": 5, "Արաբական Միացյալ Էմիրություններ": 5,
+    "Սաուդյան Արաբիա": 5, "Քաթար": 5, "Քուվեյթ": 5, "Բահրեյն": 5, "Օման": 5,
+    "Հորդանան": 5, "Լիբանան": 5, "Եգիպտոս": 5, "Մարոկկո": 5, "Թունիս": 5,
+    "Ալժիր": 5, "Լիբիա": 5, "Սիրիա": 5, "Իրաք": 5, "Եմեն": 5,
+    // Zone 6 - Latin America
+    "Մեքսիկա": 6, "Բրազիլիա": 6, "Արգենտինա": 6, "Չիլի": 6, "Կոլումբիա": 6,
+    "Պերու": 6, "Վենեսուելա": 6, "Էկվադոր": 6, "Ուրուգվայ": 6, "Կուբա": 6,
+    "Դոմինիկյան Հանրապետություն": 6,
+    // Zone 7 - Central & Southern Africa
+    "Հարավ Աֆրիկյան Հանրապետություն": 7, "Քենիա": 7, "Նիգերիա": 7, "Գանա": 7,
+    "Սենեգալ": 7, "Կամերուն": 7, "Անգոլա": 7, "Մոզամբիկ": 7, "Զիմբաբվե": 7,
+    // Zone 8 - Australia & New Zealand
+    "Ավստրալիա": 8, "Նոր Զելանդիա": 8,
+    // Zone 9 - Russia
+    "Ռուսաստան": 9,
+  };
+
+  // HayPost international tariffs (AMD) - from ֆայլ_5.xlsx
+  // Format: ZONE -> TYPE -> [weight ranges] { max_grams: amd }
+  const HAYPOST_TARIFFS = {
+    // Parcel (Փաթեթ) - weight-based, registered/tracked
+    parcel: {
+      1: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 15100, 1500: 20100, 2000: 25100 },
+      2: { 20: 4190, 100: 5190, 250: 7190, 500: 11100, 1000: 16100, 1500: 21100, 2000: 26100 },
+      3: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 15100, 1500: 20100, 2000: 33100 },
+      4: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 15100, 1500: 20100, 2000: 25100 },
+      5: { 20: 3690, 100: 5100, 250: 6100, 500: 10100, 1000: 17100, 1500: 25100, 2000: 30100 },
+      6: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 17100, 1500: 24100, 2000: 27100 },
+      7: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 17100, 1500: 24100, 2000: 26100 },
+      8: { 20: 3190, 100: 4190, 250: 6190, 500: 10100, 1000: 17100, 1500: 24100, 2000: 32100 },
+      9: { 20: 2900, 100: 3800, 250: 5400, 500: 7900, 1000: 13000, 1500: 17700, 2000: 19400 },
+    },
+    // Parcel post (Ծանրոց) - up to 20kg, cheaper per kg
+    // Base price for 0-1000g + per_kg for additional kg
+    packet: {
+      1: { base_1kg: 10000, per_kg: 2500 },
+      2: { base_1kg: 11000, per_kg: 5000 },
+      3: { base_1kg: 18100, per_kg: 7500 },
+      4: { base_1kg: 22100, per_kg: 6000 },
+      5: { base_1kg: 20100, per_kg: 6000 },
+      6: { base_1kg: 19200, per_kg: 7500 },
+      7: { base_1kg: 19200, per_kg: 7500 },
+      8: { base_1kg: 19200, per_kg: 12000 },
+      9: { base_1kg: 6000, per_kg: 1500 },  // Russia (other regions)
+    },
+    // Special rate: Russia Moscow & Moscow region (extra cheap!)
+    packet_russia_moscow: { base_1kg: 2950, per_kg: 1250 },
+    packet_belarus: { base_1kg: 3000, per_kg: 1500 },
+    packet_ukraine: { base_1kg: 3150, per_kg: 1250 },
+    // EMS - Express Mail Service (fastest, most expensive)
+    ems: {
+      1: { 500: 24300, 1000: 27800, per_kg: 6000 },
+      2: { 500: 24700, 1000: 28200, per_kg: 7500 },
+      3: { 500: 29200, 1000: 35200, per_kg: 7500 },
+      4: { 500: 34700, 1000: 36700, per_kg: 6000 },
+      5: { 500: 34700, 1000: 40200, per_kg: 6000 },
+      6: { 500: 29200, 1000: 32700, per_kg: 7500 },
+      7: { 500: 34700, 1000: 40200, per_kg: 7500 },
+      8: { 500: 34700, 1000: 46200, per_kg: 12000 },
+      9: { 500: 18200, 1000: 21200, per_kg: 6000 },
+    },
+  };
+
+  // Calculate HayPost shipping price for a given country, weight (grams), and service type
+  function calculateHaypostPrice(country, weightGrams, serviceType) {
+    const zone = COUNTRY_ZONES[country];
+    if (!zone || !weightGrams) return null;
+    
+    const weight = Math.max(1, weightGrams);
+    
+    if (serviceType === 'parcel') {
+      const tariffs = HAYPOST_TARIFFS.parcel[zone];
+      if (!tariffs) return null;
+      const ranges = [20, 100, 250, 500, 1000, 1500, 2000];
+      for (const max of ranges) {
+        if (weight <= max) return tariffs[max];
+      }
+      // Over 2kg - use per_kg from packet
+      return tariffs[2000];
+    }
+    
+    if (serviceType === 'packet') {
+      let tariff = HAYPOST_TARIFFS.packet[zone];
+      // Special cases for Russia Moscow, Belarus, Ukraine (cheaper)
+      // User needs to select specifically - for simplicity use regular rate
+      if (!tariff) return null;
+      if (weight <= 1000) return tariff.base_1kg;
+      // Over 1kg: base + per_kg for each additional kg
+      const extraKg = Math.ceil((weight - 1000) / 1000);
+      return tariff.base_1kg + extraKg * tariff.per_kg;
+    }
+    
+    if (serviceType === 'ems') {
+      const tariffs = HAYPOST_TARIFFS.ems[zone];
+      if (!tariffs) return null;
+      if (weight <= 500) return tariffs[500];
+      if (weight <= 1000) return tariffs[1000];
+      const extraKg = Math.ceil((weight - 1000) / 1000);
+      return tariffs[1000] + extraKg * tariffs.per_kg;
+    }
+    
+    return null;
+  }
+
+  // Country names translations for all 3 languages
+  const COUNTRY_NAMES = {
+    // Zone 1 - EU
+    "Ավստրիա": { hy: "Ավստրիա", en: "Austria", ru: "Австрия" },
+    "Բելգիա": { hy: "Բելգիա", en: "Belgium", ru: "Бельгия" },
+    "Բուլղարիա": { hy: "Բուլղարիա", en: "Bulgaria", ru: "Болгария" },
+    "Խորվաթիա": { hy: "Խորվաթիա", en: "Croatia", ru: "Хорватия" },
+    "Կիպրոս": { hy: "Կիպրոս", en: "Cyprus", ru: "Кипр" },
+    "Չեխիա": { hy: "Չեխիա", en: "Czech Republic", ru: "Чехия" },
+    "Դանիա": { hy: "Դանիա", en: "Denmark", ru: "Дания" },
+    "Էստոնիա": { hy: "Էստոնիա", en: "Estonia", ru: "Эстония" },
+    "Ֆինլանդիա": { hy: "Ֆինլանդիա", en: "Finland", ru: "Финляндия" },
+    "Ֆրանսիա": { hy: "Ֆրանսիա", en: "France", ru: "Франция" },
+    "Գերմանիա": { hy: "Գերմանիա", en: "Germany", ru: "Германия" },
+    "Հունաստան": { hy: "Հունաստան", en: "Greece", ru: "Греция" },
+    "Հունգարիա": { hy: "Հունգարիա", en: "Hungary", ru: "Венгрия" },
+    "Իռլանդիա": { hy: "Իռլանդիա", en: "Ireland", ru: "Ирландия" },
+    "Իտալիա": { hy: "Իտալիա", en: "Italy", ru: "Италия" },
+    "Լատվիա": { hy: "Լատվիա", en: "Latvia", ru: "Латвия" },
+    "Լիտվա": { hy: "Լիտվա", en: "Lithuania", ru: "Литва" },
+    "Լյուքսեմբուրգ": { hy: "Լյուքսեմբուրգ", en: "Luxembourg", ru: "Люксембург" },
+    "Մալթա": { hy: "Մալթա", en: "Malta", ru: "Мальта" },
+    "Հոլանդիա": { hy: "Հոլանդիա", en: "Netherlands", ru: "Нидерланды" },
+    "Լեհաստան": { hy: "Լեհաստան", en: "Poland", ru: "Польша" },
+    "Պորտուգալիա": { hy: "Պորտուգալիա", en: "Portugal", ru: "Португалия" },
+    "Ռումինիա": { hy: "Ռումինիա", en: "Romania", ru: "Румыния" },
+    "Սլովակիա": { hy: "Սլովակիա", en: "Slovakia", ru: "Словакия" },
+    "Սլովենիա": { hy: "Սլովենիա", en: "Slovenia", ru: "Словения" },
+    "Իսպանիա": { hy: "Իսպանիա", en: "Spain", ru: "Испания" },
+    "Շվեդիա": { hy: "Շվեդիա", en: "Sweden", ru: "Швеция" },
+    "Մեծ Բրիտանիա": { hy: "Մեծ Բրիտանիա", en: "United Kingdom", ru: "Великобритания" },
+    "Շվեյցարիա": { hy: "Շվեյցարիա", en: "Switzerland", ru: "Швейцария" },
+    "Սերբիա": { hy: "Սերբիա", en: "Serbia", ru: "Сербия" },
+    "Նորվեգիա": { hy: "Նորվեգիա", en: "Norway", ru: "Норвегия" },
+    "Իսլանդիա": { hy: "Իսլանդիա", en: "Iceland", ru: "Исландия" },
+    "Անդորա": { hy: "Անդորա", en: "Andorra", ru: "Андорра" },
+    "Մոնակո": { hy: "Մոնակո", en: "Monaco", ru: "Монако" },
+    "Լիխտենշտեյն": { hy: "Լիխտենշտեյն", en: "Liechtenstein", ru: "Лихтенштейн" },
+    // Zone 2 - USA & Canada
+    "Ամերիկայի Միացյալ Նահանգներ": { hy: "Ամերիկայի Միացյալ Նահանգներ", en: "United States", ru: "США" },
+    "Կանադա": { hy: "Կանադա", en: "Canada", ru: "Канада" },
+    // Zone 3 - Asia-Pacific
+    "Չինաստան": { hy: "Չինաստան", en: "China", ru: "Китай" },
+    "Ճապոնիա": { hy: "Ճապոնիա", en: "Japan", ru: "Япония" },
+    "Հարավային Կորեա": { hy: "Հարավային Կորեա", en: "South Korea", ru: "Южная Корея" },
+    "Սինգապուր": { hy: "Սինգապուր", en: "Singapore", ru: "Сингапур" },
+    "Մալայզիա": { hy: "Մալայզիա", en: "Malaysia", ru: "Малайзия" },
+    "Թաիլանդ": { hy: "Թաիլանդ", en: "Thailand", ru: "Таиланд" },
+    "Վիետնամ": { hy: "Վիետնամ", en: "Vietnam", ru: "Вьетнам" },
+    "Հոնկոնգ": { hy: "Հոնկոնգ", en: "Hong Kong", ru: "Гонконг" },
+    "Հնդկաստան": { hy: "Հնդկաստան", en: "India", ru: "Индия" },
+    "Ինդոնեզիա": { hy: "Ինդոնեզիա", en: "Indonesia", ru: "Индонезия" },
+    "Ֆիլիպիններ": { hy: "Ֆիլիպիններ", en: "Philippines", ru: "Филиппины" },
+    "Մոնղոլիա": { hy: "Մոնղոլիա", en: "Mongolia", ru: "Монголия" },
+    "Նեպալ": { hy: "Նեպալ", en: "Nepal", ru: "Непал" },
+    "Պակիստան": { hy: "Պակիստան", en: "Pakistan", ru: "Пакистан" },
+    "Բանգլադեշ": { hy: "Բանգլադեշ", en: "Bangladesh", ru: "Бангладеш" },
+    "Շրի Լանկա": { hy: "Շրի Լանկա", en: "Sri Lanka", ru: "Шри-Ланка" },
+    "Թայվան": { hy: "Թայվան", en: "Taiwan", ru: "Тайвань" },
+    // Zone 4 - CIS
+    "Բելառուս": { hy: "Բելառուս", en: "Belarus", ru: "Беларусь" },
+    "Վրաստան": { hy: "Վրաստան", en: "Georgia", ru: "Грузия" },
+    "Ղազախստան": { hy: "Ղազախստան", en: "Kazakhstan", ru: "Казахстан" },
+    "Ղրղզստան": { hy: "Ղրղզստան", en: "Kyrgyzstan", ru: "Кыргызстан" },
+    "Մոլդովա": { hy: "Մոլդովա", en: "Moldova", ru: "Молдова" },
+    "Տաջիկստան": { hy: "Տաջիկստան", en: "Tajikistan", ru: "Таджикистан" },
+    "Թուրքմենիստան": { hy: "Թուրքմենիստան", en: "Turkmenistan", ru: "Туркменистан" },
+    "Ուկրաինա": { hy: "Ուկրաինա", en: "Ukraine", ru: "Украина" },
+    "Ուզբեկստան": { hy: "Ուզբեկստան", en: "Uzbekistan", ru: "Узбекистан" },
+    // Zone 5 - Middle East & North Africa
+    "Իրան": { hy: "Իրան", en: "Iran", ru: "Иран" },
+    "Իսրայել": { hy: "Իսրայել", en: "Israel", ru: "Израиль" },
+    "Թուրքիա": { hy: "Թուրքիա", en: "Turkey", ru: "Турция" },
+    "Արաբական Միացյալ Էմիրություններ": { hy: "Արաբական Միացյալ Էմիրություններ", en: "United Arab Emirates", ru: "ОАЭ" },
+    "Սաուդյան Արաբիա": { hy: "Սաուդյան Արաբիա", en: "Saudi Arabia", ru: "Саудовская Аравия" },
+    "Քաթար": { hy: "Քաթար", en: "Qatar", ru: "Катар" },
+    "Քուվեյթ": { hy: "Քուվեյթ", en: "Kuwait", ru: "Кувейт" },
+    "Բահրեյն": { hy: "Բահրեյն", en: "Bahrain", ru: "Бахрейн" },
+    "Օման": { hy: "Օման", en: "Oman", ru: "Оман" },
+    "Հորդանան": { hy: "Հորդանան", en: "Jordan", ru: "Иордания" },
+    "Լիբանան": { hy: "Լիբանան", en: "Lebanon", ru: "Ливан" },
+    "Եգիպտոս": { hy: "Եգիպտոս", en: "Egypt", ru: "Египет" },
+    "Մարոկկո": { hy: "Մարոկկո", en: "Morocco", ru: "Марокко" },
+    "Թունիս": { hy: "Թունիս", en: "Tunisia", ru: "Тунис" },
+    "Ալժիր": { hy: "Ալժիր", en: "Algeria", ru: "Алжир" },
+    "Լիբիա": { hy: "Լիբիա", en: "Libya", ru: "Ливия" },
+    "Սիրիա": { hy: "Սիրիա", en: "Syria", ru: "Сирия" },
+    "Իրաք": { hy: "Իրաք", en: "Iraq", ru: "Ирак" },
+    "Եմեն": { hy: "Եմեն", en: "Yemen", ru: "Йемен" },
+    // Zone 6 - Latin America
+    "Մեքսիկա": { hy: "Մեքսիկա", en: "Mexico", ru: "Мексика" },
+    "Բրազիլիա": { hy: "Բրազիլիա", en: "Brazil", ru: "Бразилия" },
+    "Արգենտինա": { hy: "Արգենտինա", en: "Argentina", ru: "Аргентина" },
+    "Չիլի": { hy: "Չիլի", en: "Chile", ru: "Чили" },
+    "Կոլումբիա": { hy: "Կոլումբիա", en: "Colombia", ru: "Колумбия" },
+    "Պերու": { hy: "Պերու", en: "Peru", ru: "Перу" },
+    "Վենեսուելա": { hy: "Վենեսուելա", en: "Venezuela", ru: "Венесуэла" },
+    "Էկվադոր": { hy: "Էկվադոր", en: "Ecuador", ru: "Эквадор" },
+    "Ուրուգվայ": { hy: "Ուրուգվայ", en: "Uruguay", ru: "Уругвай" },
+    "Կուբա": { hy: "Կուբա", en: "Cuba", ru: "Куба" },
+    "Դոմինիկյան Հանրապետություն": { hy: "Դոմինիկյան Հանրապետություն", en: "Dominican Republic", ru: "Доминиканская Республика" },
+    // Zone 7 - Central & Southern Africa
+    "Հարավ Աֆրիկյան Հանրապետություն": { hy: "Հարավ Աֆրիկյան Հանրապետություն", en: "South Africa", ru: "ЮАР" },
+    "Քենիա": { hy: "Քենիա", en: "Kenya", ru: "Кения" },
+    "Նիգերիա": { hy: "Նիգերիա", en: "Nigeria", ru: "Нигерия" },
+    "Գանա": { hy: "Գանա", en: "Ghana", ru: "Гана" },
+    "Սենեգալ": { hy: "Սենեգալ", en: "Senegal", ru: "Сенегал" },
+    "Կամերուն": { hy: "Կամերուն", en: "Cameroon", ru: "Камерун" },
+    "Անգոլա": { hy: "Անգոլա", en: "Angola", ru: "Ангола" },
+    "Մոզամբիկ": { hy: "Մոզամբիկ", en: "Mozambique", ru: "Мозамбик" },
+    "Զիմբաբվե": { hy: "Զիմբաբվե", en: "Zimbabwe", ru: "Зимбабве" },
+    // Zone 8 - Australia & New Zealand
+    "Ավստրալիա": { hy: "Ավստրալիա", en: "Australia", ru: "Австралия" },
+    "Նոր Զելանդիա": { hy: "Նոր Զելանդիա", en: "New Zealand", ru: "Новая Зеландия" },
+    // Zone 9 - Russia
+    "Ռուսաստան": { hy: "Ռուսաստան", en: "Russia", ru: "Россия" },
+  };
+
+  // Helper: get country name in current language
+  function getCountryName(countryKey) {
+    return COUNTRY_NAMES[countryKey]?.[currentLang] || countryKey;
+  }
+
+  // Country list for dropdown - sorted by zone then alphabetically by current language name
+  const COUNTRIES = Object.keys(COUNTRY_ZONES).sort((a, b) => {
+    if (COUNTRY_ZONES[a] !== COUNTRY_ZONES[b]) return COUNTRY_ZONES[a] - COUNTRY_ZONES[b];
+    return a.localeCompare(b, 'hy');
+  });
 
   // Store location: Smbat Zoravar Street, 11/1, Yerevan (Fair market area)
   const STORE_LAT = 40.154879;
@@ -950,8 +1194,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     }
   }
 
-  async function calculateCarShipping(address) {
-    const geo = await geocodeAddress(address);
+  // Free translation using Google Translate public endpoint
+  async function translateText(text, sourceLang, targetLang) {
+    if (!text || !text.trim()) return '';
+    if (sourceLang === targetLang) return text;
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      // data[0] is array of translation chunks; join them
+      if (data && Array.isArray(data[0])) {
+        return data[0].map(chunk => chunk[0]).filter(Boolean).join('');
+      }
+      return text;
+    } catch(e) {
+      console.error('Translation error:', e);
+      return text;
+    }
+  }
+
+  async function calculateCarShipping(address) {    const geo = await geocodeAddress(address);
     if (!geo) return null;
     const straightDistance = calculateDistance(STORE_LAT, STORE_LNG, geo.lat, geo.lng);
     const roadDistance = straightDistance * 1.3;
@@ -1295,6 +1557,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     renderCategoryGrids();
     if(currentCategory) renderShop(currentCategory);
     if(currentProduct) refreshDetailPage();
+    // Re-render dynamic pages if they're currently active
+    if (document.getElementById('pg-checkout')?.classList.contains('on')) renderCheckoutPage();
+    if (document.getElementById('pg-cart')?.classList.contains('on')) renderCartPage();
+    if (document.getElementById('pg-account')?.classList.contains('on')) renderAccountPage();
   }
 
   window.go = (id) => {
@@ -1434,7 +1700,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           }
           return `<div class="sz ${selectedSize===s?'on':''}" onclick="window.selSz(this,${s})">${s}</div>`;
         }).join('')}</div>
-        <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_hy'] || ''}</p>
+        <p style="margin-bottom:40px; line-height:1.8; color:var(--mid)">${p['desc_'+currentLang] || p.desc_hy || ''}</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <button class="btn-wa" onclick="window.orderWA()">${t.order_wa}</button>
           <button class="btn-wa" style="background:var(--accent)" onclick="window.addToCart()">${t.add_to_cart}</button>
@@ -1610,28 +1876,61 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
   window.addNewProduct = async () => {
     const btn = document.getElementById('adm-main-btn');
-    const name_hy = document.getElementById('adm-name-hy').value;
+    const name_en_input = document.getElementById('adm-name').value.trim();
+    const desc_hy_input = document.getElementById('adm-desc').value.trim();
     const price = parseInt(document.getElementById('adm-price').value);
     const discountRaw = document.getElementById('adm-discount').value;
     const discount = discountRaw === '' ? 0 : parseInt(discountRaw);
 
-    if(admImagesArr.length === 0 || !name_hy || isNaN(price)) return alert("Լրացրեք տվյալները եւ ավելացրեք գոնե 1 նկար");
+    if(admImagesArr.length === 0 || !name_en_input || isNaN(price)) return alert("Լրացրեք տվյալները եւ ավելացրեք գոնե 1 նկար");
     if (discount < 0 || discount > 99) return alert("Զեղչը պետք է լինի 0-99 %");
 
-    btn.innerText = "Սպասեք...";
+    btn.innerText = "Թարգմանում...";
     btn.disabled = true;
+
+    // Auto-translate name (EN → HY, RU) and desc (HY → EN, RU)
+    let name_hy = name_en_input;
+    let name_ru = name_en_input;
+    let desc_en = desc_hy_input;
+    let desc_ru = desc_hy_input;
+    
+    try {
+      // Translate name from EN to HY and RU in parallel
+      const [trNameHy, trNameRu] = await Promise.all([
+        translateText(name_en_input, 'en', 'hy'),
+        translateText(name_en_input, 'en', 'ru')
+      ]);
+      if (trNameHy) name_hy = trNameHy;
+      if (trNameRu) name_ru = trNameRu;
+      
+      // Translate desc from HY to EN and RU in parallel (if desc exists)
+      if (desc_hy_input) {
+        const [trDescEn, trDescRu] = await Promise.all([
+          translateText(desc_hy_input, 'hy', 'en'),
+          translateText(desc_hy_input, 'hy', 'ru')
+        ]);
+        if (trDescEn) desc_en = trDescEn;
+        if (trDescRu) desc_ru = trDescRu;
+      }
+    } catch(e) {
+      console.error('Translation failed:', e);
+    }
+
+    btn.innerText = "Սպասեք...";
 
     const data = {
       img: admImagesArr[0],
       images: admImagesArr.slice(),
       cat: document.getElementById('adm-cat').value,
       name_hy: name_hy,
-      name_en: document.getElementById('adm-name-en').value || name_hy,
-      name_ru: document.getElementById('adm-name-ru').value || name_hy,
+      name_en: name_en_input,
+      name_ru: name_ru,
       price: price,
       discount: discount,
       sizesStock: { ...admSizesStock },
-      desc_hy: document.getElementById('adm-desc-hy').value
+      desc_hy: desc_hy_input,
+      desc_en: desc_en,
+      desc_ru: desc_ru
     };
 
     try {
@@ -1652,12 +1951,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   window.editProduct = (id) => {
     const p = PRODUCTS.find(x=>x.id===id);
     editId = id;
-    document.getElementById('adm-name-hy').value = p.name_hy;
-    document.getElementById('adm-name-en').value = p.name_en || '';
-    document.getElementById('adm-name-ru').value = p.name_ru || '';
+    // Show English name (the source field). If not present, fall back to any available name.
+    document.getElementById('adm-name').value = p.name_en || p.name_hy || p.name_ru || '';
     document.getElementById('adm-price').value = p.price;
     document.getElementById('adm-discount').value = p.discount || '';
-    document.getElementById('adm-desc-hy').value = p.desc_hy || '';
+    document.getElementById('adm-desc').value = p.desc_hy || '';
     document.getElementById('adm-cat').value = p.cat;
     admImagesArr = getProductImages(p).slice();
     renderAdmImagesPreview();
@@ -1669,7 +1967,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0 };
       p.availableSizes.forEach(s => { admSizesStock[s] = 4; });
     } else {
-      admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+      admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0 };
     }
     renderAdmSizes();
     document.getElementById('adm-main-btn').innerText = "ՊԱՀՊԱՆԵԼ";
@@ -1687,22 +1985,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   function clearForm() {
     document.getElementById('adm-file').value = '';
     document.getElementById('adm-img-base64').value = '';
-    document.getElementById('adm-name-hy').value = '';
-    document.getElementById('adm-name-en').value = '';
-    document.getElementById('adm-name-ru').value = '';
+    document.getElementById('adm-name').value = '';
     document.getElementById('adm-price').value = '';
     document.getElementById('adm-discount').value = '';
-    document.getElementById('adm-desc-hy').value = '';
+    document.getElementById('adm-desc').value = '';
     document.getElementById('file-size-info').innerText = '';
     admImagesArr = [];
     renderAdmImagesPreview();
-    admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+    admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0 };
     renderAdmSizes();
     editId = null;
     document.getElementById('adm-main-btn').innerText = "ԱՎԵԼԱՑՆԵԼ ԿԱՅՔՈՒՄ";
   }
 
-  let admSizesStock = { 39: 4, 40: 4, 41: 4, 42: 4, 43: 4, 44: 4 };
+  let admSizesStock = { 39: 0, 40: 0, 41: 0, 42: 0, 43: 0, 44: 0 };
 
   function renderAdmSizes() {
     const grid = document.getElementById('adm-sizes-grid');
@@ -1787,7 +2083,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         if(prompt("Password") === "vika1998areg") {
           document.getElementById('admin-panel').style.display='block';
           if (Object.keys(admSizesStock).length === 0) {
-            admSizesStock = { 39:4, 40:4, 41:4, 42:4, 43:4, 44:4 };
+            admSizesStock = { 39:0, 40:0, 41:0, 42:0, 43:0, 44:0 };
           }
           renderAdmSizes();
         }
@@ -1929,11 +2225,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   let postalRecipientPhone = '';   // Recipient phone
   let intlCountry = '';            // Selected international country
   let intlAddress = '';            // International address typed
+  let intlService = 'parcel';      // Selected service: 'parcel' | 'packet' | 'ems'
+  let intlShippingPrice = 0;       // Calculated HayPost shipping price (AMD)
 
   function getShippingCost() {
     if (checkoutShipping === 'car') return carShippingPrice || 0;
     if (checkoutShipping === 'post') return 1000;
-    if (checkoutShipping === 'international') return 0; // Price TBD by admin
+    if (checkoutShipping === 'international') return intlShippingPrice || 0;
     if (checkoutShipping === 'pickup') return 0;
     return 0;
   }
@@ -1984,10 +2282,128 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     });
   };
 
+  // Estimate cart total weight in grams (default 1000g per pair of shoes)
+  function getCartWeight() {
+    let totalGrams = 0;
+    CART.forEach(item => {
+      totalGrams += 1000 * (item.qty || 1); // 1 kg per pair
+    });
+    return Math.max(500, totalGrams); // Minimum 500g
+  }
+
   window.changeIntlCountry = () => {
     const sel = document.getElementById('co-intl-country');
     intlCountry = sel.value;
+    intlService = 'parcel'; // reset to default
+    renderIntlOptions();
   };
+
+  window.changeIntlService = (service) => {
+    intlService = service;
+    const weight = getCartWeight();
+    intlShippingPrice = calculateHaypostPrice(intlCountry, weight, service) || 0;
+    // Re-render to update totals
+    renderCheckoutPage();
+  };
+
+  function renderIntlOptions() {
+    const container = document.getElementById('intl-options');
+    if (!container) return;
+    
+    if (!intlCountry) {
+      container.innerHTML = '';
+      intlShippingPrice = 0;
+      return;
+    }
+    
+    const zone = COUNTRY_ZONES[intlCountry];
+    if (!zone) {
+      container.innerHTML = '<div style="padding:12px; background:#fff8e6; color:#8b6f47; font-size:13px">⚠ Այս երկրի համար սակագներ չկան։ Մենք կկապվենք ձեզ հետ։</div>';
+      intlShippingPrice = 0;
+      return;
+    }
+    
+    const weight = getCartWeight();
+    const weightKg = (weight / 1000).toFixed(1);
+    
+    const services = [
+      { 
+        key: 'parcel', 
+        name: 'Պատվիրված փաթեթ',
+        nameEn: 'Registered packet',
+        nameRu: 'Зарегистрированный пакет',
+        icon: '📦', 
+        days: '7-30 օր', 
+        daysEn: '7-30 days',
+        daysRu: '7-30 дней',
+      },
+      { 
+        key: 'packet', 
+        name: 'Ծանրոց',
+        nameEn: 'Parcel',
+        nameRu: 'Посылка',
+        icon: '📬', 
+        days: '7-30 օր', 
+        daysEn: '7-30 days',
+        daysRu: '7-30 дней',
+      },
+      { 
+        key: 'ems', 
+        name: 'EMS (Արագ առաքում)',
+        nameEn: 'EMS (Express)',
+        nameRu: 'EMS (Экспресс)',
+        icon: '⚡', 
+        days: '3-7 օր', 
+        daysEn: '3-7 days',
+        daysRu: '3-7 дней',
+      },
+    ];
+    
+    const serviceName = (s) => currentLang === 'en' ? s.nameEn : currentLang === 'ru' ? s.nameRu : s.name;
+    const serviceDays = (s) => currentLang === 'en' ? s.daysEn : currentLang === 'ru' ? s.daysRu : s.days;
+    
+    // Calculate prices
+    const prices = services.map(s => ({
+      ...s,
+      price: calculateHaypostPrice(intlCountry, weight, s.key)
+    })).filter(s => s.price !== null);
+    
+    // Set default to parcel (cheapest) if not set
+    if (!prices.find(s => s.key === intlService)) {
+      intlService = prices[0]?.key || 'parcel';
+    }
+    
+    // Set initial price
+    const selected = prices.find(s => s.key === intlService);
+    intlShippingPrice = selected?.price || 0;
+    
+    const weightLabel = currentLang === 'en' ? 'Weight' : currentLang === 'ru' ? 'Вес' : 'Քաշ';
+    const zoneLabel = currentLang === 'en' ? `Zone ${zone}` : currentLang === 'ru' ? `Зона ${zone}` : `Գոտի ${zone}`;
+    const chooseLabel = currentLang === 'en' ? 'Choose shipping method' : currentLang === 'ru' ? 'Выберите способ доставки' : 'Ընտրեք առաքման եղանակը';
+    
+    container.innerHTML = `
+      <div style="margin-top:15px; padding:12px; background:#fff; border:1px solid var(--border)">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--mid); margin-bottom:12px">
+          <span>${weightLabel}: <strong>${weightKg} ${currentLang==='en'?'kg':'կգ'}</strong></span>
+          <span>${zoneLabel}</span>
+        </div>
+        <div style="font-size:12px; color:var(--mid); margin-bottom:10px; text-transform:uppercase; letter-spacing:1px">${chooseLabel}</div>
+        ${prices.map(s => `
+          <label style="display:flex; align-items:center; padding:12px; border:1px solid ${intlService===s.key?'var(--accent)':'var(--border)'}; margin-bottom:8px; cursor:pointer; background:${intlService===s.key?'#f8f5f0':'#fff'}">
+            <input type="radio" name="intl-service" value="${s.key}" ${intlService===s.key?'checked':''} onchange="window.changeIntlService('${s.key}')" style="margin-right:12px">
+            <div style="flex:1">
+              <div style="font-weight:600; color:var(--dark)">${s.icon} ${serviceName(s)}</div>
+              <div style="font-size:11px; color:var(--mid); margin-top:2px">⏱ ${serviceDays(s)}</div>
+            </div>
+            <div style="font-weight:600; color:var(--accent); font-size:15px; white-space:nowrap">${formatPrice(s.price)}</div>
+          </label>
+        `).join('')}
+        <div style="font-size:10px; color:var(--mid); margin-top:8px; line-height:1.5">
+          ${currentLang==='en'?'* Prices are official HayPost tariffs. Delivery times are approximate.':currentLang==='ru'?'* Цены — официальные тарифы HayPost. Сроки доставки приблизительные.':'* Գները ՀայՓոստի պաշտոնական սակագներն են։ Առաքման ժամկետները մոտավոր են։'}
+        </div>
+      </div>
+    `;
+  }
 
   function renderCheckoutPage() {
     const t = TRANSLATIONS[currentLang];
@@ -1997,6 +2413,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       go('cart');
       return;
     }
+    
+    // Preserve current input values before re-rendering
+    const preserved = {
+      name: document.getElementById('co-name')?.value,
+      phone: document.getElementById('co-phone')?.value,
+      email: document.getElementById('co-email')?.value,
+      notes: document.getElementById('co-notes')?.value,
+      carAddress: document.getElementById('co-car-address')?.value,
+      postIndex: document.getElementById('co-post-index')?.value,
+      postName: document.getElementById('co-post-name')?.value,
+      postPhone: document.getElementById('co-post-phone')?.value,
+      intlAddress: document.getElementById('co-intl-address')?.value,
+    };
+    if (preserved.intlAddress !== undefined) intlAddress = preserved.intlAddress;
+    if (preserved.postIndex !== undefined) postalIndex = preserved.postIndex;
+    if (preserved.postName !== undefined) postalRecipientName = preserved.postName;
+    if (preserved.postPhone !== undefined) postalRecipientPhone = preserved.postPhone;
+    
     const subtotal = getCartSubtotal();
     const shippingCost = getShippingCost();
     
@@ -2048,7 +2482,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     ` : '';
 
     // International shipping UI
-    const countryOpts = COUNTRIES.map(c => `<option value="${c}" ${intlCountry===c?'selected':''}>${c}</option>`).join('');
+    const countryOpts = COUNTRIES.map(c => `<option value="${c}" ${intlCountry===c?'selected':''}>${getCountryName(c)}</option>`).join('');
     const intlUI = checkoutShipping === 'international' ? `
       <div style="background:#f8f5f0; padding:15px; border-left:3px solid var(--accent); margin-top:10px">
         <div style="font-size:13px; margin-bottom:10px; color:var(--mid)">${t.intl_shipping_info}</div>
@@ -2063,9 +2497,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           <label>${t.full_address_intl} *</label>
           <textarea id="co-intl-address" rows="3">${escapeHtml(intlAddress)}</textarea>
         </div>
-        <div style="background:#fff8e6; padding:10px; border:1px solid #e0c880; margin-top:10px; font-size:12px; line-height:1.6; color:#8b6f47">
-          <strong>⚠️</strong> ${t.intl_warning}
-        </div>
+        <div id="intl-options"></div>
       </div>
     ` : '';
 
@@ -2156,10 +2588,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           ${itemsHTML}
           <div class="checkout-sum-row"><span>${t.subtotal}</span><span>${formatPrice(subtotal)}</span></div>
           ${firstOrderEligible ? `<div class="checkout-sum-row" style="color:#c33"><span>${t.first_order_discount}</span><span>−${formatPrice(firstOrderDiscount)}</span></div>` : ''}
-          ${checkoutShipping === 'international' 
-            ? `<div class="checkout-sum-row"><span>${t.shipping}</span><span style="color:var(--mid); font-size:12px">${t.pending_confirm}</span></div>`
+          ${checkoutShipping === 'international' && !intlShippingPrice
+            ? `<div class="checkout-sum-row"><span>${t.shipping}</span><span style="color:var(--mid); font-size:12px">${t.to_calculate || '—'}</span></div>`
             : `<div class="checkout-sum-row"><span>${t.shipping}</span><span>${formatPrice(shippingCost)}</span></div>`}
-          <div class="checkout-sum-row grand"><span>${t.total}</span><span>${checkoutShipping === 'international' ? formatPrice(subtotal - firstOrderDiscount) + ' + ' + t.shipping.toLowerCase() : formatPrice(total)}</span></div>
+          <div class="checkout-sum-row grand"><span>${t.total}</span><span>${checkoutShipping === 'international' && !intlShippingPrice ? formatPrice(subtotal - firstOrderDiscount) + ' + ' + t.shipping.toLowerCase() : formatPrice(total)}</span></div>
         </div>
 
         <button class="cart-checkout-btn" onclick="window.submitOrder()">${t.confirm_order}</button>
@@ -2167,6 +2599,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           <a onclick="go('cart')">← ${t.cart_title}</a>
         </div>
       </div>`;
+    
+    // Restore input values after re-rendering
+    setTimeout(() => {
+      if (preserved.name !== undefined && document.getElementById('co-name')) document.getElementById('co-name').value = preserved.name;
+      if (preserved.phone !== undefined && document.getElementById('co-phone')) document.getElementById('co-phone').value = preserved.phone;
+      if (preserved.email !== undefined && document.getElementById('co-email')) document.getElementById('co-email').value = preserved.email;
+      if (preserved.notes !== undefined && document.getElementById('co-notes')) document.getElementById('co-notes').value = preserved.notes;
+      if (preserved.carAddress !== undefined && document.getElementById('co-car-address')) document.getElementById('co-car-address').value = preserved.carAddress;
+      if (preserved.postIndex !== undefined && document.getElementById('co-post-index')) document.getElementById('co-post-index').value = preserved.postIndex;
+      if (preserved.postName !== undefined && document.getElementById('co-post-name')) document.getElementById('co-post-name').value = preserved.postName;
+      if (preserved.postPhone !== undefined && document.getElementById('co-post-phone')) document.getElementById('co-post-phone').value = preserved.postPhone;
+      if (preserved.intlAddress !== undefined && document.getElementById('co-intl-address')) document.getElementById('co-intl-address').value = preserved.intlAddress;
+    }, 0);
+    
+    // If international shipping is selected and country is set, render options
+    if (checkoutShipping === 'international' && intlCountry) {
+      renderIntlOptions();
+    }
   }
 
   window.selShipping = (val) => {
@@ -2239,11 +2689,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         alert("Email-ը պարտադիր է արտերկիր առաքման համար");
         return;
       }
+      if (!intlShippingPrice || intlShippingPrice <= 0) {
+        alert("Ընտրեք առաքման ծառայությունը");
+        return;
+      }
+      const serviceNames = {
+        parcel: 'Պատվիրված փաթեթ',
+        packet: 'Ծանրոց',
+        ems: 'EMS Արագ առաքում'
+      };
       shippingDetails = { 
         method: 'international', 
         country: intlCountry, 
-        address: intlAddr, 
-        priceStatus: 'pending' 
+        address: intlAddr,
+        service: intlService,
+        serviceName: serviceNames[intlService] || intlService,
+        weightGrams: getCartWeight(),
+        zone: COUNTRY_ZONES[intlCountry] || 0,
+        priceStatus: 'confirmed' // Price is calculated, not pending anymore
       };
     } else if (checkoutShipping === 'pickup') {
       shippingDetails = { method: 'pickup' };
@@ -2393,7 +2856,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         const recipPhone = sd.recipientPhone || '';
         addressLine = `Ինդեքս: ${sd.postalIndex || '?'}${recipName ? '<br>Ստացող: ' + recipName : ''}${recipPhone ? '<br>Ստացողի հեռ.: ' + recipPhone : ''}`;
       } else if (o.shippingMethod === 'international') {
-        shipLabel = `✈️ Արտերկիր (${sd.country || ''})`;
+        const serviceInfo = sd.serviceName ? ` — ${sd.serviceName}` : '';
+        const zoneInfo = sd.zone ? ` (Գոտի ${sd.zone})` : '';
+        const weightInfo = sd.weightGrams ? ` | ${(sd.weightGrams/1000).toFixed(1)} կգ` : '';
+        shipLabel = `✈️ Արտերկիր՝ ${sd.country || ''}${zoneInfo}${serviceInfo}${weightInfo}`;
         addressLine = sd.address || '';
       } else if (o.shippingMethod === 'pickup') {
         shipLabel = '🏪 Ինքնուրույն վերցնում';
@@ -2449,8 +2915,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           <div class="order-totals">
             <div>Ենթագումար: ${(o.subtotal || 0).toLocaleString()} ֏</div>
             ${o.firstOrderDiscount && o.firstOrderDiscount > 0 ? `<div style="color:#c33">Առաջին պատվերի զեղչ (20%): −${o.firstOrderDiscount.toLocaleString()} ֏</div>` : ''}
-            <div>Առաքում: ${o.shippingMethod === 'international' && sd.priceStatus === 'pending' ? '<em style="color:#c33">կհաստատվի</em>' : (o.shippingCost || 0).toLocaleString() + ' ֏'}</div>
+            <div>Առաքում: ${o.shippingMethod === 'international' && sd.priceStatus === 'pending' ? '<em style="color:#c33">կհաստատվի</em>' : (o.shippingCost || 0).toLocaleString() + ' ֏'}${o.shippingMethod === 'international' && sd.service ? ' <span style="font-size:11px; color:var(--mid)">(' + (sd.serviceName || sd.service) + ')</span>' : ''}</div>
             <div class="grand">Ընդհանուր: ${(o.total || 0).toLocaleString()} ֏</div>
+          </div>
+          <div style="margin:15px 0; padding:12px; background:#f8f6f1; border:1px solid var(--border)">
+            <label style="display:block; font-size:11px; color:var(--mid); margin-bottom:5px; text-transform:uppercase; letter-spacing:1px">📦 ՀայՓոստի Track համար</label>
+            <div style="display:flex; gap:8px; align-items:center">
+              <input type="text" id="track-${o.id}" value="${o.trackingNumber || ''}" placeholder="օր.՝ SPO132922884AM" style="flex:1; padding:8px 12px; border:1px solid var(--border); font-family:inherit; font-size:13px; background:#fff" />
+              <button onclick="window.saveTrackingNumber('${o.id}')" style="background:var(--accent); color:#fff; border:none; padding:8px 18px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600">Պահպանել</button>
+            </div>
+            <div style="font-size:10px; color:var(--mid); margin-top:5px">Մուտքագրեք ՀայՓոստի Track համարը, հաճախորդը ինքնաբար կտեսնի առաքման ընթացքը իր պատվերների էջում</div>
           </div>
           <div class="order-actions">
             ${o.status === 'new' ? `<button onclick="window.confirmOrder('${o.id}')" style="background:#4a7c59; color:#fff; border:none; padding:10px 18px; cursor:pointer; font-family:inherit; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600">✓ Հաստատել պատվերը</button>` : ''}
@@ -2527,6 +3001,104 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   };
 
   // Admin confirms a new order (changes status from "new" to "confirmed")
+  // ==== HayPost Tracking Integration ====
+  const HAYPOST_TRACKER_URL = 'https://haypost-tracker.vikaareg1998.workers.dev';
+
+  // Admin saves tracking number for an order
+  window.saveTrackingNumber = async (orderId) => {
+    const input = document.getElementById('track-' + orderId);
+    if (!input) return;
+    const trackNum = input.value.trim().toUpperCase();
+    
+    if (trackNum && !/^[A-Z]{2,4}\d{6,12}AM$/i.test(trackNum)) {
+      alert('Սխալ Track համարի ֆորմատ։\nՕրինակ՝ SPO132922884AM');
+      return;
+    }
+    
+    try {
+      await updateDoc(doc(db, "orders", orderId), { 
+        trackingNumber: trackNum || null
+      });
+      alert(trackNum ? '✓ Track համարը պահպանվեց։\nՀաճախորդը այժմ տեսնելու է առաքման ընթացքը իր պատվերների էջում։' : '✓ Track համարը հեռացվեց');
+    } catch(e) {
+      alert('Սխալ: ' + e.message);
+    }
+  };
+
+  // Fetch tracking data from HayPost via our Cloudflare Worker
+  window.fetchTrackingData = async (trackingNumber) => {
+    if (!trackingNumber) return null;
+    try {
+      const res = await fetch(`${HAYPOST_TRACKER_URL}/?trackingNumber=${encodeURIComponent(trackingNumber)}&lng=am`);
+      const data = await res.json();
+      if (data.error) return null;
+      return data.data?.result || [];
+    } catch(e) {
+      console.error('Tracking fetch error:', e);
+      return null;
+    }
+  };
+
+  // Render tracking timeline inside an order card
+  async function renderTrackingTimeline(orderId, trackingNumber) {
+    const container = document.getElementById('tracking-timeline-' + orderId);
+    if (!container) return;
+    
+    const events = await window.fetchTrackingData(trackingNumber);
+    
+    if (!events) {
+      container.innerHTML = '<div style="color:#c33; font-size:13px">⚠ Չհաջողվեց բեռնել առաքման ընթացքը։ Փորձեք մի փոքր ուշ։</div>';
+      return;
+    }
+    
+    if (events.length === 0) {
+      container.innerHTML = '<div style="color:var(--mid); font-size:13px">Դեռ տվյալներ չկան։ ՀայՓոստը սովորաբար թարմացնում է 1-2 օր ընթացքում։</div>';
+      return;
+    }
+    
+    // Sort events chronologically (oldest first for timeline)
+    const sortedEvents = [...events].sort((a, b) => {
+      const dateA = new Date(a.eventDate || a.local_Date);
+      const dateB = new Date(b.eventDate || b.local_Date);
+      return dateA - dateB;
+    });
+    
+    const isDelivered = sortedEvents.some(e => e.event && e.event.includes('ստացող'));
+    
+    // Build timeline HTML
+    let html = '<div style="margin-top:10px">';
+    sortedEvents.forEach((ev, idx) => {
+      const isLast = idx === sortedEvents.length - 1;
+      const isFinalDelivery = ev.event && ev.event.includes('ստացող');
+      const dotColor = isFinalDelivery ? '#4caf50' : '#8b6f47';
+      const eventDate = ev.local_Date || ev.eventDate || '';
+      // Format date nicely
+      let formattedDate = eventDate;
+      try {
+        const d = new Date(ev.eventDate || ev.local_Date);
+        if (!isNaN(d.getTime())) {
+          formattedDate = d.toLocaleDateString('hy-AM', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + d.toLocaleTimeString('hy-AM', { hour: '2-digit', minute: '2-digit' });
+        }
+      } catch(e) {}
+      
+      html += `
+        <div style="display:flex; gap:12px; ${isLast ? '' : 'margin-bottom:12px'}">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0">
+            <div style="width:18px; height:18px; border-radius:50%; background:${dotColor}; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:600">${isFinalDelivery ? '★' : '✓'}</div>
+            ${isLast ? '' : `<div style="width:2px; flex:1; min-height:20px; background:${dotColor}; opacity:0.3; margin-top:2px"></div>`}
+          </div>
+          <div style="flex:1; padding-bottom:${isLast ? '0' : '5px'}">
+            <div style="font-weight:600; font-size:13px; color:${isFinalDelivery ? '#4caf50' : 'var(--dark)'}">${ev.event || '—'}</div>
+            <div style="font-size:11px; color:var(--mid); margin-top:2px">${formattedDate}</div>
+            ${ev.location ? `<div style="font-size:12px; color:var(--mid); margin-top:2px">📍 ${ev.location}</div>` : ''}
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+    
+    container.innerHTML = html;
+  }
+
   window.confirmOrder = async (orderId) => {
     if (!confirm("Հաստատել այս պատվերը։ Հետո հաճախորդը չի կարող չեղարկել։")) return;
     try {
@@ -2944,10 +3516,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
               </div>
               <div class="user-order-items" style="margin-top:10px; font-size:13px; color:var(--dark)">${items}</div>
               <div style="margin-top:10px; font-weight:600; color:var(--accent)">${(o.total||0).toLocaleString()} ֏</div>
+              ${o.trackingNumber ? `<div id="tracking-box-${o.id}" style="margin-top:15px; padding:15px; background:#f8f6f1; border:1px solid var(--border)"><div style="font-size:11px; color:var(--mid); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px">📦 Առաքման ընթացք (ՀայՓոստ)</div><div style="font-family:monospace; font-size:13px; color:var(--accent); margin-bottom:10px">${o.trackingNumber}</div><div id="tracking-timeline-${o.id}" style="color:var(--mid); font-size:13px">Բեռնվում է...</div></div>` : ''}
               ${actionBtns ? `<div style="margin-top:12px">${actionBtns}</div>` : ''}
               ${canReturn ? `<div style="margin-top:10px; font-size:12px; color:var(--mid); line-height:1.5">${t.return_info}</div>` : ''}
             </div>`;
         }).join('');
+        
+        // Load tracking data for orders with tracking numbers (async, after DOM is rendered)
+        myOrders.forEach(o => {
+          if (o.trackingNumber) {
+            renderTrackingTimeline(o.id, o.trackingNumber);
+          }
+        });
       }
     } else if (accountTab === 'wishlist') {
       const wlProducts = PRODUCTS.filter(p => WISHLIST.includes(p.id));
