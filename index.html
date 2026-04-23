@@ -654,6 +654,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       <button class="orders-tab on" onclick="window.admTab('products')" id="admt-products">Ապրանքներ</button>
       <button class="orders-tab" onclick="window.admTab('orders')" id="admt-orders">Պատվերներ <span class="orders-tab-badge" id="new-orders-badge" style="display:none">0</span></button>
       <button class="orders-tab" onclick="window.admTab('users')" id="admt-users">Հաճախորդներ</button>
+      <button class="orders-tab" onclick="window.admTab('emails')" id="admt-emails">📣 Email Campaign</button>
     </div>
 
     <div id="adm-section-products">
@@ -700,6 +701,63 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
     <div id="adm-section-users" style="display:none; margin-top:20px">
       <div id="users-list"></div>
+    </div>
+
+    <div id="adm-section-emails" style="display:none; margin-top:20px">
+      <h3 style="margin-bottom:15px; font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:500">📣 Email Campaign ստեղծում</h3>
+      <div style="background:#f8f5f0; padding:20px; border-left:3px solid var(--accent); margin-bottom:20px">
+        <p style="font-size:13px; color:var(--mid); line-height:1.6; margin:0">Ստեղծեք գեղեցիկ email եւ ուղարկեք ձեր բոլոր հաճախորդներին։ Կարող եք ընտրել ապրանքներ, որ զեղչով ներկայացնեք։</p>
+      </div>
+      
+      <div style="background:#fff; padding:20px; border:1px solid var(--border)">
+        <div class="admin-input-group" style="margin-bottom:15px">
+          <label style="font-weight:600">Email վերնագիր (subject) *</label>
+          <input type="text" id="camp-subject" placeholder="օր.՝ Գարնանային զեղչեր 30%-ի հասնող" style="width:100%; padding:10px; border:1px solid var(--border); font-family:inherit">
+        </div>
+        
+        <div class="admin-input-group" style="margin-bottom:15px">
+          <label style="font-weight:600">Գլխավոր վերնագիր (email-ի մեջ) *</label>
+          <input type="text" id="camp-title" placeholder="օր.՝ Գարնանային Հավաքածու" style="width:100%; padding:10px; border:1px solid var(--border); font-family:inherit">
+        </div>
+        
+        <div class="admin-input-group" style="margin-bottom:15px">
+          <label style="font-weight:600">Ուղերձի տեքստը</label>
+          <textarea id="camp-intro" rows="4" placeholder="օր.՝ Ողջույն, ուրախ ենք ներկայացնել մեր նոր հավաքածուն։ Սահմանափակ ժամանակով՝ 30% զեղչ։" style="width:100%; padding:10px; border:1px solid var(--border); font-family:inherit; resize:vertical"></textarea>
+        </div>
+        
+        <div class="admin-input-group" style="margin-bottom:15px">
+          <label style="font-weight:600">Ապրանքներ (ընտրեք զեղչել կամ ներկայացնել)</label>
+          <div id="camp-products-list" style="max-height:300px; overflow-y:auto; border:1px solid var(--border); padding:10px; background:#fafafa">
+            <div style="color:var(--mid); text-align:center; padding:15px">Բեռնվում է...</div>
+          </div>
+          <div style="font-size:11px; color:var(--mid); margin-top:5px">Նշեք ապրանքները ☑ որ ուզում եք email-ի մեջ լինեն</div>
+        </div>
+        
+        <div class="admin-input-group" style="margin-bottom:15px">
+          <label style="font-weight:600">Կոճակի տեքստ</label>
+          <input type="text" id="camp-cta-text" placeholder="Դիտել հավաքածուն →" value="Դիտել հավաքածուն →" style="width:100%; padding:10px; border:1px solid var(--border); font-family:inherit">
+        </div>
+        
+        <div class="admin-input-group" style="margin-bottom:20px">
+          <label style="font-weight:600">Ստացողներ</label>
+          <div style="display:flex; align-items:center; gap:15px; padding:10px; background:#f5f1eb; border:1px solid var(--border)">
+            <span id="camp-recipient-count" style="font-weight:600; color:var(--accent)">0 հաճախորդ</span>
+            <span style="font-size:12px; color:var(--mid)">(բոլոր գրանցված օգտատերերը)</span>
+            <button onclick="window.refreshRecipientCount()" style="margin-left:auto; padding:5px 12px; background:#fff; border:1px solid var(--border); cursor:pointer; font-family:inherit; font-size:12px">🔄 Թարմացնել</button>
+          </div>
+        </div>
+        
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button onclick="window.sendTestEmail()" style="padding:12px 20px; background:#fff; border:2px solid var(--accent); color:var(--accent); cursor:pointer; font-family:inherit; font-weight:600">
+            📧 Փորձնական ուղարկել ինձ
+          </button>
+          <button onclick="window.sendCampaign()" style="padding:12px 25px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase">
+            🚀 Ուղարկել բոլորին
+          </button>
+        </div>
+        
+        <div id="camp-status" style="margin-top:15px; font-size:13px"></div>
+      </div>
     </div>
 </div>
 
@@ -2802,11 +2860,161 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('admt-products').classList.toggle('on', tab === 'products');
     document.getElementById('admt-orders').classList.toggle('on', tab === 'orders');
     document.getElementById('admt-users').classList.toggle('on', tab === 'users');
+    document.getElementById('admt-emails').classList.toggle('on', tab === 'emails');
     document.getElementById('adm-section-products').style.display = tab === 'products' ? 'block' : 'none';
     document.getElementById('adm-section-orders').style.display = tab === 'orders' ? 'block' : 'none';
     document.getElementById('adm-section-users').style.display = tab === 'users' ? 'block' : 'none';
+    document.getElementById('adm-section-emails').style.display = tab === 'emails' ? 'block' : 'none';
     if (tab === 'orders') renderOrders();
     if (tab === 'users') renderUsersAdmin();
+    if (tab === 'emails') renderEmailCampaignUI();
+  };
+
+  // ==== Email Campaign Functions ====
+  let campaignRecipients = [];
+
+  function renderEmailCampaignUI() {
+    // Render products list with checkboxes
+    const container = document.getElementById('camp-products-list');
+    if (!container) return;
+    
+    if (PRODUCTS.length === 0) {
+      container.innerHTML = '<div style="color:var(--mid); text-align:center; padding:15px">Ապրանքներ չկան։ Նախ ավելացրեք ապրանքներ։</div>';
+    } else {
+      container.innerHTML = PRODUCTS.map(p => {
+        const imgs = getProductImages(p);
+        const mainImg = imgs && imgs.length > 0 ? imgs[0] : '';
+        const hasDisc = hasDiscount(p);
+        const discPrice = getDiscountedPrice(p);
+        return `
+          <label style="display:flex; align-items:center; gap:12px; padding:10px; border-bottom:1px solid var(--border); cursor:pointer">
+            <input type="checkbox" class="camp-prod-check" data-id="${p.id}" style="width:18px; height:18px; cursor:pointer">
+            ${mainImg ? `<img src="${mainImg}" style="width:50px; height:50px; object-fit:cover; border:1px solid var(--border)">` : '<div style="width:50px; height:50px; background:#eee"></div>'}
+            <div style="flex:1">
+              <div style="font-weight:600; font-size:14px">${p.name_hy || p.name_en || ''}</div>
+              <div style="font-size:12px; color:var(--mid)">
+                ${hasDisc ? `<span style="text-decoration:line-through; color:#999">${p.price.toLocaleString()} ֏</span> <span style="color:#c33; font-weight:600">${discPrice.toLocaleString()} ֏</span> <span style="background:#c33; color:#fff; padding:1px 6px; font-size:10px; margin-left:4px">-${p.discount}%</span>` : `<span>${p.price.toLocaleString()} ֏</span>`}
+              </div>
+            </div>
+          </label>
+        `;
+      }).join('');
+    }
+    
+    // Refresh recipient count
+    window.refreshRecipientCount();
+  }
+
+  window.refreshRecipientCount = async () => {
+    const countEl = document.getElementById('camp-recipient-count');
+    if (!countEl) return;
+    countEl.innerText = 'Հաշվում...';
+    try {
+      const snap = await getDocs(collection(db, "users"));
+      campaignRecipients = [];
+      snap.forEach(d => {
+        const u = d.data();
+        if (u.email) {
+          campaignRecipients.push({ email: u.email, name: u.name || '' });
+        }
+      });
+      countEl.innerText = campaignRecipients.length + ' հաճախորդ';
+    } catch(e) {
+      countEl.innerText = 'Սխալ: ' + e.message;
+    }
+  };
+
+  function collectCampaignData() {
+    const subject = document.getElementById('camp-subject')?.value.trim() || '';
+    const title = document.getElementById('camp-title')?.value.trim() || '';
+    const intro = document.getElementById('camp-intro')?.value.trim() || '';
+    const ctaText = document.getElementById('camp-cta-text')?.value.trim() || 'Դիտել →';
+    
+    // Collect selected products
+    const checks = document.querySelectorAll('.camp-prod-check:checked');
+    const products = [];
+    checks.forEach(chk => {
+      const pid = chk.dataset.id;
+      const p = PRODUCTS.find(x => x.id === pid);
+      if (!p) return;
+      const imgs = getProductImages(p);
+      const mainImg = imgs && imgs.length > 0 ? imgs[0] : '';
+      const hasDisc = hasDiscount(p);
+      const discPrice = getDiscountedPrice(p);
+      products.push({
+        name: p.name_hy || p.name_en || '',
+        image: mainImg,
+        oldPrice: hasDisc ? p.price.toLocaleString() + ' ֏' : null,
+        newPrice: hasDisc ? discPrice.toLocaleString() + ' ֏' : p.price.toLocaleString() + ' ֏',
+        discount: hasDisc ? `-${p.discount}%` : null,
+        description: (p.desc_hy || '').substring(0, 100),
+        url: 'https://hovakimyan-web.pages.dev'
+      });
+    });
+    
+    return { subject, title, intro, products, ctaText, ctaUrl: 'https://hovakimyan-web.pages.dev' };
+  }
+
+  window.sendTestEmail = async () => {
+    const statusEl = document.getElementById('camp-status');
+    const data = collectCampaignData();
+    
+    if (!data.subject || !data.title) {
+      statusEl.innerHTML = '<span style="color:#c33">⚠ Լրացրեք email-ի վերնագիրը եւ գլխավոր վերնագիրը</span>';
+      return;
+    }
+    
+    const testEmail = prompt('Ձեր email-ը որտեղ ուղարկեմ փորձնականը:', currentUser?.email || '');
+    if (!testEmail) return;
+    
+    statusEl.innerHTML = '<span style="color:var(--mid)">Ուղարկվում է...</span>';
+    
+    const result = await sendEmail('campaign', testEmail, 'Test User', data);
+    
+    if (result.error) {
+      statusEl.innerHTML = `<span style="color:#c33">❌ Սխալ: ${result.message}</span>`;
+    } else {
+      statusEl.innerHTML = `<span style="color:#4caf50">✓ Ուղարկվեց! Ստուգեք <strong>${testEmail}</strong> (inbox կամ spam folder)</span>`;
+    }
+  };
+
+  window.sendCampaign = async () => {
+    const statusEl = document.getElementById('camp-status');
+    const data = collectCampaignData();
+    
+    if (!data.subject || !data.title) {
+      statusEl.innerHTML = '<span style="color:#c33">⚠ Լրացրեք email-ի վերնագիրը եւ գլխավոր վերնագիրը</span>';
+      return;
+    }
+    
+    if (campaignRecipients.length === 0) {
+      statusEl.innerHTML = '<span style="color:#c33">⚠ Ստացողներ չկան։ Սեղմեք «Թարմացնել» կոճակը։</span>';
+      return;
+    }
+    
+    if (!confirm(`Ուղարկել email ${campaignRecipients.length} հաճախորդի?\n\nՎերնագիր: ${data.subject}\nԱպրանքներ: ${data.products.length}\n\nՇարունակել?`)) return;
+    
+    statusEl.innerHTML = '<span style="color:var(--mid)">Ուղարկվում է 0/' + campaignRecipients.length + '...</span>';
+    
+    let sent = 0;
+    let failed = 0;
+    
+    for (let i = 0; i < campaignRecipients.length; i++) {
+      const r = campaignRecipients[i];
+      const result = await sendEmail('campaign', r.email, r.name || r.email.split('@')[0], data);
+      if (result.error) {
+        failed++;
+      } else {
+        sent++;
+      }
+      statusEl.innerHTML = `<span style="color:var(--mid)">Ուղարկվում է ${i+1}/${campaignRecipients.length}... (✓ ${sent}, ✗ ${failed})</span>`;
+      // Small delay to avoid rate limiting
+      if (i < campaignRecipients.length - 1) {
+        await new Promise(r => setTimeout(r, 200));
+      }
+    }
+    
+    statusEl.innerHTML = `<div style="padding:15px; background:#e8f5e9; border:1px solid #4caf50; color:#2e7d32"><strong>✓ Campaign ավարտվեց!</strong><br>Ուղարկվեց՝ ${sent} հաճախորդի<br>Չի ուղարկվել՝ ${failed}-ին (հնարավոր է անվավեր email)</div>`;
   };
 
   window.filterOrders = (filter) => {
@@ -3003,6 +3211,30 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
   // Admin confirms a new order (changes status from "new" to "confirmed")
   // ==== HayPost Tracking Integration ====
   const HAYPOST_TRACKER_URL = 'https://haypost-tracker.vikaareg1998.workers.dev';
+  
+  // ==== Email Worker Integration (Brevo) ====
+  const EMAIL_WORKER_URL = 'https://hovakimyan-email.vikaareg1998.workers.dev';
+  
+  // Send email via our Cloudflare Worker (which calls Brevo)
+  async function sendEmail(type, toEmail, toName, data) {
+    if (!toEmail) return { error: true, message: 'No email provided' };
+    try {
+      const res = await fetch(EMAIL_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, to: toEmail, toName: toName || '', data: data || {} })
+      });
+      const result = await res.json();
+      if (!res.ok || result.error) {
+        console.error('Email send error:', result);
+        return { error: true, message: result.message || 'Failed to send email' };
+      }
+      return { error: false, messageId: result.messageId };
+    } catch(e) {
+      console.error('Email fetch error:', e);
+      return { error: true, message: e.message };
+    }
+  }
 
   // Admin saves tracking number for an order
   window.saveTrackingNumber = async (orderId) => {
@@ -3367,6 +3599,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
         wishlist: WISHLIST,
         createdAt: serverTimestamp()
       });
+      // Send welcome email (don't block signup if it fails)
+      sendEmail('welcome', email, name || email.split('@')[0], {}).catch(e => console.warn('Welcome email failed:', e));
       window.closeAuth();
     } catch(e) {
       errEl.innerText = authErrorMsg(e.code);
@@ -3406,6 +3640,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           wishlist: WISHLIST,
           createdAt: serverTimestamp()
         });
+        // Send welcome email to new Google users (don't block signup if it fails)
+        if (cred.user.email) {
+          sendEmail('welcome', cred.user.email, cred.user.displayName || cred.user.email.split('@')[0], {}).catch(e => console.warn('Welcome email failed:', e));
+        }
       }
       window.closeAuth();
     } catch(e) {
