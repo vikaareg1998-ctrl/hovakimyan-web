@@ -3841,7 +3841,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
           
           // Return instructions shown based on status + shipping method
           let returnInstructions = '';
-          const daysRemaining = Math.max(0, 14 - daysSinceOrder);
           let deadlineText;
           if (daysRemaining === 0) {
             deadlineText = 'Այսօրվա ընթացքում (վերջին օրը)';
