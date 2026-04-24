@@ -652,6 +652,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     
     <div class="orders-tabs" style="margin-top:20px">
       <button class="orders-tab on" onclick="window.admTab('products')" id="admt-products">Ապրանքներ</button>
+      <button class="orders-tab" onclick="window.admTab('quickstock')" id="admt-quickstock">⚡ Արագ Stock</button>
       <button class="orders-tab" onclick="window.admTab('orders')" id="admt-orders">Պատվերներ <span class="orders-tab-badge" id="new-orders-badge" style="display:none">0</span></button>
       <button class="orders-tab" onclick="window.admTab('users')" id="admt-users">Հաճախորդներ</button>
       <button class="orders-tab" onclick="window.admTab('emails')" id="admt-emails">📣 Email Campaign</button>
@@ -667,6 +668,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
             <div class="adm-images-preview" id="adm-images-preview"></div>
         </div>
         <div class="admin-input-group"><label>Տեսակ</label><select id="adm-cat"><option value="sneakers">Sneakers</option><option value="loafers">Loafers</option></select></div>
+        <div class="admin-input-group"><label>Կոդ / SKU (ներքին, 1C-ի կոդ)</label><input type="text" id="adm-sku" placeholder="օր.՝ HF-001, AR-042"><div style="font-size:10px; color:var(--mid); margin-top:5px">Կոդը երեւում է միայն Admin-ում (Quick Stock-ում)։ Կարող եք որոնել կոդով։ Ոչ պարտադիր՝ կարող եք դատարկ թողնել։</div></div>
         <div class="admin-input-group"><label>Անուն (անգլերեն)</label><input type="text" id="adm-name" placeholder="օր.՝ Mirror Specter"><div style="font-size:10px; color:var(--mid); margin-top:5px">Գրեք անունը անգլերեն։ Կայքում ինքնաբար կցուցադրվի բոլոր լեզուներով։</div></div>
         <div class="admin-input-group">
             <label>Գին եւ Զեղչ (AMD)</label>
@@ -701,6 +703,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
 
     <div id="adm-section-users" style="display:none; margin-top:20px">
       <div id="users-list"></div>
+    </div>
+
+    <div id="adm-section-quickstock" style="display:none; margin-top:20px">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px">
+        <h3 style="margin:0; font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:500">⚡ Արագ Stock թարմացում</h3>
+        <div style="display:flex; gap:10px; align-items:center">
+          <input type="text" id="qs-search" placeholder="🔍 Որոնել կոդով կամ անունով..." oninput="window.filterQuickStock()" style="padding:8px 12px; border:1px solid var(--border); font-family:inherit; font-size:13px; min-width:240px">
+          <button onclick="window.saveAllQuickStock()" id="qs-save-btn" style="padding:10px 20px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase; white-space:nowrap">💾 Պահպանել բոլորը</button>
+        </div>
+      </div>
+      
+      <div style="background:#f8f5f0; padding:12px 15px; border-left:3px solid var(--accent); margin-bottom:15px; font-size:13px; color:var(--mid); line-height:1.6">
+        💡 <strong>Արագ ձեւ քանակների թարմացման համար։</strong> Փոփոխեք ցանկացած չափսի քանակը, սեղմեք «Պահպանել բոլորը»։ Նարնջագույն գույնով նշված են չփոփոխված դաշտերը։
+      </div>
+      
+      <div id="qs-status" style="margin-bottom:10px; font-size:13px"></div>
+      
+      <div id="quickstock-list" style="background:#fff; border:1px solid var(--border)"></div>
     </div>
 
     <div id="adm-section-emails" style="display:none; margin-top:20px">
@@ -1980,6 +2000,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       img: admImagesArr[0],
       images: admImagesArr.slice(),
       cat: document.getElementById('adm-cat').value,
+      sku: (document.getElementById('adm-sku')?.value || '').trim(),
       name_hy: name_hy,
       name_en: name_en_input,
       name_ru: name_ru,
@@ -2011,6 +2032,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     editId = id;
     // Show English name (the source field). If not present, fall back to any available name.
     document.getElementById('adm-name').value = p.name_en || p.name_hy || p.name_ru || '';
+    const skuField = document.getElementById('adm-sku');
+    if (skuField) skuField.value = p.sku || '';
     document.getElementById('adm-price').value = p.price;
     document.getElementById('adm-discount').value = p.discount || '';
     document.getElementById('adm-desc').value = p.desc_hy || '';
@@ -2036,7 +2059,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     const l = document.getElementById('admin-list');
     l.innerHTML = '<h4>Ցուցակ</h4>';
     PRODUCTS.forEach(p => {
-      l.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${p.name_hy}</span> <div><button onclick="window.editProduct('${p.id}')">✏️</button><button onclick="window.deleteProduct('${p.id}')">🗑️</button></div></div>`;
+      const skuBadge = p.sku ? `<span style="display:inline-block; padding:2px 6px; background:#f8f5f0; color:var(--accent); font-family:monospace; font-size:11px; font-weight:600; margin-right:8px">${escapeHtml(p.sku)}</span>` : '';
+      l.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${skuBadge}${escapeHtml(p.name_hy || '')}</span> <div><button onclick="window.editProduct('${p.id}')">✏️</button><button onclick="window.deleteProduct('${p.id}')">🗑️</button></div></div>`;
     });
   }
 
@@ -2044,6 +2068,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('adm-file').value = '';
     document.getElementById('adm-img-base64').value = '';
     document.getElementById('adm-name').value = '';
+    const skuField = document.getElementById('adm-sku');
+    if (skuField) skuField.value = '';
     document.getElementById('adm-price').value = '';
     document.getElementById('adm-discount').value = '';
     document.getElementById('adm-desc').value = '';
@@ -2861,16 +2887,185 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     document.getElementById('admt-orders').classList.toggle('on', tab === 'orders');
     document.getElementById('admt-users').classList.toggle('on', tab === 'users');
     document.getElementById('admt-emails').classList.toggle('on', tab === 'emails');
+    document.getElementById('admt-quickstock').classList.toggle('on', tab === 'quickstock');
     document.getElementById('adm-section-products').style.display = tab === 'products' ? 'block' : 'none';
     document.getElementById('adm-section-orders').style.display = tab === 'orders' ? 'block' : 'none';
     document.getElementById('adm-section-users').style.display = tab === 'users' ? 'block' : 'none';
     document.getElementById('adm-section-emails').style.display = tab === 'emails' ? 'block' : 'none';
+    document.getElementById('adm-section-quickstock').style.display = tab === 'quickstock' ? 'block' : 'none';
     if (tab === 'orders') renderOrders();
     if (tab === 'users') renderUsersAdmin();
     if (tab === 'emails') renderEmailCampaignUI();
+    if (tab === 'quickstock') renderQuickStock();
   };
 
-  // ==== Email Campaign Functions ====
+  // ==== Quick Stock Management Functions ====
+  let quickStockChanges = {}; // { productId: { sizeNum: newValue } }
+  const STANDARD_SIZES = [39, 40, 41, 42, 43, 44];
+
+  function renderQuickStock() {
+    const container = document.getElementById('quickstock-list');
+    if (!container) return;
+    
+    if (PRODUCTS.length === 0) {
+      container.innerHTML = '<div style="padding:30px; text-align:center; color:var(--mid)">Ապրանքներ չկան։ Ավելացրեք ապրանքներ «Ապրանքներ» բաժնից։</div>';
+      return;
+    }
+    
+    quickStockChanges = {}; // Reset changes
+    
+    // Use ONLY standard sizes (39-44) — any older non-standard sizes still stored in DB are ignored here
+    const sizes = STANDARD_SIZES;
+    
+    const headerHTML = `
+      <div class="qs-row qs-header" style="display:grid; grid-template-columns: 60px 90px 2fr ${sizes.map(() => '60px').join(' ')} 80px; gap:8px; padding:12px 15px; background:#f8f5f0; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--mid); border-bottom:2px solid var(--accent); position:sticky; top:0; z-index:10">
+        <div style="text-align:center">🖼</div>
+        <div>Կոդ</div>
+        <div>Անուն</div>
+        ${sizes.map(s => `<div style="text-align:center">${s}</div>`).join('')}
+        <div style="text-align:center">Ընդ.</div>
+      </div>`;
+    
+    const rowsHTML = PRODUCTS.map(p => {
+      const imgs = getProductImages(p);
+      const mainImg = imgs && imgs.length > 0 ? imgs[0] : '';
+      const stock = (p.sizesStock && typeof p.sizesStock === 'object') ? p.sizesStock : {};
+      const totalStock = sizes.reduce((sum, s) => sum + (parseInt(stock[s]) || 0), 0);
+      const name = p.name_hy || p.name_en || '—';
+      const code = p.sku || '';
+      const searchData = `${name.toLowerCase()} ${code.toLowerCase()}`;
+      
+      return `
+        <div class="qs-row" data-search="${escapeHtml(searchData)}" style="display:grid; grid-template-columns: 60px 90px 2fr ${sizes.map(() => '60px').join(' ')} 80px; gap:8px; padding:10px 15px; border-bottom:1px solid var(--border); align-items:center; font-size:13px; transition:background 0.2s">
+          <div style="text-align:center">
+            ${mainImg ? `<img src="${mainImg}" style="width:40px; height:40px; object-fit:cover; border:1px solid var(--border)">` : '<div style="width:40px; height:40px; background:#eee"></div>'}
+          </div>
+          <div style="font-family:monospace; font-size:12px; color:var(--accent); font-weight:600">${code ? escapeHtml(code) : '<span style="color:#ccc">—</span>'}</div>
+          <div>
+            <div style="font-weight:600">${escapeHtml(name)}</div>
+            <div style="font-size:11px; color:var(--mid)">${(p.price || 0).toLocaleString()} ֏</div>
+          </div>
+          ${sizes.map(s => {
+            const currentVal = stock[s] !== undefined ? stock[s] : 0;
+            return `<input type="number" min="0" max="999" value="${currentVal}" data-product-id="${p.id}" data-size="${s}" data-original="${currentVal}" onchange="window.updateQuickStockValue(this)" style="width:100%; padding:6px; text-align:center; border:1px solid var(--border); font-family:inherit; font-size:13px; background:#fff">`;
+          }).join('')}
+          <div id="qs-total-${p.id}" style="text-align:center; font-weight:600; color:var(--accent)">${totalStock}</div>
+        </div>`;
+    }).join('');
+    
+    container.innerHTML = headerHTML + rowsHTML;
+  }
+
+  window.updateQuickStockValue = (input) => {
+    const productId = input.dataset.productId;
+    const sizeNum = parseInt(input.dataset.size);
+    const originalVal = parseInt(input.dataset.original) || 0;
+    const newVal = parseInt(input.value) || 0;
+    
+    if (!quickStockChanges[productId]) quickStockChanges[productId] = {};
+    
+    if (newVal !== originalVal) {
+      quickStockChanges[productId][sizeNum] = newVal;
+      input.style.background = '#fff8e6';
+      input.style.borderColor = '#e67e22';
+      input.style.fontWeight = '600';
+    } else {
+      delete quickStockChanges[productId][sizeNum];
+      if (Object.keys(quickStockChanges[productId]).length === 0) {
+        delete quickStockChanges[productId];
+      }
+      input.style.background = '#fff';
+      input.style.borderColor = 'var(--border)';
+      input.style.fontWeight = 'normal';
+    }
+    
+    // Update total for this product
+    const totalEl = document.getElementById('qs-total-' + productId);
+    if (totalEl) {
+      const allInputs = document.querySelectorAll(`input[data-product-id="${productId}"]`);
+      let total = 0;
+      allInputs.forEach(inp => total += (parseInt(inp.value) || 0));
+      totalEl.innerText = total;
+    }
+    
+    // Update status
+    updateQuickStockStatus();
+  };
+
+  function updateQuickStockStatus() {
+    const statusEl = document.getElementById('qs-status');
+    if (!statusEl) return;
+    const changedProducts = Object.keys(quickStockChanges).length;
+    if (changedProducts === 0) {
+      statusEl.innerHTML = '';
+    } else {
+      let totalChanges = 0;
+      Object.values(quickStockChanges).forEach(sizes => { totalChanges += Object.keys(sizes).length; });
+      statusEl.innerHTML = `<div style="padding:10px; background:#fff8e6; border-left:3px solid #e67e22; color:#8b6f47">⚠ ${changedProducts} ապրանքում ${totalChanges} փոփոխություն սպասում է պահպանման։</div>`;
+    }
+  }
+
+  window.filterQuickStock = () => {
+    const query = (document.getElementById('qs-search')?.value || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#quickstock-list .qs-row:not(.qs-header)');
+    rows.forEach(row => {
+      const searchData = row.dataset.search || '';
+      row.style.display = (!query || searchData.includes(query)) ? 'grid' : 'none';
+    });
+  };
+
+  window.saveAllQuickStock = async () => {
+    const changedProducts = Object.keys(quickStockChanges);
+    if (changedProducts.length === 0) {
+      alert('Փոփոխություններ չկան։');
+      return;
+    }
+    
+    if (!confirm(`Պահպանել ${changedProducts.length} ապրանքի փոփոխությունները?`)) return;
+    
+    const statusEl = document.getElementById('qs-status');
+    const saveBtn = document.getElementById('qs-save-btn');
+    if (saveBtn) saveBtn.disabled = true;
+    
+    let saved = 0;
+    let failed = 0;
+    
+    for (const productId of changedProducts) {
+      try {
+        const product = PRODUCTS.find(p => p.id === productId);
+        if (!product) { failed++; continue; }
+        
+        const currentStock = (product.sizesStock && typeof product.sizesStock === 'object') ? { ...product.sizesStock } : {};
+        const changes = quickStockChanges[productId];
+        Object.keys(changes).forEach(sizeNum => {
+          currentStock[sizeNum] = changes[sizeNum];
+        });
+        
+        await updateDoc(doc(db, "products", productId), { sizesStock: currentStock });
+        saved++;
+        if (statusEl) statusEl.innerHTML = `<div style="padding:10px; background:#e3f2fd; color:#1976d2">⏳ Պահպանվում է... ${saved}/${changedProducts.length}</div>`;
+      } catch(e) {
+        console.error('Save error for product', productId, e);
+        failed++;
+      }
+    }
+    
+    if (saveBtn) saveBtn.disabled = false;
+    quickStockChanges = {};
+    
+    if (failed === 0) {
+      if (statusEl) statusEl.innerHTML = `<div style="padding:12px; background:#e8f5e9; border-left:3px solid #4caf50; color:#2e7d32"><strong>✓ Հաջողությամբ պահպանվեց!</strong> ${saved} ապրանքի քանակները թարմացվեցին։</div>`;
+      // Re-render after 2 seconds
+      setTimeout(() => {
+        renderQuickStock();
+        const newStatus = document.getElementById('qs-status');
+        if (newStatus) newStatus.innerHTML = '';
+      }, 2000);
+    } else {
+      if (statusEl) statusEl.innerHTML = `<div style="padding:12px; background:#ffebee; border-left:3px solid #c33; color:#8b4543">⚠ Պահպանվեց՝ ${saved}, սխալ՝ ${failed}։ Փորձեք նորից։</div>`;
+    }
+  };
+
   let campaignRecipients = [];
 
   function renderEmailCampaignUI() {
