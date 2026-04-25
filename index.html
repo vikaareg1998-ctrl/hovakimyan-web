@@ -461,6 +461,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     .user-nav-box { padding: 6px; }
 }
 </style>
+<!-- SheetJS for Excel parsing in Admin Quick Stock import -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -708,17 +710,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
     <div id="adm-section-quickstock" style="display:none; margin-top:20px">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px">
         <h3 style="margin:0; font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:500">⚡ Արագ Stock թարմացում</h3>
-        <div style="display:flex; gap:10px; align-items:center">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
           <input type="text" id="qs-search" placeholder="🔍 Որոնել կոդով կամ անունով..." oninput="window.filterQuickStock()" style="padding:8px 12px; border:1px solid var(--border); font-family:inherit; font-size:13px; min-width:240px">
-          <button onclick="window.saveAllQuickStock()" id="qs-save-btn" style="padding:10px 20px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase; white-space:nowrap">💾 Պահպանել բոլորը</button>
+          <label style="padding:10px 16px; background:#3a7bd5; color:#fff; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; font-size:12px">
+            📥 1C Excel Import
+            <input type="file" id="qs-excel-file" accept=".xlsx,.xls" style="display:none" onchange="window.handleExcelImport(this)">
+          </label>
+          <button onclick="window.saveAllQuickStock()" id="qs-save-btn" style="padding:10px 20px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; font-size:12px">💾 Պահպանել բոլորը</button>
         </div>
       </div>
       
       <div style="background:#f8f5f0; padding:12px 15px; border-left:3px solid var(--accent); margin-bottom:15px; font-size:13px; color:var(--mid); line-height:1.6">
-        💡 <strong>Արագ ձեւ քանակների թարմացման համար։</strong> Փոփոխեք ցանկացած չափսի քանակը, սեղմեք «Պահպանել բոլորը»։ Նարնջագույն գույնով նշված են չփոփոխված դաշտերը։
+        💡 <strong>Արագ ձեւ քանակների թարմացման համար։</strong> Ձեռքով փոփոխեք քանակները կամ <strong>1C-ից Excel ֆայլ վերբեռնեք</strong> ավտոմատ թարմացման համար։ Միայն կայքում առկա կոդերը կթարմացվեն։
       </div>
       
       <div id="qs-status" style="margin-bottom:10px; font-size:13px"></div>
+      
+      <!-- Excel Import Preview Modal -->
+      <div id="qs-import-preview" style="display:none; margin-bottom:15px; background:#fff; border:2px solid #3a7bd5; padding:20px"></div>
       
       <div id="quickstock-list" style="background:#fff; border:1px solid var(--border)"></div>
     </div>
@@ -3063,6 +3072,204 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba
       }, 2000);
     } else {
       if (statusEl) statusEl.innerHTML = `<div style="padding:12px; background:#ffebee; border-left:3px solid #c33; color:#8b4543">⚠ Պահպանվեց՝ ${saved}, սխալ՝ ${failed}։ Փորձեք նորից։</div>`;
+    }
+  };
+
+  // ==== 1C Excel Import ====
+  // Parses 1C "Մնացորդները պահեստներում" Excel format. Each line: "CODE, SIZE, հատ" with quantity.
+  // Lines without size (e.g. "CODE, , հատ") are subtotals — skipped.
+  // Header rows and totals (Խանութ, Итого, Պահեստ) are also skipped.
+  let pendingImportData = null; // { rows: [{code, sizes: {39:1, 40:2}}], matched: [...], unmatched: [...] }
+
+  function parseQR1CRow(rowText) {
+    if (!rowText || typeof rowText !== 'string') return null;
+    const trimmed = rowText.trim();
+    if (!trimmed) return null;
+    
+    // Skip headers and totals
+    const skipKeywords = ['Մնացորդները', 'Ապրանքացանկ', 'Խանութ', 'Պահեստ', 'Итого', 'Total'];
+    if (skipKeywords.some(kw => trimmed === kw || trimmed.startsWith(kw + ','))) return null;
+    
+    // Format: "CODE, SIZE, UNIT" — e.g. "01, 40, հատ" or "107 , 41, հատ" or "01, , հատ" (subtotal)
+    const parts = trimmed.split(',').map(p => p.trim());
+    if (parts.length < 2) return null;
+    
+    const code = parts[0].trim();
+    const sizeStr = parts[1].trim();
+    
+    if (!code) return null;
+    
+    // If size is empty, it's a subtotal row — skip
+    if (!sizeStr) return null;
+    
+    const size = parseInt(sizeStr);
+    if (isNaN(size) || size < 30 || size > 50) return null;
+    
+    return { code, size };
+  }
+
+  window.handleExcelImport = async (input) => {
+    const file = input.files[0];
+    if (!file) return;
+    
+    if (typeof XLSX === 'undefined') {
+      alert('Excel գրադարանը չի բեռնված։ Թարմացրեք էջը եւ փորձեք նորից։');
+      return;
+    }
+    
+    const previewEl = document.getElementById('qs-import-preview');
+    if (previewEl) {
+      previewEl.style.display = 'block';
+      previewEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--mid)">⏳ Կարդում է ֆայլը...</div>';
+    }
+    
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      
+      // Aggregate by code: { "01": { 39: 1, 40: 2, ... } }
+      const codeData = {};
+      
+      for (const row of rows) {
+        if (!row || row.length === 0) continue;
+        // First column is the row text, third column (index 2) is the quantity
+        const rowText = row[0];
+        const qty = parseInt(row[2]);
+        if (!rowText || isNaN(qty)) continue;
+        
+        const parsed = parseQR1CRow(rowText);
+        if (!parsed) continue;
+        
+        if (!codeData[parsed.code]) codeData[parsed.code] = {};
+        codeData[parsed.code][parsed.size] = qty;
+      }
+      
+      // Match codes against products
+      const matched = [];
+      const unmatched = [];
+      
+      for (const code of Object.keys(codeData)) {
+        const product = PRODUCTS.find(p => (p.sku || '').toLowerCase().trim() === code.toLowerCase().trim());
+        if (product) {
+          matched.push({ code, productId: product.id, productName: product.name_hy || product.name_en || '—', sizes: codeData[code] });
+        } else {
+          unmatched.push({ code, sizes: codeData[code] });
+        }
+      }
+      
+      pendingImportData = { matched, unmatched, totalCodes: Object.keys(codeData).length };
+      
+      // Build preview UI
+      let html = `<h3 style="margin:0 0 15px 0; font-family:'Cormorant Garamond',serif; font-size:22px">📋 Excel Import — Նախադիտում</h3>`;
+      
+      html += `<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:20px">
+        <div style="background:#e3f2fd; padding:12px; text-align:center"><div style="font-size:24px; font-weight:600; color:#1976d2">${pendingImportData.totalCodes}</div><div style="font-size:11px; color:var(--mid); text-transform:uppercase; letter-spacing:1px">Կոդ ֆայլում</div></div>
+        <div style="background:#e8f5e9; padding:12px; text-align:center"><div style="font-size:24px; font-weight:600; color:#2e7d32">${matched.length}</div><div style="font-size:11px; color:var(--mid); text-transform:uppercase; letter-spacing:1px">Կթարմացվի</div></div>
+        <div style="background:#ffebee; padding:12px; text-align:center"><div style="font-size:24px; font-weight:600; color:#c33">${unmatched.length}</div><div style="font-size:11px; color:var(--mid); text-transform:uppercase; letter-spacing:1px">Կանտեսվի</div></div>
+      </div>`;
+      
+      if (matched.length > 0) {
+        html += `<details open style="margin-bottom:15px"><summary style="cursor:pointer; font-weight:600; padding:8px; background:#e8f5e9; color:#2e7d32">✅ Կթարմացվեն (${matched.length} ապրանք) — սեղմեք ընդարձակել/փակել</summary>`;
+        html += `<div style="max-height:300px; overflow-y:auto; padding:10px; border:1px solid #e8f5e9; font-size:12px">`;
+        for (const m of matched.slice(0, 100)) {
+          const sizesStr = Object.entries(m.sizes).map(([s, q]) => `${s}:${q}`).join(', ');
+          html += `<div style="padding:6px 0; border-bottom:1px dashed #eee"><strong style="color:var(--accent); font-family:monospace">${escapeHtml(m.code)}</strong> · ${escapeHtml(m.productName)} · <span style="color:var(--mid)">${sizesStr}</span></div>`;
+        }
+        if (matched.length > 100) html += `<div style="padding:6px 0; color:var(--mid); font-style:italic">... եւ ${matched.length - 100} ավելին</div>`;
+        html += `</div></details>`;
+      }
+      
+      if (unmatched.length > 0) {
+        html += `<details style="margin-bottom:15px"><summary style="cursor:pointer; font-weight:600; padding:8px; background:#ffebee; color:#c33">⚠ Կանտեսվեն — կոդը կայքում չկա (${unmatched.length}) — սեղմեք ընդարձակել</summary>`;
+        html += `<div style="max-height:300px; overflow-y:auto; padding:10px; border:1px solid #ffebee; font-size:12px">`;
+        for (const u of unmatched.slice(0, 100)) {
+          const sizesStr = Object.entries(u.sizes).map(([s, q]) => `${s}:${q}`).join(', ');
+          html += `<div style="padding:6px 0; border-bottom:1px dashed #eee"><strong style="color:#c33; font-family:monospace">${escapeHtml(u.code)}</strong> · <span style="color:var(--mid)">${sizesStr}</span></div>`;
+        }
+        if (unmatched.length > 100) html += `<div style="padding:6px 0; color:var(--mid); font-style:italic">... եւ ${unmatched.length - 100} ավելին</div>`;
+        html += `</div></details>`;
+      }
+      
+      html += `<div style="display:flex; gap:10px; margin-top:15px">`;
+      if (matched.length > 0) {
+        html += `<button onclick="window.confirmImport()" style="flex:1; padding:14px; background:#2e7d32; color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase">✓ Հաստատել եւ թարմացնել ${matched.length} ապրանք</button>`;
+      }
+      html += `<button onclick="window.cancelImport()" style="padding:14px 20px; background:#999; color:#fff; border:none; cursor:pointer; font-family:inherit; font-weight:600; letter-spacing:1px; text-transform:uppercase">Չեղարկել</button>`;
+      html += `</div>`;
+      
+      if (matched.length === 0) {
+        html += `<div style="margin-top:15px; padding:12px; background:#fff8e6; border-left:3px solid #e67e22; color:#8b6f47; font-size:13px">⚠️ Ոչ մի կոդ չի համընկնում կայքի ապրանքների հետ։ Համոզվեք, որ ապրանքները ունեն ճշգրիտ նույն SKU/Կոդ-ը (ինչպես 1C-ում)։</div>`;
+      }
+      
+      previewEl.innerHTML = html;
+      
+      // Reset file input
+      input.value = '';
+    } catch(e) {
+      console.error('Excel import error:', e);
+      if (previewEl) previewEl.innerHTML = `<div style="padding:15px; background:#ffebee; border-left:3px solid #c33; color:#8b4543"><strong>Սխալ՝</strong> Չհաջողվեց կարդալ ֆայլը։ ${escapeHtml(e.message || '')}</div>`;
+      input.value = '';
+    }
+  };
+
+  window.cancelImport = () => {
+    pendingImportData = null;
+    const previewEl = document.getElementById('qs-import-preview');
+    if (previewEl) {
+      previewEl.style.display = 'none';
+      previewEl.innerHTML = '';
+    }
+  };
+
+  window.confirmImport = async () => {
+    if (!pendingImportData || pendingImportData.matched.length === 0) return;
+    
+    if (!confirm(`Հաստատու՞մ եք ${pendingImportData.matched.length} ապրանքի թարմացումը։\n\n⚠ Կարեւոր՝ Excel-ում նշված չափսերի քանակները կփոխարինեն կայքի ընթացիկ քանակները։`)) return;
+    
+    const previewEl = document.getElementById('qs-import-preview');
+    let saved = 0;
+    let failed = 0;
+    const total = pendingImportData.matched.length;
+    
+    for (const m of pendingImportData.matched) {
+      try {
+        const product = PRODUCTS.find(p => p.id === m.productId);
+        if (!product) { failed++; continue; }
+        
+        // Build new sizesStock: keep existing sizes that aren't in import as-is, override imported sizes
+        const currentStock = (product.sizesStock && typeof product.sizesStock === 'object') ? { ...product.sizesStock } : {};
+        // Reset standard sizes (39-44) — only what's in Excel will be set
+        STANDARD_SIZES.forEach(s => { currentStock[s] = 0; });
+        // Apply imported sizes
+        Object.keys(m.sizes).forEach(sizeNum => {
+          currentStock[sizeNum] = m.sizes[sizeNum];
+        });
+        
+        await updateDoc(doc(db, "products", m.productId), { sizesStock: currentStock });
+        saved++;
+        if (previewEl) previewEl.innerHTML = `<div style="padding:30px; text-align:center"><div style="font-size:18px; margin-bottom:10px">⏳ Պահպանվում է...</div><div style="font-size:14px; color:var(--mid)">${saved}/${total}</div></div>`;
+      } catch(e) {
+        console.error('Import save error:', m.code, e);
+        failed++;
+      }
+    }
+    
+    pendingImportData = null;
+    
+    if (previewEl) {
+      if (failed === 0) {
+        previewEl.innerHTML = `<div style="padding:20px; background:#e8f5e9; border-left:4px solid #2e7d32; color:#2e7d32"><h3 style="margin:0 0 10px 0">✓ Հաջող ներմուծում!</h3><div>${saved} ապրանքի քանակները թարմացվեցին 1C-ի Excel ֆայլից։</div></div>`;
+        setTimeout(() => {
+          previewEl.style.display = 'none';
+          previewEl.innerHTML = '';
+          renderQuickStock();
+        }, 3000);
+      } else {
+        previewEl.innerHTML = `<div style="padding:20px; background:#fff8e6; border-left:4px solid #e67e22; color:#8b6f47"><h3 style="margin:0 0 10px 0">⚠ Մասամբ ավարտված</h3><div>Պահպանվեց՝ ${saved}, սխալ՝ ${failed}։</div></div>`;
+      }
     }
   };
 
